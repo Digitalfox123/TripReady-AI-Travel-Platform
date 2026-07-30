@@ -1,0 +1,61 @@
+Created At: 2026-05-31T18:48:32Z
+Completed At: 2026-05-31T18:48:32Z
+File Path: `file:///C:/Users/hafiz/.gemini/antigravity/brain/8aea9138-58d5-4892-b520-33e32f04da5c/implementation_plan.md`
+Total Lines: 87
+Total Bytes: 5725
+Showing lines 1 to 87
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Implementation Plan - Destination Expansion, Galleries & Explorer Sights
+2: 
+3: This updated plan details the technical design and steps required to expand the Trip Ready database to **150+ categorized destinations**, ensure **every destination has 3 to 5 high-quality landmark-specific images** utilizing our Pexels & Pixabay APIs, and implement a visual gallery section on the Country Explorer page.
+4: 
+5: ---
+6: 
+7: ## Goal Description
+8: 
+9: 1. **150+ Destinations**: Expand `src/data/index.js` from 55 to **150+ categorized destinations**, explicitly including **Mecca**, **Medina**, and various premium destinations (such as Skardu, Abha, Al Ula, Berlin, Vienna, etc.) categorized cleanly.
+10: 2. **3 to 5 Sights per Destination**: Ensure every single destination offers a rich gallery of 3 to 5 specific, matching HD images (Hero, Sights, Nature, Food/Culture).
+11: 3. **Dynamic Multi-Image Search API Engine**: Rather than hardcoding 750+ static image URLs (which would bloat the bundle and create broken/outdated links), we will build a highly advanced dynamic image loader hook `useDestinationGallery` in `src/utils/imageLookup.js` that calls the Pexels & Pixabay APIs to fetch 3 to 5 highly specific photos for *any* destination at runtime and caches them in `localStorage`.
+12: 4. **Static Curation Fallback**: Provide curated static 3-to-5 image arrays for the top flagship destinations (including Tokyo, Paris, Dubai, Mecca, Medina, Hunza, Skardu, etc.) to ensure instant first-load visuals, coupled with robust generic keyword Unsplash fal
+<truncated 2539 bytes>
+ds.
+49:   - If the APIs fail or return empty, it maps the destination keywords to a curated Unsplash fallback structure to guarantee **no broken images**.
+50: 
+51: ---
+52: 
+53: ### 3. Destination Page Integration
+54: 
+55: #### [MODIFY] [DestinationPage.jsx](file:///C:/Users/hafiz/.gemini/antigravity/scratch/trip-ready/src/pages/DestinationPage.jsx)
+56: - Update the hero backdrop and gallery sections in `DestinationPage.jsx` to consume the array of 3 to 5 images returned by `useDestinationGallery`.
+57: - Render a premium horizontal image strip / carousel in the page body where users can explore the visual sights of the destination.
+58: 
+59: ---
+60: 
+61: ### 4. Country Explorer Gallery Section
+62: 
+63: #### [MODIFY] [CountryExplorerPage.jsx](file:///C:/Users/hafiz/.gemini/antigravity/scratch/trip-ready/src/pages/CountryExplorerPage.jsx)
+64: - Insert a new tab: `{ id: 'gallery', label: '6. Image Gallery', icon: Camera }`.
+65: - Build the gallery view containing:
+66:   - Large hero banner of the country.
+67:   - Categories: "Historic Sights", "Nature & Wildlife", "Culture & Gastronomy".
+68:   - Click-to-open glassmorphism **Lightbox Modal** with full-screen viewer and exit animations.
+69: 
+70: ---
+71: 
+72: ## Verification Plan
+73: 
+74: ### Automated Verification
+75: - Run a production build of the Vite application:
+76:   ```powershell
+77:   npm run build
+78:   ```
+79:   Ensure it compiles cleanly with 0 errors.
+80: 
+81: ### Manual UI Verification
+82: 1. Navigate to the **Destinations Catalog** and verify that 150+ cards are listed and filterable by region/category.
+83: 2. Confirm that **Mecca** and **Medina** are fully operational with complete details.
+84: 3. Open any destination page and verify that a beautiful gallery of 3 to 5 destination-specific images is displayed.
+85: 4. Verify that no destination has empty or broken images.
+86: 5. In the **Country Explorer** page, check the new **Image Gallery** tab for several countries.
+87: 
+The above content shows the entire, complete file contents of the requested file.

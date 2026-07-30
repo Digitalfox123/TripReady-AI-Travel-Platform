@@ -1,0 +1,69 @@
+Created At: 2026-05-30T18:36:41Z
+Completed At: 2026-05-30T18:36:41Z
+The following changes were made by the multi_replace_file_content tool to: C:\Users\hafiz\.gemini\antigravity\scratch\trip-ready\src\pages\DestinationPage.jsx. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -69,6 +69,7 @@
+ } from 'lucide-react';
+ import { topDestinations, currencies, travelCategories, countries } from '../data';
+ import { getCityImage, usePremiumImage } from '../utils/imageLookup';
++import AmbientWeatherCard from '../components/AmbientWeatherCard';
+ 
+ // Helper function to map category ID to styled Lucide icon
+ export function getCategoryIcon(id, className = "w-3.5 h-3.5") {
+@@ -2104,72 +2104,23 @@
+           <div className="grid grid-cols-12 gap-8 items-stretch">
+             
+             {/* LEFT DISPLAY: Ambient Cinematic Hero Card */}
+-            <div className="col-span-12 lg:col-span-5 flex flex-col justify-between p-8 sm:p-10 rounded-[32px] border border-white/10 dark:border-white/5 bg-slate-900/40 dark:bg-black/40 backdrop-blur-xl relative overflow-hidden min-h-[460px] text-left">
+-              
+-              {/* Particle Canvas Simulator is embedded here! */}
+-              <WeatherSimulator condition={destination.weather.condition} />
+-
+-              {/* Fog glass vignette overlay */}
+-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent pointer-events-none z-10" />
+-
+-              {/* Card top details */}
+-              <div className="relative z-20 flex items-center justify-between">
+-                <div>
+-                  <span className="text-[10px] font-mono tracking-widest text-white/50 uppercase">Ambient Feed</span>
+-                  <h3 className="font-heading text-lg font-normal text-white mt-1">{destination.name} Climate</h3>
+-                </div>
+-                
+-                {/* Condition-specific Vector Icon */}
+-                <div className="w-11 h-11 rou
+<truncated 2580 bytes>
+        </div>
+-                </div>
+-                
+-                <div className="flex items-center gap-2">
+-                  <Sunset className="w-4 h-4 text-rose-400 animate-pulse" />
+-                  <div>
+-                    <span className="text-white/40 block uppercase font-heading">Sunset</span>
+-                    <span>06:48 PM</span>
+-                  </div>
+-                </div>
+-              </div>
+-
++            {/* LEFT DISPLAY: Premium Ambient Weather Card */}
++            <div className="col-span-12 lg:col-span-5 flex items-center justify-center">
++              <AmbientWeatherCard
++                location={`${destination.name} Climate`}
++                temperature={parseInt(destination.weather.temp) || 17}
++                feelsLike={parseInt(destination.weather.temp) || 17}
++                condition={
++                  destination.weather.condition.toLowerCase().includes('rain') || destination.weather.condition.toLowerCase().includes('tropical') ? 'RAIN'
++                  : destination.weather.condition.toLowerCase().includes('snow') || destination.weather.condition.toLowerCase().includes('crisp') ? 'SNOW'
++                  : destination.weather.condition.toLowerCase().includes('storm') ? 'STORM'
++                  : destination.weather.condition.toLowerCase().includes('fog') || destination.weather.condition.toLowerCase().includes('mist') || destination.weather.condition.toLowerCase().includes('cloudy') || destination.weather.condition.toLowerCase().includes('overcast') ? 'CLOUDY'
++                  : 'CLEAR'
++                }
++                sunriseTime="06:12 AM"
++                sunsetTime="06:48 PM"
++                unit="C"
++              />
+             </div>
+ 
+             {/* RIGHT DISPLAY: Modular Tactile Details Grid */}
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

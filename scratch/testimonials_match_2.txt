@@ -1,0 +1,21 @@
+Created At: 2026-05-31T18:52:37Z
+Completed At: 2026-05-31T18:52:40Z
+
+				The command completed successfully.
+				Output:
+				Searching for 'export const features = [' in transcript.jsonl...
+Match 1: Line length = 4255
+Snippet: export const features = [\n302:   { id: 1, title: 'AI Trip Planning', description: 'Our advanced AI analyzes millions of data points to craft your perfect itinerary, considering weather, crowds, costs, and your personal preferences.', icon: 'Brain' },\n303:   { id: 2, title: 'Smart Budget Estimation', description: 'Get real-time cost breakdowns for flights, hotels, food, transport, and activities — tailored to your travel style and destination.', icon: 'Calculator' },\n304:   { id: 3, title: 'Personalized Recommendations', description: 'Discover hidden gems and curated experiences matched to your interests, travel history, and preferred adventure level.', icon: 'Sparkles' },\n305:   { id: 4, title: 'Real-time Travel Guidance', description: 'Live weather updates, flight tracking, local events, and emergency information — all in one dashboard during your trip.', icon: 'Navigation' },\n306:   { id: 5, title: 'Weather Intelligence', description: 'Advanced weather forecasting with climate analysis, best-time-to-visit predictions, and packing recommendations.', icon: 'CloudSun' },\n307:   { id: 6, title: 'Local Cultural Insights', description: 'Understand customs, etiquette, local laws, dress codes, and cultural sensitivities before you arrive.', icon: 'Globe' },\n308:   { id: 7, title: 'Smart Travel Checklist', description: 'AI-generated packing lists, document reminders, health advisories, and pre-trip preparation guides.', icon: 'CheckSquare' },\n309:   { id: 8, title: 'Visa & Travel Requirements', description: 'Instan\n<truncated 4297 bytes>\n: 'R$', rate: 4.97 },\n355:   { code: 'ZAR', name: 'South African Rand', symbol: 'R', rate: 18.90 },\n356:   { code: 'NZD', name: 'New Zealand Dollar', symbol: 'NZ$', rate: 1.65 },\n357:   { code: 'SEK', name: 'Swedish Krona', symbol: 'kr', rate: 10.
+<truncated 1977 bytes>
+1267:   { title: 'Budget Assistant', description: 'Real-time cost optimization and savings tips', icon: 'Wallet' },\n1268:   { title: 'Destination Intelligence', description: 'Deep insights about any destination worldwide', icon: 'Search' },\n1269:   { title: 'Real-time Help', description:
+-----------------------------------------
+Match 3: Line length = 875
+Snippet: export const features = [\r\nsrc\\data\\index.js:1240:export const featuredTestimonials = [\r\nsrc\\data\\index.js:1247:export const scrollingTestimonials = [\r\nsrc\\data\\index.js:1263:export const currencies = [\r\nsrc\\data\\index.js:1287:export const chatbotFeatures = [\r\nsrc\\data\\index.js:1297:export const travelTypes = [\r\nsrc\\data\\index.js:1307:export const budgetPreferences = [\r\n\r\n\r\n\n"}
+-----------------------------------------
+Match 4: Line length = 1337
+Snippet: export const features = [\r\nsrc\\data\\index.js:1240:export const featuredTestimonials = [\r\nsrc\\data\\index.js:1247:export const scrollingTestimonials = [\r\nsrc\\data\\index.js:1263:export const currencies = [\r\nsrc\\data\\index.js:1287:export const chatbotFeatures = [\r\nsrc\\data\\index.js:1297:export const travelTypes = [\r\nsrc\\data\\index.js:1307:export const budgetPreferences = [\r\n\r\n\r\n\n\nLog: file:///C:/Users/hafiz/.gemini/antigravity/brain/8aea9138-58d5-4892-b520-33e32f04da5c/.system_generated/tasks/task-4006.log\n</SYSTEM_MESSAGE>"}
+-----------------------------------------
+Match 5: Line length = 4287
+Snippet: export const features = [\\r\\nsrc\\\\data\\\\index.js:1240:export const featuredTestimonials = [\\r\\nsrc\\\\data\\\\index.js:1247:export const scrollingTestimonials = [\\r\\nsrc\\\\data\\\\index.js:1263:export const currencies = [\\r\\nsrc\\\\data\\\\index.js:1287:export const chatbotFeatures = [\\r\\nsrc\\\\data\\\\index.js:1297:export const travelTypes = [\\r\\nsrc\\\\data\\\\index.js:1307:export const budgetPreferences = [\\r\\n\\r\\n\\r\\n\\n\"}\n-----------------------------------------\n\n"}
+-----------------------------------------
+

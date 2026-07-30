@@ -1,0 +1,59 @@
+Created At: 2026-05-25T18:46:37Z
+Completed At: 2026-05-25T18:46:37Z
+File Path: `file:///C:/Users/hafiz/.gemini/antigravity/scratch/trip-ready/src/data/index.js`
+Total Lines: 1290
+Total Bytes: 76533
+Showing lines 1180 to 1290
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1180:     culture: 'Fast-paced, efficient culture. Tipping is generally not expected.',
+1181:     visa: 'Visa-free for up to 30 or 90 days',
+1182:     categoryIds: ['cities', 'skyscrapers']
+1183:   }
+1184: ];
+1185: 
+1186: // === TRAVEL CATEGORIES ===
+1187: export const travelCategories = [
+1188:   { id: 'nature', name: 'Nature', icon: '🌿', gradient: 'from-green-400 to-emerald-600', description: 'Immerse in natural wonders' },
+1189:   { id: 'mountains', name: 'Mountains', icon: '🏔️', gradient: 'from-slate-400 to-slate-700', description: 'Conquer majestic peaks' },
+1190:   { id: 'beaches', name: 'Beaches', icon: '🏖️', gradient: 'from-cyan-400 to-blue-500', description: 'Paradise shores await' },
+1191:   { id: 'deserts', name: 'Deserts', icon: '🏜️', gradient: 'from-amber-400 to-orange-600', description: 'Golden sand adventures' },
+1192:   { id: 'historical', name: 'Historical', icon: '🏛️', gradient: 'from-amber-300 to-yellow-600', description: 'Walk through time' },
+1193:   { id: 'cities', name: 'Cities', icon: '🌆', gradient: 'from-purple-400 to-indigo-600', description: 'Urban exploration' },
+1194:   { id: 'skyscrapers', name: 'Skyscrapers', icon: '🏙️', gradient: 'from-blue-400 to-indigo-600', description: 'Touch the sky' },
+1195:   { id: 'forests', name: 'Forests', icon: '🌲', gradient: 'from-green-500 to-green-800', description: 'Deep in the wilderness' },
+1196:   { id: 'snow', name: 'Snow', icon: '❄️', gradient: 'from-blue-200 to-blue-500', description: 'Winter wonderlands' },
+1197:   { id: 'adventure', name: 'Adventu
+<truncated 6634 bytes>
+code: 'ZAR', name: 'South African Rand', symbol: 'R', rate: 18.90 },
+1260:   { code: 'NZD', name: 'New Zealand Dollar', symbol: 'NZ$', rate: 1.65 },
+1261:   { code: 'SEK', name: 'Swedish Krona', symbol: 'kr', rate: 10.82 },
+1262: ];
+1263: 
+1264: // === CHATBOT FEATURES ===
+1265: export const chatbotFeatures = [
+1266:   { title: 'Trip Planning', description: 'Plan your entire trip with AI-powered itineraries', icon: 'MapPin' },
+1267:   { title: 'Budget Assistant', description: 'Real-time cost optimization and savings tips', icon: 'Wallet' },
+1268:   { title: 'Destination Intelligence', description: 'Deep insights about any destination worldwide', icon: 'Search' },
+1269:   { title: 'Real-time Help', description: 'Instant assistance during your travels', icon: 'MessageCircle' },
+1270:   { title: 'Packing Suggestions', description: 'Weather-based packing lists and reminders', icon: 'Package' },
+1271:   { title: 'Emergency Guidance', description: 'Critical safety info and emergency contacts', icon: 'Shield' },
+1272: ];
+1273: 
+1274: // === TRAVEL TYPES ===
+1275: export const travelTypes = [
+1276:   { id: 'solo', label: 'Solo', icon: '🧑' },
+1277:   { id: 'couple', label: 'Couple', icon: '💑' },
+1278:   { id: 'family', label: 'Family', icon: '👨‍👩‍👧‍👦' },
+1279:   { id: 'friends', label: 'Friends', icon: '👫' },
+1280:   { id: 'business', label: 'Business', icon: '💼' },
+1281:   { id: 'adventure', label: 'Adventure', icon: '🏕️' },
+1282: ];
+1283: 
+1284: // === BUDGET PREFERENCES ===
+1285: export const budgetPreferences = [
+1286:   { id: 'budget', label: 'Budget', icon: '💰', description: 'Smart & affordable' },
+1287:   { id: 'midrange', label: 'Mid-Range', icon: '⭐', description: 'Comfort & value' },
+1288:   { id: 'luxury', label: 'Luxury', icon: '💎', description: 'Premium experience' },
+1289: ];
+1290: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,23 @@
+# User-agent configurations for search engines
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /auth
+Disallow: /trip-ai
+
+# User-agent configurations for AI LLM Scraping Bots
+User-agent: GPTBot
+Disallow: /dashboard
+Disallow: /auth
+
+User-agent: ClaudeBot
+Disallow: /dashboard
+Disallow: /auth
+
+User-agent: Google-Extended
+Disallow: /dashboard
+Disallow: /auth
+
+# Host & Sitemaps
+Host: https://tripready.ai
+Sitemap: https://tripready.ai/sitemap.xml

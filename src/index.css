@@ -1,0 +1,499 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,400;1,500;1,600&display=swap');
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  :root {
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F4F6F9;
+    --bg-tertiary: #E9EFF5;
+    --text-primary: #020813;
+    --text-secondary: #475569;
+    --text-muted: #94A3B8;
+    --accent: #1E40AF;
+    --border: rgba(2, 8, 19, 0.08);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-shadow: 0 4px 24px rgba(2, 8, 19, 0.02);
+    
+    /* Background Ribbon Light Mode Gradients */
+    --ribbon-color-1: #1E40AF;
+    --ribbon-color-2: #2563EB;
+    --ribbon-color-3: #3B82F6;
+    --ribbon-color-4: #60A5FA;
+    --ribbon-color-5: #1D4ED8;
+    --ribbon-color-6: #93C5FD;
+    
+    /* Neumorphic Light Mode Variables */
+    --neu-bg: #e2e8f0;
+    --neu-card: #e2e8f0;
+    --neu-shadow-1: 9px 9px 18px rgba(163, 177, 198, 0.7);
+    --neu-shadow-2: -9px -9px 18px rgba(255, 255, 255, 0.95);
+    --neu-shadow-hover-1: 13px 13px 25px rgba(163, 177, 198, 0.8);
+    --neu-shadow-hover-2: -13px -13px 25px rgba(255, 255, 255, 1);
+    --neu-inset-1: inset 5px 5px 10px rgba(163, 177, 198, 0.65);
+    --neu-inset-2: inset -5px -5px 10px rgba(255, 255, 255, 0.95);
+    --neu-border: rgba(255, 255, 255, 0.45);
+    --neu-text: #0f172a;
+  }
+
+  .dark {
+    --bg-primary: #020813;
+    --bg-secondary: #081125;
+    --bg-tertiary: #0F1E3D;
+    --text-primary: #FFFFFF;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    --accent: #2E5BFF;
+    --border: rgba(255, 255, 255, 0.08);
+    --glass-bg: rgba(8, 17, 37, 0.85);
+    --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    
+    /* Background Ribbon Dark Mode Neon/Electric Gradients */
+    --ribbon-color-1: #2563EB;
+    --ribbon-color-2: #3B82F6;
+    --ribbon-color-3: #60A5FA;
+    --ribbon-color-4: #A5F3FC; /* Electric Cyan */
+    --ribbon-color-5: #1D4ED8;
+    --ribbon-color-6: #C084FC; /* Glowing Violet */
+    
+    /* Neumorphic Dark Mode Variables */
+    --neu-bg: #030712;
+    --neu-card: #090f20;
+    --neu-shadow-1: 9px 9px 18px rgba(0, 0, 0, 0.55);
+    --neu-shadow-2: -9px -9px 18px rgba(255, 255, 255, 0.015);
+    --neu-shadow-hover-1: 13px 13px 25px rgba(0, 0, 0, 0.68);
+    --neu-shadow-hover-2: -13px -13px 25px rgba(255, 255, 255, 0.02);
+    --neu-inset-1: inset 5px 5px 10px rgba(0, 0, 0, 0.6);
+    --neu-inset-2: inset -5px -5px 10px rgba(255, 255, 255, 0.008);
+    --neu-border: rgba(255, 255, 255, 0.02);
+    --neu-text: #ffffff;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.4s ease, color 0.4s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Force highly professional 1.5px stroke weight globally for all Lucide Icons */
+  svg.lucide {
+    stroke-width: 1.5px !important;
+  }
+}
+
+@layer components {
+  /* Minimalist Editorial Card */
+  .glass-card {
+    @apply backdrop-blur-md border rounded-[24px] transition-all duration-300;
+    background: var(--glass-bg);
+    border-color: var(--border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .glass-card-hover {
+    @apply glass-card;
+  }
+  .glass-card-hover:hover {
+    transform: translateY(-3px) scale(1.005);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    border-color: rgba(30, 64, 175, 0.12);
+  }
+  .dark .glass-card-hover:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    border-color: rgba(96, 165, 250, 0.18);
+  }
+
+  /* Editorial Headings (Solid, no gradient) */
+  .text-gradient {
+    @apply text-luxury-primary dark:text-white font-heading tracking-tight;
+  }
+
+  .text-gradient-warm {
+    @apply text-luxury-primary dark:text-white font-heading tracking-tight;
+  }
+
+  .text-gradient-cyan {
+    @apply text-luxury-primary dark:text-white font-heading tracking-tight;
+  }
+
+  /* Soft Ambient Backdrops */
+  .bg-gradient-hero {
+    background-color: var(--bg-primary);
+    background-image: radial-gradient(circle at top, rgba(30, 64, 175, 0.02) 0%, transparent 70%);
+  }
+
+  .bg-gradient-section {
+    background-color: var(--bg-primary);
+  }
+
+  /* Premium Luxury Button — Dark/Primary style */
+  .btn-primary {
+    @apply px-5 py-2.5 rounded-full font-medium transition-all duration-300 text-xs tracking-wide uppercase inline-flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] cursor-pointer;
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
+    border: 1px solid var(--border);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+    opacity: 0.95;
+  }
+  .dark .btn-primary:hover {
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.01);
+  }
+
+  /* Single Accent sunset orange button for focal points */
+  .btn-sunset {
+    @apply px-5 py-2.5 rounded-full font-medium text-white transition-all duration-300 text-xs tracking-wide uppercase inline-flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] cursor-pointer;
+    background-color: var(--accent);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .btn-sunset:hover {
+    box-shadow: 0 6px 16px rgba(30, 64, 175, 0.18);
+    opacity: 0.95;
+  }
+
+  /* Minimalist Glass pill button */
+  .btn-glass {
+    @apply glass-card px-4 py-2 rounded-full font-medium text-xs tracking-wide uppercase transition-all duration-300 inline-flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] cursor-pointer;
+  }
+  .btn-glass:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.03);
+    border-color: var(--accent);
+  }
+
+  /* Spacious rhythm */
+  .section-padding {
+    @apply py-24 md:py-36 px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-title {
+    @apply font-heading text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-luxury-primary dark:text-white leading-[1.08] mb-4;
+  }
+
+  .section-subtitle {
+    @apply text-sm sm:text-base max-w-xl mx-auto text-luxury-secondary dark:text-slate-400 font-light leading-relaxed;
+  }
+
+  /* Custom subtle shadow */
+  .shadow-premium {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.02);
+  }
+
+  .dark .shadow-premium {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Luxury scroll reveal animation classes */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 800ms cubic-bezier(0.16, 1, 0.3, 1), transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Premium Micro-Animations */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes spin-slow {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 0.2;
+      transform: scale(0.96);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(1.05);
+    }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 25s linear infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 4s ease-in-out infinite;
+  }
+
+  @keyframes slide-in {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-in {
+    animation: slide-in 350ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Premium thin scrollbar for overflow containers */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+  }
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Premium PDF Print Stylesheet formatting as a luxury travel brochure */
+@media print {
+  html, body {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+    font-family: 'Inter', sans-serif !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide interactive desktop elements */
+  nav, 
+  footer, 
+  .sticky, 
+  button, 
+  select, 
+  input, 
+  textarea,
+  a.btn-sunset,
+  a.btn-primary,
+  .no-print {
+    display: none !important;
+  }
+
+  .page-break {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  .avoid-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+
+/* ── Attraction Horizontal Scroll Cards ──────────────────────────── */
+.attraction-scroll-card {
+  min-width: 290px;
+  max-width: 310px;
+  flex-shrink: 0;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.attraction-scroll-card:hover {
+  transform: translateY(-6px);
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Infinite Marquee Scroll Animation ──────────────────────────── */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ── Floating Drift Animation for Background Orbs ────────────── */
+@keyframes drift {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(30px, -20px);
+  }
+  50% {
+    transform: translate(-20px, 15px);
+  }
+  75% {
+    transform: translate(15px, 25px);
+  }
+}
+
+/* ── Responsive Neumorphic UI Theme Classes ── */
+.neumorphic-bg {
+  background-color: var(--neu-bg) !important;
+  color: var(--neu-text) !important;
+}
+
+.neumorphic-card {
+  background-color: var(--neu-card) !important;
+  border: 1px solid var(--neu-border) !important;
+  box-shadow: var(--neu-shadow-1), var(--neu-shadow-2) !important;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  color: var(--neu-text) !important;
+}
+
+.neumorphic-card:hover {
+  box-shadow: var(--neu-shadow-hover-1), var(--neu-shadow-hover-2) !important;
+  transform: translateY(-3px) !important;
+}
+
+.neumorphic-inset {
+  background-color: var(--neu-card) !important;
+  border: 1px solid var(--neu-border) !important;
+  box-shadow: var(--neu-inset-1), var(--neu-inset-2) !important;
+  color: var(--neu-text) !important;
+}
+
+/* ── UI/UX Pro Max Glassmorphic & Animation Utilities ────────────────── */
+.premium-glass-card {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  box-shadow: 0 10px 30px -10px rgba(2, 8, 19, 0.03);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .premium-glass-card {
+  background: rgba(12, 25, 56, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
+}
+
+.premium-glass-card:hover {
+  transform: translateY(-4px) scale(1.005);
+  border-color: rgba(16, 185, 129, 0.22);
+  box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.06);
+}
+
+.dark .premium-glass-card:hover {
+  border-color: rgba(16, 185, 129, 0.15);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 50px -10px rgba(16, 185, 129, 0.04);
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 4s ease-in-out infinite;
+}
+
+@keyframes marquee-scroll {
+  from {
+    stroke-dashoffset: 200;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}

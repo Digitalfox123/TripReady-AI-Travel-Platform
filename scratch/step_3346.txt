@@ -1,0 +1,71 @@
+Created At: 2026-05-27T05:27:06Z
+Completed At: 2026-05-27T05:27:06Z
+File Path: `file:///C:/Users/hafiz/.gemini/antigravity/scratch/trip-ready/src/pages/DestinationPage.jsx`
+Total Lines: 2770
+Total Bytes: 163831
+Showing lines 858 to 920
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+858:     };
+859:   };
+860: 
+861:   const destination = getActiveDestination();
+862:   destination.weather = weather;
+863:   destination.image = getCityImage(destination.name, destination.country);
+864:   const { isDark } = useTheme();
+865: 
+866:   // Curate and inject destinations array dynamically to prevent directory schema crash
+867:   const mappedCategories = travelCategories.slice(0, 9).map((cat) => {
+868:     let destinations = [];
+869:     if (cat.id === 'nature') {
+870:       destinations = ['Bali', 'Costa Rica', 'Norway', 'New Zealand', 'Amazon Rainforest', 'Hunza Valley'];
+871:     } else if (cat.id === 'mountains') {
+872:       destinations = ['Swiss Alps', 'Patagonia', 'Himalayas', 'Rocky Mountains', 'Andes', 'Mount Fuji', 'Dolomites', 'Kilimanjaro', 'Hunza Valley'];
+873:     } else if (cat.id === 'beaches') {
+874:       destinations = ['Bali', 'Santorini', 'Phuket', 'Cancún', 'Costa Rica'];
+875:     } else if (cat.id === 'deserts') {
+876:       destinations = ['Sahara', 'Dubai Desert', 'Dubai'];
+877:     } else if (cat.id === 'historical') {
+878:       destinations = ['Tokyo', 'Paris', 'Rome', 'London', 'Kyoto', 'Machu Picchu'];
+879:     } else if (cat.id === 'cities') {
+880:       destinations = ['Tokyo', 'Paris', 'London', 'Singapore', 'New York', 'Dubai'];
+881:     } else if (cat.id === 'skyscrapers') {
+882:       destinations = ['Tokyo', 'Dubai', 'Singapore', 'New York'];
+883:     } else if (cat.id === 'forests') {
+884:       destinations = ['Amazon Rainforest', 'Costa Rica'];
+885:     } else {
+886:       destinations = ['Bali', 'Paris', 'Tokyo'];
+887:     }
+888:     return { ...cat, destinations };
+889:   });
+890: 
+891:   const getCoordinates = (name) => {
+892:     const lower = name.toLowerCase();
+893:     if (lower.includes('tokyo') || lower.includes('japan')) return [35.6762, 139.6503];
+894:     if (lower.includes('riyadh') || lower.includes('saudi')) return [24.7136, 46.6753];
+895:     if (lower.includes('new york') || lower.includes('nyc')) return [40.7128, -74.006];
+896:     if (lower.includes('london')) return [51.5074, -0.1278];
+897:     if (lower.includes('paris')) return [48.8566, 2.3522];
+898:     if (lower.includes('bali')) return [-8.4095, 115.1889];
+899:     if (lower.includes('sydney')) return [-33.8688, 151.2093];
+900:     if (lower.includes('cape town')) return [-33.9249, 18.4241];
+901:     if (lower.includes('dubai')) return [25.2048, 55.2708];
+902:     if (lower.includes('são paulo') || lower.includes('brazil')) return [-23.5505, -46.6333];
+903:     if (lower.includes('rome') || lower.includes('italy')) return [41.9028, 12.4964];
+904:     if (lower.includes('singapore')) return [1.3521, 103.8198];
+905:     return [20.0, 0.0];
+906:   };
+907: 
+908:   const destCoords = getCoordinates(destination.name);
+909: 
+910:   const [coords, setCoords] = useState(getCoordinates(destination.name));
+911:   const [weather, setWeather] = useState(destination.weather);
+912:   const [hourlyForecast, setHourlyForecast] = useState([]);
+913:   const [liveRates, setLiveRates] = useState({});
+914: 
+915:   const [visaChecked, setVisaChecked] = useState(false);
+916:   const [visaNationality, setVisaNationality] = useState('United States');
+917:   const [mapHotspot, setMapHotspot] = useState(null);
+918:   
+919:   // Geocode custom locations dynamically via Nominatim openStreetMap keyless API
+920:   useEffect(() => {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

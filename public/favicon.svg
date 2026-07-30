@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Smooth linear gradient for premium vertical lighting depth -->
+    <linearGradient id="logo-gradient" x1="0" y1="0" x2="0" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Premium rounded squircle card backdrop mimicking the user's logo -->
+  <rect x="0" y="0" width="512" height="512" rx="144" ry="144" fill="url(#logo-gradient)" />
+  
+  <!-- Sleek lowercase "tr." centered text styling using system-ui for maximum cross-platform crispness -->
+  <text 
+    x="256" 
+    y="320" 
+    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" 
+    font-weight="800" 
+    font-size="240" 
+    fill="#ffffff" 
+    text-anchor="middle" 
+    letter-spacing="-10"
+  >tr.</text>
+</svg>

@@ -1,0 +1,69 @@
+Created At: 2026-05-31T17:36:52Z
+Completed At: 2026-05-31T17:36:53Z
+File Path: `file:///C:/Users/hafiz/.gemini/antigravity/scratch/trip-ready/src/pages/DestinationPage.jsx`
+Total Lines: 3998
+Total Bytes: 240990
+Showing lines 1040 to 1100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1040:     };
+1041:   };
+1042: 
+1043:   const destination = getActiveDestination();
+1044:   const { imageUrl: premiumImage } = usePremiumImage(destination.name, destination.country);
+1045:   destination.image = premiumImage;
+1046:   const { isDark } = useTheme();
+1047: 
+1048:   // Curate and inject destinations array dynamically to prevent directory schema crash
+1049:   const mappedCategories = travelCategories.slice(0, 9).map((cat) => {
+1050:     let destinations = [];
+1051:     if (cat.id === 'nature') {
+1052:       destinations = ['Bali', 'Costa Rica', 'Norway', 'New Zealand', 'Amazon Rainforest', 'Hunza Valley'];
+1053:     } else if (cat.id === 'mountains') {
+1054:       destinations = ['Swiss Alps', 'Patagonia', 'Himalayas', 'Rocky Mountains', 'Andes', 'Mount Fuji', 'Dolomites', 'Kilimanjaro', 'Hunza Valley'];
+1055:     } else if (cat.id === 'beaches') {
+1056:       destinations = ['Bali', 'Santorini', 'Phuket', 'Cancún', 'Costa Rica'];
+1057:     } else if (cat.id === 'deserts') {
+1058:       destinations = ['Sahara', 'Dubai Desert', 'Dubai'];
+1059:     } else if (cat.id === 'historical') {
+1060:       destinations = ['Tokyo', 'Paris', 'Rome', 'London', 'Kyoto', 'Machu Picchu'];
+1061:     } else if (cat.id === 'cities') {
+1062:       destinations = ['Tokyo', 'Paris', 'London', 'Singapore', 'New York', 'Dubai'];
+1063:     } else if (cat.id === 'skyscrapers') {
+1064:       destinations = ['Tokyo', 'Dubai', 'Singapore', 'New York'];
+1065:     } else if (cat.id === 'forests') {
+1066:       destinations = ['Amazon Rainforest', 'Costa Rica'];
+1067:     } else {
+1068:       destinations = ['Bali', 'Paris', 'Tokyo'];
+1069:     }
+1070:     return { ...cat, destinations };
+1071:   });
+1072: 
+1073:   const getCoordinates = (name) => {
+1074:     const lower = name.toLowerCase();
+1075:     if (lower.includes('tokyo') || lower.includes('japan')) return [35.6762, 139.6503];
+1076:     if (lower.includes('riyadh') || lower.includes('saudi')) return [24.7136, 46.6753];
+1077:     if (lower.includes('new york') || lower.includes('nyc')) return [40.7128, -74.006];
+1078:     if (lower.includes('london')) return [51.5074, -0.1278];
+1079:     if (lower.includes('paris')) return [48.8566, 2.3522];
+1080:     if (lower.includes('bali')) return [-8.4095, 115.1889];
+1081:     if (lower.includes('sydney')) return [-33.8688, 151.2093];
+1082:     if (lower.includes('cape town')) return [-33.9249, 18.4241];
+1083:     if (lower.includes('dubai')) return [25.2048, 55.2708];
+1084:     if (lower.includes('são paulo') || lower.includes('brazil')) return [-23.5505, -46.6333];
+1085:     if (lower.includes('rome') || lower.includes('italy')) return [41.9028, 12.4964];
+1086:     if (lower.includes('singapore')) return [1.3521, 103.8198];
+1087:     return [20.0, 0.0];
+1088:   };
+1089: 
+1090:   const destCoords = getCoordinates(destination.name);
+1091: 
+1092:   const [coords, setCoords] = useState(getCoordinates(destination.name));
+1093:   const [weather, setWeather] = useState(destination.weather);
+1094:   const [hourlyForecast, setHourlyForecast] = useState([]);
+1095:   const [liveRates, setLiveRates] = useState({});
+1096: 
+1097:   destination.weather = weather;
+1098: 
+1099:   const [visaChecked, setVisaChecked] = useState(false);
+1100:   const [visaNationality, setVisaNationality] = useState('United States');
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,576 @@
+﻿App.jsx:19:import BlogPostPage from './pages/BlogPostPage';
+App.jsx:22:import { blogPosts } from './data/blogData';
+App.jsx:48:desc = "Create customized day-by-day itineraries, flight & hotel guides, budget allocations, safety memos, and printable travel magazines instantly with our AI travel engine.";
+App.jsx:63:desc = "Learn about the vision and core engineering team behind Trip Ready, building the world's most helpful and beautiful travel companion.";
+App.jsx:81:const postId = pathname.split('/').pop();
+App.jsx:82:const matched = blogPosts.find(b => b.id === postId);
+App.jsx:132:<Route path="/blog/:id" element={<BlogPostPage />} />
+components\AmbientWeatherCard.jsx:61:0%, 100% { opacity: 0.1; background-position: 0% 50%; }
+components\AmbientWeatherCard.jsx:62:50% { opacity: 0.38; background-position: 100% 50%; }
+components\AmbientWeatherCard.jsx:73:0% { background-position: 0% 50%; }
+components\AmbientWeatherCard.jsx:74:50% { background-position: 100% 50%; }
+components\AmbientWeatherCard.jsx:75:100% { background-position: 0% 50%; }
+components\AmbientWeatherCard.jsx:193:const m = destNow.getMinutes().toString().padStart(2, '0');
+components\AmbientWeatherCard.jsx:194:const s = destNow.getSeconds().toString().padStart(2, '0');
+components\AmbientWeatherCard.jsx:306:position: 'relative',
+components\AmbientWeatherCard.jsx:314:MozOsxFontSmoothing: 'grayscale',
+components\AmbientWeatherCard.jsx:327:position: 'absolute',
+components\AmbientWeatherCard.jsx:340:position: 'absolute',
+components\AmbientWeatherCard.jsx:352:<div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+components\AmbientWeatherCard.jsx:355:position: 'absolute',
+components\AmbientWeatherCard.jsx:367:position: 'absolute',
+components\AmbientWeatherCard.jsx:382:<div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+components\AmbientWeatherCard.jsx:387:position: 'absolute',
+components\AmbientWeatherCard.jsx:402:position: 'absolute',
+components\AmbientWeatherCard.jsx:416:<div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+components\AmbientWeatherCard.jsx:419:position: 'absolute',
+components\AmbientWeatherCard.jsx:432:position: 'absolute',
+components\AmbientWeatherCard.jsx:447:position: 'absolute',
+components\AmbientWeatherCard.jsx:462:<div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+components\AmbientWeatherCard.jsx:466:position: 'absolute',
+components\AmbientWeatherCard.jsx:478:position: 'absolute',
+components\AmbientWeatherCard.jsx:491:position: 'absolute',
+components\AmbientWeatherCard.jsx:506:<div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+components\AmbientWeatherCard.jsx:512:position: 'absolute',
+components\AmbientWeatherCard.jsx:527:position: 'absolute',
+components\AmbientWeatherCard.jsx:540:position: 'absolute',
+components\AmbientWeatherCard.jsx:554:position: 'absolute',
+components\AmbientWeatherCard.jsx:563:<div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+components\AmbientWeatherCard.jsx:568:position: 'absolute',
+components\AmbientWeatherCard.jsx:587:<div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+components\AmbientWeatherCard.jsx:592:position: 'absolute',
+components\AmbientWeatherCard.jsx:610:<div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+components\AmbientWeatherCard.jsx:615:position: 'absolute',
+components\AmbientWeatherCard.jsx:634:<div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+components\AmbientWeatherCard.jsx:639:position: 'absolute',
+components\AmbientWeatherCard.jsx:656:position: 'absolute',
+components\AmbientWeatherCard.jsx:669:<div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+components\AmbientWeatherCard.jsx:674:position: 'absolute',
+components\AmbientWeatherCard.jsx:693:position: 'absolute',
+components\AmbientWeatherCard.jsx:704:position: 'relative',
+components\AmbientWeatherCard.jsx:723:fontFamily: "'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace",
+components\AmbientWeatherCard.jsx:863:fontFamily: "'SF Mono', 'Fira Code', 'Consolas', monospace",
+components\Footer.jsx:150:Get travel cost updates, destination alerts, and helpful travel tips sent straight to your inbox.
+components\Navbar.jsx:131:aria-label="Close menu"
+components\home\BlogSection.jsx:3:import { blogPosts } from '../../data/blogData';
+components\home\BlogSection.jsx:40:{blogPosts.slice(0, 3).map((post) => (
+components\home\BlogSection.jsx:42:key={post.id}
+components\home\BlogSection.jsx:43:to={`/blog/${post.id}`}
+components\home\BlogSection.jsx:50:src={post.image}
+components\home\BlogSection.jsx:51:alt={post.title}
+components\home\BlogSection.jsx:55:{post.category}
+components\home\BlogSection.jsx:63:{post.date}
+components\home\BlogSection.jsx:68:{post.readTime}
+components\home\BlogSection.jsx:74:{post.title}
+components\home\BlogSection.jsx:79:{post.subtitle}
+components\home\BlogSection.jsx:90:{post.author.split(',')[0]}
+components\home\BudgetPreviewSection.jsx:6:UtensilsCrossed,
+components\home\BudgetPreviewSection.jsx:30:const DAILY_COSTS = {
+components\home\BudgetPreviewSection.jsx:43:{ key: 'food',       label: 'Food & Dining',     color: '#8E9296', icon: UtensilsCrossed }, // grey
+components\home\BudgetPreviewSection.jsx:63:description: 'Real-time conversion rates so you always know exact costs in your local currency.',
+components\home\BudgetPreviewSection.jsx:163:const costs = DAILY_COSTS[destination][style];
+components\home\BudgetPreviewSection.jsx:166:value: costs[cat.key] * days,
+components\home\BudgetPreviewSection.jsx:198:Get custom cost estimates tailored to your travel style and current travel rates.
+components\home\BudgetPreviewSection.jsx:295:<span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold font-heading">Total Estimated Cost</span>
+components\home\CategoriesSection.jsx:148:backgroundPosition: 'center',
+components\home\CategoriesSection.jsx:149:position: 'absolute',
+components\home\ChatbotSection.jsx:118:{/* Overlapping Floating Widget 1: Left Card (Frosted Glassmorphism Weather Widget - optimized -left-24) */}
+components\home\ChatbotSection.jsx:134:{/* Overlapping Floating Widget 2: Right Large Card (Frosted Obsidian Glassmorphism JSON Matrix - optimized -right-48) */}
+components\home\ChatbotSection.jsx:268:{/* AI Assistant Dossier Bubble (Rich styled card instead of emojis) */}
+components\home\ChatbotSection.jsx:310:{/* Cost Valuation Panel */}
+components\home\ChatbotSection.jsx:312:<span className="flex items-center gap-1"><DollarSign className="w-2.5 h-2.5" /> Cost Estimate</span>
+components\home\FeaturesSection.jsx:81:Set a daily budget limit, check hotel costs instantly, and see exchange rates. We track your spending categories automatically so you never overspend.
+components\home\FeaturesSection.jsx:104:{/* Why Choose Trip Ready? 3x3 Features Grid */}
+components\home\FeaturesSection.jsx:108:<span>Why Choose Us</span>
+components\home\HeroSection.jsx:187:export default function HeroSection() {
+components\home\HeroSection.jsx:291:{/* Deep Atmospheric Blue Glow behind the map */}
+components\home\HeroSection.jsx:301:{/* Concentric curved grid/latitude arches across the background sky */}
+components\home\HeroSection.jsx:429:placeholder={departureCountry ? 'Choose city' : 'Choose country'}
+components\home\HeroSection.jsx:449:placeholder={destinationCountry ? 'Choose city' : 'Choose country'}
+components\home\HeroSection.jsx:567:{/* Est Cost Summary */}
+components\home\HeroSection.jsx:583:{/* Cost breakdown list */}
+components\home\ImmersiveDiscoverySection.jsx:13:img.crossOrigin = 'anonymous';
+components\home\ImmersiveDiscoverySection.jsx:313:alt="Destination colosseum"
+components\home\ImmersiveDiscoverySection.jsx:339:Get complete country insights including visa, safety, costs, culture, transport & more.
+components\home\JourneyFlowSection.jsx:92:{/* Card 1: Destinations (Postcard Parallax style) */}
+components\home\JourneyFlowSection.jsx:220:<div className="w-11 h-11 rounded-full bg-gradient-to-br from-cyan-500/10 to-blue-500/5 border border-cyan-500/30 dark:from-cyan-500/10 dark:to-blue-500/5 dark:border-cyan-500/20 flex items-center justify-center shadow-[0_4px_12px_rgba(6,182,212,0.1)] hover:border-cyan-500/60 hover:shadow-[0_0_15px_rgba(6,182,212,0.25)] hover:scale-110 active:scale-95 transition-all duration-300 shrink-0 mr-[1%]" title="Transit App Logos">
+components\home\PlannerAdBanner.jsx:35:<span>Planner OS 2.0 has arrived</span>
+components\home\TestimonialsSection.jsx:7:text: "Trip Ready revolutionized our travel planning, streamlining cost analysis and itineraries. The cloud-based platform keeps us productive and organized, even remotely.",
+components\home\TestimonialsSection.jsx:25:text: "Trip Ready's seamless budget integration enhanced our travel operations and budget efficiency. Highly recommend for its intuitive interface.",
+components\home\TestimonialsSection.jsx:43:text: "Our international flight bookings improved with a user-friendly layout and incredibly positive team feedback.",
+components\home\TestimonialsSection.jsx:55:text: "Using Trip Ready, our online travel bookings and budgeting significantly improved, boosting global trip performance.",
+components\home\ToolsSuiteSection.jsx:22:export default function ToolsSuiteSection() {
+components\home\ToolsSuiteSection.jsx:72:<span>Global Telemetry</span>
+components\home\ToolsSuiteSection.jsx:146:<span>Timeline OS 2.0</span>
+components\home\ToolsSuiteSection.jsx:254:desc: 'Track flight, hotel, food, and transport costs instantly in local currencies.',
+components\home\ToolsSuiteSection.jsx:352:stroke="url(#arc-swoosh-glassless)"
+components\home\ToolsSuiteSection.jsx:357:<linearGradient id="arc-swoosh-glassless" x1="0%" y1="0%" x2="100%" y2="100%">
+components\home\ToolsSuiteSection.jsx:554:{ time: '09:00 AM', loc: 'Shibuya Crossing', active: false },
+components\ui\cobe-globe.jsx:234:position: "absolute",
+components\ui\cobe-globe.jsx:235:positionAnchor: `--cobe-${m.id}`,
+components\ui\cobe-globe.jsx:246:fontFamily: "monospace",
+components\ui\cobe-globe.jsx:260:position: "absolute",
+components\ui\cobe-globe.jsx:276:position: "absolute",
+components\ui\cobe-globe.jsx:277:positionAnchor: `--cobe-arc-${a.id}`,
+components\ui\cobe-globe.jsx:286:fontFamily: "monospace",
+components\ui\cobe-globe.jsx:301:position: "absolute",
+components\ui\spotlight-card.jsx:78:backgroundPosition: '50% 50%',
+components\ui\spotlight-card.jsx:81:position: 'relative',
+components\ui\spotlight-card.jsx:101:position: absolute;
+components\ui\spotlight-card.jsx:108:background-position: 50% 50%;
+components\ui\spotlight-card.jsx:111:mask-composite: intersect;
+components\ui\spotlight-card.jsx:114:-webkit-mask-composite: source-in, xor;
+components\ui\spotlight-card.jsx:137:position: absolute;
+pages\AboutPage.jsx:25:Trip Ready was founded in 2025 with a simple yet bold mission: to fuse cutting-edge artificial intelligence with beautiful frontend design, empowering travelers to explore our planet stress-free.
+pages\BlogExplorerPage.jsx:4:import { blogPosts } from '../data/blogData';
+pages\BlogExplorerPage.jsx:25:const categories = ['All', 'Budgeting', 'Intelligence', 'Locales'];
+pages\BlogExplorerPage.jsx:29:'Intelligence': 'Tips',
+pages\BlogExplorerPage.jsx:34:const filteredPosts = blogPosts.filter((post) => {
+pages\BlogExplorerPage.jsx:36:post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+pages\BlogExplorerPage.jsx:37:post.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+pages\BlogExplorerPage.jsx:38:post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())) ||
+pages\BlogExplorerPage.jsx:39:post.keywords.some(kw => kw.toLowerCase().includes(searchQuery.toLowerCase()));
+pages\BlogExplorerPage.jsx:41:const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
+pages\BlogExplorerPage.jsx:46:// Featured Post is the first one
+pages\BlogExplorerPage.jsx:47:const featuredPost = blogPosts[0];
+pages\BlogExplorerPage.jsx:48:const gridPosts = filteredPosts.filter(post => searchQuery || activeCategory !== 'All' ? true : post.id !== featuredPost.id);
+pages\BlogExplorerPage.jsx:107:{filteredPosts.length > 0 ? (
+pages\BlogExplorerPage.jsx:110:{/* A. Featured Post (Show only when no active filters) */}
+pages\BlogExplorerPage.jsx:114:to={`/blog/${featuredPost.id}`}
+pages\BlogExplorerPage.jsx:120:src={featuredPost.image}
+pages\BlogExplorerPage.jsx:121:alt={featuredPost.title}
+pages\BlogExplorerPage.jsx:126:Featured {categoryDisplay[featuredPost.category] || featuredPost.category}
+pages\BlogExplorerPage.jsx:137:{featuredPost.date}
+pages\BlogExplorerPage.jsx:142:{featuredPost.readTime}
+pages\BlogExplorerPage.jsx:148:{featuredPost.title}
+pages\BlogExplorerPage.jsx:153:{featuredPost.subtitle}
+pages\BlogExplorerPage.jsx:156:{/* Post description preview */}
+pages\BlogExplorerPage.jsx:158:{featuredPost.description}
+pages\BlogExplorerPage.jsx:169:<p className="text-xs font-bold text-slate-900 dark:text-white leading-none">{featuredPost.author.split(',')[0]}</p>
+pages\BlogExplorerPage.jsx:170:<span className="text-[9px] text-slate-450 dark:text-slate-400 font-light uppercase tracking-wider">{featuredPost.author.split(',')[1] || 'Editor'}</span>
+pages\BlogExplorerPage.jsx:177:onClick={(e) => handleLike(featuredPost.id, e)}
+pages\BlogExplorerPage.jsx:179:likes[featuredPost.id]
+pages\BlogExplorerPage.jsx:184:<Heart className={`w-4 h-4 ${likes[featuredPost.id] ? 'fill-current' : ''}`} />
+pages\BlogExplorerPage.jsx:200:{gridPosts.map((post) => (
+pages\BlogExplorerPage.jsx:202:key={post.id}
+pages\BlogExplorerPage.jsx:203:to={`/blog/${post.id}`}
+pages\BlogExplorerPage.jsx:210:src={post.image}
+pages\BlogExplorerPage.jsx:211:alt={post.title}
+pages\BlogExplorerPage.jsx:215:{categoryDisplay[post.category] || post.category}
+pages\BlogExplorerPage.jsx:223:{post.date}
+pages\BlogExplorerPage.jsx:228:{post.readTime}
+pages\BlogExplorerPage.jsx:234:{post.title}
+pages\BlogExplorerPage.jsx:239:{post.subtitle}
+pages\BlogExplorerPage.jsx:250:{post.author.split(',')[0]}
+pages\BlogExplorerPage.jsx:257:onClick={(e) => handleLike(post.id, e)}
+pages\BlogExplorerPage.jsx:259:likes[post.id]
+pages\BlogExplorerPage.jsx:264:<Heart className={`w-3.5 h-3.5 ${likes[post.id] ? 'fill-current' : ''}`} />
+pages\BlogPostPage.jsx:21:import { blogPosts } from '../data/blogData';
+pages\BlogPostPage.jsx:85:export default function BlogPostPage() {
+pages\BlogPostPage.jsx:89:const [post, setPost] = useState(null);
+pages\BlogPostPage.jsx:97:const matchedPost = blogPosts.find(p => p.id === id);
+pages\BlogPostPage.jsx:98:if (matchedPost) {
+pages\BlogPostPage.jsx:99:setPost(matchedPost);
+pages\BlogPostPage.jsx:100:// Retrieve related posts (exclude current)
+pages\BlogPostPage.jsx:101:const others = blogPosts.filter(p => p.id !== id).slice(0, 2);
+pages\BlogPostPage.jsx:105:document.title = `${matchedPost.title} — Travel Chronicles | Trip Ready`;
+pages\BlogPostPage.jsx:110:setPost(null);
+pages\BlogPostPage.jsx:116:if (!post) return;
+pages\BlogPostPage.jsx:138:}, [post]);
+pages\BlogPostPage.jsx:140:if (!post) {
+pages\BlogPostPage.jsx:147:The travel post you are searching for might have been archived or repositioned to a new section.
+pages\BlogPostPage.jsx:162:const target = e.target.closest('a');
+pages\BlogPostPage.jsx:180:const headings = post.sections
+pages\BlogPostPage.jsx:219:<span className="text-slate-400 truncate max-w-[120px] sm:max-w-xs">{post.category}</span>
+pages\BlogPostPage.jsx:226:<Sparkles className="w-3 h-3 text-[var(--accent)]" /> {post.category} Focus
+pages\BlogPostPage.jsx:230:{post.title}
+pages\BlogPostPage.jsx:234:{post.subtitle}
+pages\BlogPostPage.jsx:245:<p className="text-xs font-bold text-slate-900 dark:text-white leading-none">{post.author}</p>
+pages\BlogPostPage.jsx:254:{post.date}
+pages\BlogPostPage.jsx:258:{post.readTime}
+pages\BlogPostPage.jsx:263:{/* Social telemetry icons */}
+pages\BlogPostPage.jsx:305:{/* Full-width premium post header image */}
+pages\BlogPostPage.jsx:308:src={post.image}
+pages\BlogPostPage.jsx:309:alt={post.title}
+pages\BlogPostPage.jsx:344:{/* Travel OS Tools Promo Container */}
+pages\BlogPostPage.jsx:364:{/* MIDDLE: Comprehensive Markdown-Compiled Post Content */}
+pages\BlogPostPage.jsx:369:{post.sections.map((section, secIdx) => {
+pages\BlogPostPage.jsx:463:case 'proscons':
+pages\BlogPostPage.jsx:466:{/* Pros column */}
+pages\BlogPostPage.jsx:474:{section.pros.map((pro, pIdx) => (
+pages\BlogPostPage.jsx:488:<div className="rounded-[24px] border border-rose-500/10 bg-rose-500/[0.02] dark:bg-rose-500/[0.01] p-5 text-left flex flex-col justify-between">
+pages\BlogPostPage.jsx:490:<h4 className="font-heading font-extrabold text-[11px] sm:text-xs text-rose-600 dark:text-rose-450 uppercase tracking-wider mb-4 flex items-center gap-2">
+pages\BlogPostPage.jsx:491:<span className="w-5 h-5 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 text-[10px] font-black">✕</span>
+pages\BlogPostPage.jsx:500:<span className="text-rose-500 mt-1 select-none font-bold text-xs">•</span>
+pages\BlogPostPage.jsx:560:{/* Symmetrical Post Tags Row */}
+pages\BlogPostPage.jsx:563:{post.tags.map((tag, idx) => (
+pages\BlogPostPage.jsx:574:{post.suggestedImages && post.suggestedImages.length > 0 && (
+pages\BlogPostPage.jsx:580:{post.suggestedImages.map((img, idx) => (
+pages\BlogPostPage.jsx:611:{related.map((post) => (
+pages\BlogPostPage.jsx:613:key={post.id}
+pages\BlogPostPage.jsx:614:to={`/blog/${post.id}`}
+pages\BlogPostPage.jsx:619:src={post.image}
+pages\BlogPostPage.jsx:620:alt={post.title}
+pages\BlogPostPage.jsx:625:{post.title}
+pages\BlogPostPage.jsx:628:<span>{post.date}</span>
+pages\BlogPostPage.jsx:630:<span>{post.readTime}</span>
+pages\BlogPostPage.jsx:641:<TrendingUp className="w-3 h-3" /> Live Cost Auditing
+pages\BlogPostPage.jsx:653:Estimate Costs <ChevronRight className="w-3 h-3" />
+pages\BudgetPlannerPage.jsx:13:UtensilsCrossed,
+pages\BudgetPlannerPage.jsx:41:food:       { label: 'Culinary Experiences', color: '#8E9296', icon: UtensilsCrossed }, // Neutral Grey
+pages\BudgetPlannerPage.jsx:48:// Daily benchmark multiplier ratios per destination style
+pages\BudgetPlannerPage.jsx:49:const DEST_BASE_COSTS = {
+pages\BudgetPlannerPage.jsx:194:const flightBaseCost = isRegional
+pages\BudgetPlannerPage.jsx:198:const baseCost = DEST_BASE_COSTS[destinationId]?.[style] || (style === 'luxury' ? 300 : style === 'midrange' ? 150 : 80);
+pages\BudgetPlannerPage.jsx:201:const dailySum = baseCost * travelers;
+pages\BudgetPlannerPage.jsx:203:const flightCostRaw = flightBaseCost * travelers;
+pages\BudgetPlannerPage.jsx:204:const totalRaw = staysAndExcursionsRaw + flightCostRaw;
+pages\BudgetPlannerPage.jsx:220:const flightCostConverted = Math.round(flightCostRaw * conversionRate);
+pages\BudgetPlannerPage.jsx:223:flights: flightCostConverted,
+pages\BudgetPlannerPage.jsx:295:A simple, helpful travel budget tool. Enter your trip details, comfort preferences, and currency to see estimated costs instantly.
+pages\BudgetPlannerPage.jsx:301:<span className="flex items-center gap-1.5"><TrendingDown className="w-4 h-4 text-[var(--accent)]" /> Cost-Optimization Checks</span>
+pages\BudgetPlannerPage.jsx:474:Evaluating Local Cost Estimates
+pages\BudgetPlannerPage.jsx:479:<span>Analyzing: {selectedDest.name} Hospitality Index</span>
+pages\BudgetPlannerPage.jsx:528:Optimal
+pages\BudgetPlannerPage.jsx:650:📌 <strong>AI Cost Projections:</strong> This segment details average daily expenditures adjusted for a {style} style stay in {selectedDest.name}.
+pages\BudgetPlannerPage.jsx:653:<li>Cross-referenced with historical tourist index records and local seasonal tax changes.</li>
+pages\BudgetPlannerPage.jsx:654:<li>Booking hotels 45 days in advance yields optimal price structures.</li>
+pages\BudgetPlannerPage_backup.jsx:13:UtensilsCrossed,
+pages\BudgetPlannerPage_backup.jsx:40:food:       { label: 'Culinary Experiences', color: '#8E9296', icon: UtensilsCrossed }, // Neutral Grey
+pages\BudgetPlannerPage_backup.jsx:47:// Daily benchmark multiplier ratios per destination style
+pages\BudgetPlannerPage_backup.jsx:48:const DEST_BASE_COSTS = {
+pages\BudgetPlannerPage_backup.jsx:151:const baseCost = DEST_BASE_COSTS[destinationId]?.[style] || 150;
+pages\BudgetPlannerPage_backup.jsx:154:const dailySum = baseCost * travelers;
+pages\BudgetPlannerPage_backup.jsx:214:<span>AI FinTech Engine</span>
+pages\BudgetPlannerPage_backup.jsx:228:<span className="flex items-center gap-1.5"><TrendingDown className="w-4 h-4 text-[var(--accent)]" /> Cost-Optimization Checks</span>
+pages\BudgetPlannerPage_backup.jsx:386:Evaluating Regional Cost Logs
+pages\BudgetPlannerPage_backup.jsx:391:<span>Analyzing: {selectedDest.name} Hospitality Index</span>
+pages\BudgetPlannerPage_backup.jsx:440:Optimal
+pages\BudgetPlannerPage_backup.jsx:562:📌 <strong>AI Cost Projections:</strong> This segment details average daily expenditures adjusted for a {style} style stay in {selectedDest.name}.
+pages\BudgetPlannerPage_backup.jsx:565:<li>Cross-referenced with historical tourist index records and local seasonal tax changes.</li>
+pages\BudgetPlannerPage_backup.jsx:566:<li>Booking hotels 45 days in advance yields optimal price structures.</li>
+pages\ContactPage.jsx:81:100 Silicon Blvd, Suite 400, San Francisco, CA
+pages\CountryExplorerPage.jsx:26:UtensilsCrossed,
+pages\CountryExplorerPage.jsx:39:// ── Intelligent Telemetry Dynamic Synthesis Engine ──────────────────────────
+pages\CountryExplorerPage.jsx:59:climate: 'Mostly dry and hot in the central desert regions, temperate in the fertile agricultural plains, and extremely cold sub-zero alpine conditions in the high-altitude northern ranges.',
+pages\CountryExplorerPage.jsx:64:{ name: 'Balochistan', capital: 'Quetta', highlight: 'Massive arid plateaus, strategic coastal ports, and deep mineral deposits.' },
+pages\CountryExplorerPage.jsx:70:healthcare: 'A mix of private tertiary care hospitals and public healthcare facilities under provincial health card schemes.',
+pages\CountryExplorerPage.jsx:72:customs: 'Renowned for exceptional hospitality, respect for family structure, community cohesion, and celebratory festival gatherings.',
+pages\CountryExplorerPage.jsx:86:{ name: 'Shandur Polo Festival', date: 'July', desc: 'The world\'s highest polo ground hosts a spectacular traditional tournament between Gilgit and Chitral teams.', emoji: '🏇' },
+pages\CountryExplorerPage.jsx:92:culture: 'A beautiful mosaic of Punjabi, Sindhi, Pashtun, Balochi, and Kashmiri traditions, blended together by shared faith and values.',
+pages\CountryExplorerPage.jsx:93:diversity: 'Composed of distinct linguistic and ethnic groups including Punjabis, Sindhis, Pashtuns, Balochis, Muhajirs, and Saraikis.',
+pages\CountryExplorerPage.jsx:95:architecture: 'Showcases grand Mughal sandstone architecture (Badshahi Mosque), Buddhist brick stupas (Takht-i-Bahi), British colonial structures, and futuristic concrete shells (Faisal Mosque).',
+pages\CountryExplorerPage.jsx:105:relations: 'Active member of the UN, OIC, and SAARC, holding a pivotal strategic position bridging South and Central Asia.',
+pages\CountryExplorerPage.jsx:106:unescoSites: [
+pages\CountryExplorerPage.jsx:128:desc: 'A world-famous historic hub of Gandharan civilization, Buddhist learning, and philosophy, drawing ancient scholars along the Silk Road. Located in Taxila, Rawalpindi District, Punjab.',
+pages\CountryExplorerPage.jsx:135:desc: 'A monumental stone military garrison fortress built by Emperor Sher Shah Suri, featuring massive bastions and imposing gateways designed to control the Grand Trunk Road. Located in Jhelum, Punjab.',
+pages\CountryExplorerPage.jsx:155:title: 'Badshahi Mosque (Lahore)',
+pages\CountryExplorerPage.jsx:156:desc: 'The iconic imperial mosque built by Emperor Aurangzeb, featuring three majestic white marble domes, four soaring red sandstone minarets, and a vast courtyard holding 100,000 worshippers. Located in Lahore, Punjab.',
+pages\CountryExplorerPage.jsx:162:title: 'Shah Faisal National Mosque (Islamabad)',
+pages\CountryExplorerPage.jsx:168:costOfLiving: 32,
+pages\CountryExplorerPage.jsx:189:geography: 'Composed of two main landmasses—the North Island and South Island—separated by the Cook Strait, featuring alpine peaks, geothermal fields, and scenic coastal inlets.',
+pages\CountryExplorerPage.jsx:190:climate: 'Temperate maritime climate, characterized by mild temperatures, moderate rainfall, and abundant sunshine across both main islands.',
+pages\CountryExplorerPage.jsx:192:{ name: 'Auckland Region', capital: 'Auckland', highlight: 'The commercial powerhouse, sailing capital, and cosmopolitan metropolitan center.' },
+pages\CountryExplorerPage.jsx:206:'Strict biosecurity customs check at the border to protect endemic wildlife.',
+pages\CountryExplorerPage.jsx:234:unescoSites: [
+pages\CountryExplorerPage.jsx:293:healthcare: 'Public clinics alongside premium private hospitals in Cairo.',
+pages\CountryExplorerPage.jsx:295:customs: 'Deeply values community greetings, family hospitality, bargaining at historic souks, and respect for cultural traditions.',
+pages\CountryExplorerPage.jsx:296:cuisine: 'Koshary (lentils, rice, pasta, and spicy tomato sauce), Ful Medames (fava beans), Falafel (Taameya), and Kunafa.',
+pages\CountryExplorerPage.jsx:299:'Always dress conservatively when visiting historic mosques and rural villages.',
+pages\CountryExplorerPage.jsx:304:{ name: 'Koshary Platter', desc: 'Egypt\'s national dish—a hearty bowl of rice, brown lentils, macaroni, chickpeas, and crispy fried onions, topped with garlic vinegar and spicy tomato sauce.', emoji: '🍲' },
+pages\CountryExplorerPage.jsx:313:culture: 'A rich Islamic and Coptic heritage, heavily influenced by its pivotal position at the crossroads of Africa and Asia.',
+pages\CountryExplorerPage.jsx:327:unescoSites: [
+pages\CountryExplorerPage.jsx:359:costOfLiving: 35,
+pages\CountryExplorerPage.jsx:369:overview: 'A vast country in South Asia, characterized by its immense geographical variety—spanning from the snow-capped Himalayan ranges to the tropical beaches of the south. As the world\'s largest democracy and most populous nation, India possesses a deeply layered historical heritage, vibrant traditions, and a rapidly expanding technological economy.',
+pages\CountryExplorerPage.jsx:385:{ name: 'Karnataka Plateau', capital: 'Bangalore', highlight: 'The high-tech Silicon Valley of Asia and advanced aerospace hub.' },
+pages\CountryExplorerPage.jsx:392:healthcare: 'A mix of large public hospitals and highly advanced private multi-specialty healthcare networks (e.g., Apollo, Fortis).',
+pages\CountryExplorerPage.jsx:394:customs: 'Values exceptional hospitality ("Atithi Devo Bhava" - The guest is God), respect for elders, diverse spiritual customs, and vibrant festive assemblies.',
+pages\CountryExplorerPage.jsx:395:cuisine: 'Biryani, Chicken Tikka Masala, Butter Chicken, Masala Dosa, Naan, and traditional Spiced Chai.',
+pages\CountryExplorerPage.jsx:398:'Dress modestly when visiting active temples, mosques, and heritage shrines.',
+pages\CountryExplorerPage.jsx:404:{ name: 'Crispy Masala Dosa', desc: 'A thin, crispy fermented rice and lentil crepe stuffed with a spiced potato mash, served with coconut chutney and hot sambar.', emoji: '🥞' },
+pages\CountryExplorerPage.jsx:428:unescoSites: [
+pages\CountryExplorerPage.jsx:437:futureProjects: 'Gaganyaan human spaceflight mission, high-speed rail corridors, and a massive 500 GW non-fossil renewable energy grid transition.',
+pages\CountryExplorerPage.jsx:465:// If it already has custom intermediate/advanced blocks (flagship countries), return with custom metrics
+pages\CountryExplorerPage.jsx:468:let costOfLiving = 65;
+pages\CountryExplorerPage.jsx:474:costOfLiving = 96;
+pages\CountryExplorerPage.jsx:479:costOfLiving = 76;
+pages\CountryExplorerPage.jsx:484:costOfLiving = 48;
+pages\CountryExplorerPage.jsx:489:costOfLiving = 45;
+pages\CountryExplorerPage.jsx:494:costOfLiving = 82;
+pages\CountryExplorerPage.jsx:502:costOfLiving,
+pages\CountryExplorerPage.jsx:510:`National Ecological Biosphere Reserve`
+pages\CountryExplorerPage.jsx:515:{ name: 'Signature Street Food', desc: `Popular local street delicacy enjoyed across major cities in ${raw.name || 'the country'}.`, emoji: '🥙' }
+pages\CountryExplorerPage.jsx:677:realExportProducts = 'Tropical fruits, timber, seafood, mineral deposits';
+pages\CountryExplorerPage.jsx:717:const costOfLiving = Math.round(Math.min(98, 20 + (realGDPPerCapita / 100000) * 75));
+pages\CountryExplorerPage.jsx:725:costOfLiving,
+pages\CountryExplorerPage.jsx:739:healthcare: 'Public medical centers and private urgent care clinics located across major municipalities.',
+pages\CountryExplorerPage.jsx:759:culture: `Rich cultural framework blending traditional folklore with modern metropolitan lifestyles across cantonal and municipal borders.`,
+pages\CountryExplorerPage.jsx:773:unescoSites: continentUnesco,
+pages\CountryExplorerPage.jsx:784:culture: 'A vibrant urban landscape hosting central galleries, national theatres, and lively street markets.',
+pages\CountryExplorerPage.jsx:789:costOfLiving: 'Moderate (65/100 Index)',
+pages\CountryExplorerPage.jsx:799:history: 'Evolved as a historic trading post along vital overland merchant travel routes.',
+pages\CountryExplorerPage.jsx:803:costOfLiving: 'Low-Moderate (45/100 Index)',
+pages\CountryExplorerPage.jsx:805:bestTimeToVisit: 'Summer months for optimal hiking and sightseeing.',
+pages\CountryExplorerPage.jsx:817:costOfLiving: 'Moderate-High (72/100 Index)',
+pages\CountryExplorerPage.jsx:835:Math.cos((lat1 * Math.PI) / 180) *
+pages\CountryExplorerPage.jsx:836:Math.cos((lat2 * Math.PI) / 180) *
+pages\CountryExplorerPage.jsx:994:if (data.photos && data.photos.length > 0) {
+pages\CountryExplorerPage.jsx:995:return data.photos.map(p => p.src.large2x || p.src.large);
+pages\CountryExplorerPage.jsx:1182:// Create an enclosing boundary path for the fallback shape
+pages\CountryExplorerPage.jsx:1204:const cy = my + offset * Math.cos(theta);
+pages\CountryExplorerPage.jsx:1396:{/* Continent Detail OS View */}
+pages\CountryExplorerPage.jsx:1413:{/* KPI Metrics row */}
+pages\CountryExplorerPage.jsx:1518:{/* ── Mode 2: MULTI-TIER COUNTRY TELEMETRY DASHBOARD ────────────────── */}
+pages\CountryExplorerPage.jsx:1790:*Percentages represent normalized approximations across secondary manufacturing and resource allocations.
+pages\CountryExplorerPage.jsx:1875:{/* Left Column (8/12): Dynamic Dotted Cyber-Telemetry Visualizer */}
+pages\CountryExplorerPage.jsx:1888:{/* Custom Cyber-Telemetry Vector Visualizer Map */}
+pages\CountryExplorerPage.jsx:2165:<UtensilsCrossed className="w-4 h-4 text-slate-550" />
+pages\CountryExplorerPage.jsx:2214:{country.advanced.unescoSites.map((site, uidx) => (
+pages\CountryExplorerPage.jsx:2389:<UtensilsCrossed className="w-4 h-4 text-amber-500" />
+pages\CountryExplorerPage.jsx:2438:<span className="text-[8px] font-mono text-slate-450 block uppercase">CITY DEEP DIVE OS</span>
+pages\CountryExplorerPage.jsx:2481:{ label: 'Cost of Living Index', val: parseInt(activeCityDeepDive.costOfLiving) || 65, desc: activeCityDeepDive.costOfLiving, color: 'bg-amber-500' },
+pages\CountryExplorerPage.jsx:2503:{ title: 'Traditional Foods', val: activeCityDeepDive.foodSpecialties, icon: UtensilsCrossed },
+pages\CountryExplorerPage.jsx:2607:{ metric: 'Cost of Living Index', valA: compareCountryA === 'switzerland' || compareCountryA === 'japan' ? 95 : 65, valB: compareCountryB === 'switzerland' || compareCountryB === 'japan' ? 95 : 65, colorA: 'bg-amber-500', colorB: 'bg-orange-500' },
+pages\CountryExplorerPage.jsx:2609:{ metric: 'UNESCO Sites density', valA: compareCountryA === 'italy' || compareCountryA === 'spain' ? 95 : 60, valB: compareCountryB === 'italy' || compareCountryB === 'spain' ? 95 : 60, colorA: 'bg-rose-500', colorB: 'bg-pink-500' }
+pages\CountryExplorerPage.jsx:2649:Close Comparison
+pages\DestinationPage.jsx:26:UtensilsCrossed,
+pages\DestinationPage.jsx:112:// Animate digital metrics on mount
+pages\DestinationPage.jsx:297:// Parallax mouse interaction (closer foreground flakes are affected more!)
+pages\DestinationPage.jsx:299:this.x += Math.cos(angle) * force * multiplier;
+pages\DestinationPage.jsx:303:this.x += Math.cos(angle) * force * multiplier;
+pages\DestinationPage.jsx:306:this.speedX += Math.cos(angle) * force * 0.4;
+pages\DestinationPage.jsx:438:this.x += Math.cos(angle) * force * 2.5;
+pages\DestinationPage.jsx:517:const x1 = sunX + Math.cos(angle - widthAngle) * 550;
+pages\DestinationPage.jsx:519:const x2 = sunX + Math.cos(angle + widthAngle) * 550;
+pages\DestinationPage.jsx:531:ctx.closePath();
+pages\DestinationPage.jsx:679:'costa-rica': { country: 'Costa Rica', flag: '🇨🇷', image: 'https://images.unsplash.com/photo-1565880122-8322c627a92d?w=600&q=80', preview: 'Lush rain forests, active volcanoes, and pristine beaches in Central America.', bestTime: 'Dec - April', budget: '$80-180' },
+pages\DestinationPage.jsx:680:'norway': { country: 'Norway', flag: '🇳🇴', image: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=600&q=80', preview: 'Majestic deep fjords, towering mountains, and stunning northern lights crossings.', bestTime: 'June - Aug', budget: '$160-320' },
+pages\DestinationPage.jsx:685:'rocky-mountains': { country: 'United States', flag: '🇺🇸', image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80', preview: 'Stretching mountains, alpine lakes, and abundant wildlife across North America.', bestTime: 'June - Aug', budget: '$130-250' },
+pages\DestinationPage.jsx:715:{ name: 'Careem', purpose: 'The premier local ride-hailing application across Saudi Arabia for regular and luxury trips.' },
+pages\DestinationPage.jsx:716:{ name: 'Riyadh Bus App', purpose: 'Official app for local bus network schedules, routes, and smart ticketing.' },
+pages\DestinationPage.jsx:717:{ name: 'Uber Saudi Arabia', purpose: 'Widely active and highly reliable for standard city rides and airport transfers.' }
+pages\DestinationPage.jsx:725:tip: 'Get a Suica or Pasmo IC card for tap-and-go convenience across all JR and subway rail networks.'
+pages\DestinationPage.jsx:734:{ name: 'Japan Travel (Navitime)', purpose: 'Best for route planning, train schedules, and platforms navigation.' },
+pages\DestinationPage.jsx:735:{ name: 'S.RIDE / Go App', purpose: 'The primary local Japanese taxi ride-hailing applications.' },
+pages\DestinationPage.jsx:736:{ name: 'Google Maps', purpose: 'Flawlessly maps train transfers and estimates platform numbers.' }
+pages\DestinationPage.jsx:753:{ name: 'Bonjour RATP', purpose: 'Official app for routes mapping, timetables, and loading electronic metro tickets.' },
+pages\DestinationPage.jsx:754:{ name: 'Bolt / Uber', purpose: 'The leading ride-hailing applications for cars and shared scooters in Paris.' },
+pages\DestinationPage.jsx:755:{ name: 'Citymapper', purpose: 'Outperforms local tools for live bus rerouting and peak subway disruptions.' }
+pages\DestinationPage.jsx:772:{ name: 'Grab', purpose: 'Highly efficient app for food delivery, ride-hailing, and booking private vehicles.' },
+pages\DestinationPage.jsx:773:{ name: 'Gojek', purpose: 'The quintessential local super-app for bike-taxis, courier service, and payments.' },
+pages\DestinationPage.jsx:774:{ name: 'Klook', purpose: 'Best for pre-booking fast boats to Nusa Penida and inter-island private transfers.' }
+pages\DestinationPage.jsx:786:desc: 'Rent elite supercars (Lamborghini, Ferrari) to cruise Sheikh Zayed Road, or book premium private luxury yacht transfers across the Dubai Marina.',
+pages\DestinationPage.jsx:788:tip: 'Ensure you carry an International Driving Permit (IDP) and a high-limit credit card for deposits.'
+pages\DestinationPage.jsx:791:{ name: 'Careem (Hala Taxi)', purpose: 'Essential local ride-hailing app for booking regular city cabs and luxury sedans.' },
+pages\DestinationPage.jsx:792:{ name: 'RTA Smart Drive', purpose: 'Official government routing app providing offline map guidance and traffic info.' },
+pages\DestinationPage.jsx:793:{ name: 'Uber Dubai', purpose: 'Widely active for booking premium high-tier Lexus rides and airport drop-offs.' }
+pages\DestinationPage.jsx:810:{ name: 'MYmta', purpose: 'Official MTA schedule app showing live train arrivals, delays, and subway maps.' },
+pages\DestinationPage.jsx:811:{ name: 'Uber / Lyft', purpose: 'Ride-hailing apps widely active across all 5 boroughs for yellow cabs and premium black cars.' },
+pages\DestinationPage.jsx:812:{ name: 'Curb', purpose: 'Best app for hailing official yellow/green cabs directly and locking low metered pricing.' }
+pages\DestinationPage.jsx:826:tip: 'Ensure your private NCC driver possesses the legal windshield permit to enter active ZTL zones.'
+pages\DestinationPage.jsx:829:{ name: 'TicketAppy', purpose: 'Buy virtual metro/bus tickets directly on your smartphone to bypass station queues.' },
+pages\DestinationPage.jsx:830:{ name: 'FreeNow (MyTaxi)', purpose: 'The primary local app for summoning official licensed Roman taxis.' },
+pages\DestinationPage.jsx:831:{ name: 'Moovit', purpose: 'Excellent live route guidance and public transit warning schedules for Rome.' }
+pages\DestinationPage.jsx:850:{ name: 'Google Maps / Uber', purpose: 'Universal route planning, subway tracking, and ride-hailing services.' },
+pages\DestinationPage.jsx:851:{ name: 'Local City Cab App', purpose: 'Summons official city metered taxis with standard local tariffs.' },
+pages\DestinationPage.jsx:852:{ name: 'Klook Transfers', purpose: 'Convenient online fast boats, private charters, and tour shuttles booking.' }
+pages\DestinationPage.jsx:917:let cheaperDesc = `Public buses, subway lines, or municipal train networks are active across ${city}. Acquire a local smart transit card at the station.`;
+pages\DestinationPage.jsx:927:{ name: 'Uber', purpose: 'The universal standard for rapid ride-hailing and airport transfers.' },
+pages\DestinationPage.jsx:928:{ name: 'Google Maps', purpose: 'Excellent for live public transit route coordinates and schedules.' }
+pages\DestinationPage.jsx:942:{ name: 'Careem', purpose: 'The premier local ride-hailing app across the Middle East for regular and luxury cars.' },
+pages\DestinationPage.jsx:943:{ name: 'Uber', purpose: 'Widely active and highly reliable for standard city rides and airport transfers.' }
+pages\DestinationPage.jsx:955:{ name: 'Grab', purpose: 'The ultimate super-app for ride-hailing, food delivery, and local transit booking.' }
+pages\DestinationPage.jsx:958:apps.push({ name: 'Gojek', purpose: 'Highly popular and cheap motorbike taxi hailing and digital payment platform.' });
+pages\DestinationPage.jsx:960:apps.push({ name: 'Uber / Bolt', purpose: 'Reliable ride-hailing and airport transfer services.' });
+pages\DestinationPage.jsx:971:{ name: country.includes('japan') ? 'Go App' : 'Kakao T', purpose: 'The leading national taxi-hailing applications.' },
+pages\DestinationPage.jsx:972:{ name: 'Japan Travel by Navitime', purpose: 'Highly recommended for transit schedules, platforms, and bullet train routing.' }
+pages\DestinationPage.jsx:984:{ name: 'Ola', purpose: 'The premier national ride-hailing platform for cars and rickshaws.' },
+pages\DestinationPage.jsx:985:{ name: 'Uber India', purpose: 'Highly active for premium standard cabs and airport transfers.' },
+pages\DestinationPage.jsx:986:{ name: 'Rapido', purpose: 'Popular bike-taxi hailing service to cut through heavy urban traffic.' }
+pages\DestinationPage.jsx:998:{ name: 'Careem', purpose: 'The most popular and secure ride-hailing service for cars.' },
+pages\DestinationPage.jsx:999:{ name: 'inDrive', purpose: 'Allows passengers to negotiate and bid custom fares directly with drivers.' },
+pages\DestinationPage.jsx:1000:{ name: 'Yango / Bykea', purpose: 'Highly cost-effective ride-hailing and bike taxi services.' }
+pages\DestinationPage.jsx:1006:cheaperTip = 'Contactless fares are automatically capped daily, ensuring maximum cost-efficiency.';
+pages\DestinationPage.jsx:1012:{ name: 'Citymapper', purpose: 'The absolute best live multi-modal transit planning and navigation app.' },
+pages\DestinationPage.jsx:1013:{ name: 'Uber / Bolt', purpose: 'Widely popular ride-hailing apps for private hire vehicles.' },
+pages\DestinationPage.jsx:1014:{ name: 'Trainline', purpose: 'Essential app for booking national intercity rail tickets and checking departures.' }
+pages\DestinationPage.jsx:1026:{ name: country.includes('switzerland') ? 'SBB Mobile' : 'DB Navigator', purpose: 'Official national railway schedules and mobile ticket bookings.' },
+pages\DestinationPage.jsx:1027:{ name: 'FreeNow', purpose: 'The primary app to summon licensed city taxis and shared micro-mobility.' },
+pages\DestinationPage.jsx:1028:{ name: 'Uber / Bolt', purpose: 'Active in major cities for convenient ride requests.' }
+pages\DestinationPage.jsx:1034:cheaperTip = 'Buy multi-ride ticket booklets at tabac shops or station kiosks for extra discounts.';
+pages\DestinationPage.jsx:1040:{ name: 'Bonjour RATP / TicketAppy', purpose: 'Local public transit tickets and routing apps.' },
+pages\DestinationPage.jsx:1041:{ name: 'FreeNow / Cabify', purpose: 'The leading regional taxi and private hire hailing applications.' },
+pages\DestinationPage.jsx:1042:{ name: 'Uber / Bolt', purpose: 'Highly active ride-hailing alternatives across European hubs.' }
+pages\DestinationPage.jsx:1054:{ name: 'BiTaksi', purpose: 'The leading Turkish taxi-hailing app for booking official yellow and turquoise cabs.' },
+pages\DestinationPage.jsx:1055:{ name: 'Uber Turkey', purpose: 'Reliable option for calling yellow taxis and VIP black vans.' },
+pages\DestinationPage.jsx:1056:{ name: 'Citymapper Istanbul', purpose: 'Excellent for ferry, subway, and tram transit schedules.' }
+pages\DestinationPage.jsx:1068:{ name: 'Uber / DiDi / Ola', purpose: 'The primary active ride-hailing apps in Australia and NZ.' },
+pages\DestinationPage.jsx:1069:{ name: 'TripView / Opal Travel', purpose: 'Best apps for live train and ferry schedules and delays.' }
+pages\DestinationPage.jsx:1102:description: `${nameCap} is a spectacular world-class destination. ${extra.preview} From local hospitality to breathtaking views, it represents the absolute peak of adventure and relaxation.`,
+pages\DestinationPage.jsx:1112:visa: 'Visa-free entry or immediate visa on arrival provided for most international travelers.'
+pages\DestinationPage.jsx:1143:visa: `eVisa or visa-free entry is provided for most international travelers to ${matchedCountry.name}.`
+pages\DestinationPage.jsx:1156:destinations = ['Bali', 'Costa Rica', 'Norway', 'New Zealand', 'Amazon Rainforest', 'Hunza Valley'];
+pages\DestinationPage.jsx:1160:destinations = ['Bali', 'Santorini', 'Phuket', 'Cancún', 'Costa Rica'];
+pages\DestinationPage.jsx:1170:destinations = ['Amazon Rainforest', 'Costa Rica'];
+pages\DestinationPage.jsx:1481:title: `Optimal Climate & Walkability Advisory`,
+pages\DestinationPage.jsx:1483:desc: `Local meteorological stations in ${city} report optimal clear skies and gentle regional breeze. Recommended sunset photography window open between 6:15 PM and 6:45 PM. Carry light hydration.`,
+pages\DestinationPage.jsx:1490:desc: `Local transport updates: City transit operators have launched complete mobile-tap ticketing across all electric buses linking ${city} historic landmarks and hotel zones.`,
+pages\DestinationPage.jsx:1507:return cId === 'switzerland' || cId === 'norway' || cId === 'new-zealand' || cId === 'costa-rica' || cId === 'pakistan' || cId === 'spain' || cId === 'thailand' || cId === 'turkey' || cId === 'egypt' || cId === 'italy' || cId === 'france' || cId === 'united-kingdom' || cId === 'saudi-arabia' || cId === 'japan' || cId === 'india' || cId === 'brazil';
+pages\DestinationPage.jsx:1520:if (cId === 'costa-rica') {
+pages\DestinationPage.jsx:1522:{ name: 'San José', type: 'Cultural Gateway', time: 'Base City', activity: 'Visit the National Theatre, explore local gold museums, and sample organic coffee.' },
+pages\DestinationPage.jsx:1530:{ name: 'Oslo', type: 'Modern Nordic Design', time: 'Base City', activity: 'Visit the Opera House, Vigeland Sculpture Park, and the new Munch Museum.' },
+pages\DestinationPage.jsx:1546:{ name: 'Tokyo', type: 'Neon Skyscrapers & Spiritual Shrines', time: 'Base City', activity: 'Explore Shibuya Crossing, ascend Tokyo Skytree, and stroll through Meiji Shrine and historic Senso-ji temple.' },
+pages\DestinationPage.jsx:1548:{ name: 'Osaka', type: 'Neon Nightlife & Legendary Street Food', time: '30 mins by Rail', activity: 'Indulge in takoyaki and okonomiyaki in Dotonbori, explore Osaka Castle, and ride the Umeda Sky Ferris wheel.' },
+pages\DestinationPage.jsx:1549:{ name: 'Nara', type: 'UNESCO Giant Buddha & Sacred Bowing Deer', time: '45 mins by Rail', activity: 'Feed tame deer in Nara Park and marvel at the colossal bronze Buddha statue at Todai-ji Temple.' }
+pages\DestinationPage.jsx:1562:{ name: 'Lahore', type: 'Mughal Architectural Capital & Food streets', time: 'Base City', activity: 'Visit the historic Badshahi Mosque, Lahore Fort, Liberty Market, and feast at Fort Road Food Street.' },
+pages\DestinationPage.jsx:1563:{ name: 'Islamabad', type: 'Scenic Green Foothills & Monumental Squares', time: '4 hrs by Motorway', activity: 'Breathe fresh air at Margalla Hills, visit Faisal Mosque, and capture monument panoramas at Shakarparian.' },
+pages\DestinationPage.jsx:1564:{ name: 'Hunza Valley', type: 'High Altitude Peaks & Ancient Silk Road Forts', time: '1 hr Flight + Road', activity: 'Explore Altit and Baltit forts, boat across turquoise Attabad Lake, and watch sunset at Eagle\'s Nest.' },
+pages\DestinationPage.jsx:1565:{ name: 'Skardu', type: 'Cold Desert Sand Dunes & High Mountain Lakes', time: '1 hr Scenic Flight', activity: 'Tour the Shangrila Resort, cross the Katpana Cold Desert, and drive through the high-altitude Deosai Plains.' }
+pages\DestinationPage.jsx:1578:{ title: 'Street Parade Lake Zurich', date: 'August 8', type: 'Concert / Music', desc: 'The world\'s largest techno and electronic music street demonstration, winding across the lake basin with 100+ decorated trucks.' },
+pages\DestinationPage.jsx:1599:{ title: 'Historical Monuments Heritage Week', date: 'April 15 - 22', type: 'Festival / Closure', desc: 'Special free entry gates to all primary heritage sites, accompanied by nightly light projection shows and outdoor orchestras.' }
+pages\DestinationPage.jsx:1607:// Real Hospital Database for Major Sights
+pages\DestinationPage.jsx:1610:{ name: 'Shaukat Khanum Cancer Hospital & Centre', type: 'Best Private Specialist Hospital', phone: '+92 42 35905000', hours: 'Emergency 24/7 Open', address: '7A block R3 Johar Town, Lahore', rating: 4.8 },
+pages\DestinationPage.jsx:1611:{ name: 'Doctors Hospital & Medical Center', type: 'Best Private General Hospital', phone: '+92 42 111 362 867', hours: 'Emergency 24/7 Open', address: '152-G/1 Canal Bank Road, Johar Town, Lahore', rating: 4.2 },
+pages\DestinationPage.jsx:1612:{ name: 'Mayo General Hospital (AIMC)', type: 'Best Government Tertiary Hospital', phone: '+92 42 99211100', hours: 'Emergency 24/7 Open', address: 'Hospital Road, Near Anarkali Bazaar, Lahore', rating: 4.1 }
+pages\DestinationPage.jsx:1615:if (cLower.includes('japan') || nLower.includes('tokyo') || nLower.includes('kyoto') || nLower.includes('osaka')) {
+pages\DestinationPage.jsx:1617:{ name: "St. Luke's International Hospital", type: 'Best Private Specialist Hospital', phone: '+81 3-3541-5151', hours: 'Emergency 24/7 Open', address: '9-1 Akashicho, Chuo City, Tokyo', rating: 4.3 },
+pages\DestinationPage.jsx:1618:{ name: 'Juntendo University Hospital', type: 'Best Private General Hospital', phone: '+81 3-3813-3111', hours: 'Emergency 24/7 Open', address: '3-1-3 Hongo, Bunkyo City, Tokyo', rating: 4.2 },
+pages\DestinationPage.jsx:1619:{ name: 'Tokyo Metropolitan Hiroo Hospital', type: 'Best Government General Hospital', phone: '+81 3-3444-1181', hours: 'Emergency 24/7 Open', address: '2-34-10 Ebisu, Shibuya City, Tokyo', rating: 4.0 }
+pages\DestinationPage.jsx:1624:{ name: 'American Hospital of Paris', type: 'Best Private Specialist Hospital', phone: '+33 1 46 41 25 25', hours: 'Emergency 24/7 Open', address: '63 Bd Victor Hugo, 92200 Neuilly-sur-Seine', rating: 4.4 },
+pages\DestinationPage.jsx:1625:{ name: 'Hôpital Privé des Peupliers', type: 'Best Private General Hospital', phone: '+33 826 30 13 30', hours: 'Emergency 24/7 Open', address: "8 Place de l'Abbé Georges Hénocque, Paris", rating: 4.1 },
+pages\DestinationPage.jsx:1626:{ name: 'Hôpital Pitié-Salpêtrière (AP-HP)', type: 'Best Government General Hospital', phone: '+33 1 42 16 00 00', hours: 'Emergency 24/7 Open', address: "47-83 Bd de l'Hôpital, 75013 Paris", rating: 4.2 }
+pages\DestinationPage.jsx:1631:{ name: 'NewYork-Presbyterian Hospital Center', type: 'Best Private Specialist Hospital', phone: '+1 212-746-5454', hours: 'Emergency 24/7 Open', address: '525 E 68th St, New York, NY', rating: 4.5 },
+pages\DestinationPage.jsx:1632:{ name: 'NYU Langone Medical Center', type: 'Best Private General Hospital', phone: '+1 212-263-7300', hours: 'Emergency 24/7 Open', address: '550 First Ave, New York, NY', rating: 4.6 },
+pages\DestinationPage.jsx:1633:{ name: 'Bellevue Government Hospital Center', type: 'Best Government General Hospital', phone: '+1 212-562-4141', hours: 'Emergency 24/7 Open', address: '462 1st Ave, New York, NY', rating: 4.1 }
+pages\DestinationPage.jsx:1638:{ name: 'American Hospital Dubai', type: 'Best Private Specialist Hospital', phone: '+971 4 377 5500', hours: 'Emergency 24/7 Open', address: '19th St, Oud Metha, Dubai', rating: 4.4 },
+pages\DestinationPage.jsx:1639:{ name: 'Mediclinic Parkview Hospital', type: 'Best Private General Hospital', phone: '+971 800 1999', hours: 'Emergency 24/7 Open', address: 'Umm Suqeim St, Al Barsha, Dubai', rating: 4.3 },
+pages\DestinationPage.jsx:1640:{ name: 'Rashid Government Trauma Hospital', type: 'Best Government Emergency Hospital', phone: '+971 4 219 2000', hours: 'Emergency 24/7 Open', address: '315 Umm Hurair Rd, Oud Metha, Dubai', rating: 4.1 }
+pages\DestinationPage.jsx:1645:{ name: 'The London Private Clinic', type: 'Best Private Specialist Hospital', phone: '+44 20 7935 4444', hours: 'Emergency 24/7 Open', address: '20 Devonshire Pl, London W1G 6BW', rating: 4.5 },
+pages\DestinationPage.jsx:1646:{ name: 'Cromwell Private Hospital', type: 'Best Private General Hospital', phone: '+44 20 7460 2000', hours: 'Emergency 24/7 Open', address: '162-166 Cromwell Rd, London SW5 0TU', rating: 4.3 },
+pages\DestinationPage.jsx:1647:{ name: "Guy's and St Thomas' Government Trust", type: 'Best Government NHS Hospital', phone: '+44 20 7188 7188', hours: 'Emergency 24/7 Open', address: 'Great Maze Pond, London SE1 9RT', rating: 4.2 }
+pages\DestinationPage.jsx:1655:name: `${localizedName} Specialist Care Hospital`,
+pages\DestinationPage.jsx:1656:type: 'Best Private Specialist Hospital',
+pages\DestinationPage.jsx:1659:address: `10 Medical Ave, Suite B, ${localizedName}`,
+pages\DestinationPage.jsx:1664:type: 'Best Private General Hospital',
+pages\DestinationPage.jsx:1671:name: `${localizedName} Central Government Hospital`,
+pages\DestinationPage.jsx:1672:type: 'Best Government General Hospital',
+pages\DestinationPage.jsx:1675:address: `Hospital Road, Sector 5, ${localizedName}`,
+pages\DestinationPage.jsx:1692:lowerId.includes('costa-rica');
+pages\DestinationPage.jsx:1781:desc: 'One of the world\'s most legendary hotels on Place Vendôme, famous for its French art de vivre.',
+pages\DestinationPage.jsx:1923:desc: 'Premium modern hotel integrated with the Emporium Mall, offering state-of-the-art corporate suites.',
+pages\DestinationPage.jsx:1980:desc: 'Luxury treehouse villas suspended in the forest canopy, offering close contact with local fauna.',
+pages\DestinationPage.jsx:1996:desc: `The premier classic hotel of ${name}, offering grand suites, refined service, and convenient central landmark access.`,
+pages\DestinationPage.jsx:2001:name: `Hotel ${name} Cosmopolitan`,
+pages\DestinationPage.jsx:2011:name: `${name} Central Transit Suites`,
+pages\DestinationPage.jsx:2035:if (cLower.includes('costa') || idLower.includes('costa-rica') || cLower.includes('mexico')) return 'Spanish';
+pages\DestinationPage.jsx:2040:if (cLower.includes('norway') || idLower.includes('norway') || nLower.includes('oslo')) return 'Norwegian';
+pages\DestinationPage.jsx:2089:{ eng: 'How much is this?', loc: 'Quanto costa questo?', ph: 'Kwan-toh kos-tah kwes-toh' },
+pages\DestinationPage.jsx:2107:{ eng: 'How much is this?', loc: 'Quanto custa isto?', ph: 'Kwan-toh koos-tah ees-toh' },
+pages\DestinationPage.jsx:2116:{ eng: 'How much is this?', loc: 'Wie viel kostet das?', ph: 'Vee feel kos-tet das' },
+pages\DestinationPage.jsx:2143:{ eng: 'How much is this?', loc: 'Hvor mye koster dette?', ph: 'Hvoor mee-eh kos-ter det-teh' },
+pages\DestinationPage.jsx:2513:const elementPosition = elementRect - bodyRect;
+pages\DestinationPage.jsx:2514:const offsetPosition = elementPosition - offset;
+pages\DestinationPage.jsx:2517:top: offsetPosition,
+pages\DestinationPage.jsx:2601:desc: 'Atmospheric currents speed and direction.',
+pages\DestinationPage.jsx:2615:label: 'UV Exposure Index',
+pages\DestinationPage.jsx:2641:desc: 'Atmospheric pressure details.',
+pages\DestinationPage.jsx:2643:color: 'text-rose-500 dark:text-rose-400',
+pages\DestinationPage.jsx:2644:bg: 'bg-rose-500/[0.02] dark:bg-rose-400/[0.01]'
+pages\DestinationPage.jsx:2735:{ day: 'Thursday', temp: '20°C / 13°C', condition: 'Mild Breeze', suggestions: 'Calm and mild day. Optimal conditions for a hiking route or visiting structural landmarks.' },
+pages\DestinationPage.jsx:2767:<strong className="text-amber-500 font-medium mr-1">Optimal photography window:</strong>
+pages\DestinationPage.jsx:2808:Plan your travel dates around vibrant spectacles, local artisan markets, traditional gatherings, and regional closures in {destination.name}.
+pages\DestinationPage.jsx:3251:{app.purpose}
+pages\DestinationPage.jsx:3330:{ title: 'Medical / Ambulance', num: em.ambulance, desc: 'Urgent medical operations dispatch', icon: Activity, color: 'text-rose-500 dark:text-rose-400', bg: 'bg-rose-500/5' },
+pages\DestinationPage.jsx:3577:? `Trace our signature regional routing timeline across key cities, transit times, and local highlights inside ${destination.name}.`
+pages\DestinationPage.jsx:3961:? `Secure ecological lodges and professional basecamp domes cross-referenced for carbon-footprint safety, permit compliance, and local wildlife proximity in ${destination.name}.`
+pages\DestinationPage.jsx:3962:: `Secure accommodations thoroughly cross-referenced for quality index scores, guest comfort, structural sustainability, and local transit.`
+pages\DestinationPage.jsx:4387:{/* Fintech Exchange Curves & Floating Currency Symbols Backdrop */}
+pages\DestinationPage.jsx:4395:<path d="M 0 170 Q 80 80 160 120 T 320 50 T 400 20 L 400 200 L 0 200 Z" fill="url(#fintechAreaGrad)" stroke="none" className="opacity-10" />
+pages\DestinationPage.jsx:4407:<linearGradient id="fintechAreaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+pages\DisclaimerPage.jsx:43:While our AI models strive to analyze relative atmospheric conditions and regional updates, microclimate anomalies and unexpected events occur. Under no circumstances will Trip Ready be held responsible for travel delays, flight cancellations, financial loss, custom clearance rejections, or safety issues encountered while exploring.
+pages\FullTripPlannerPage.jsx:238:desc = 'Bustling cherry blossoms, spring blooms, and mild temperatures. Perfect for botanical garden walks and old town markets.';
+pages\FullTripPlannerPage.jsx:240:{ name: 'Tokyo', country: 'Japan', image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=200&q=80', highlight: 'Cherry blossom (Sakura) season' },
+pages\FullTripPlannerPage.jsx:251:{ name: 'Sukiyabashi Jiro', type: 'Fine Dining (Sushi)', cost: '$$$$', rating: 4.9, tags: ['Michelin 3-Star', 'Authentic'], note: 'Requires months-ahead reservation. Unrivaled premium sushi.' },
+pages\FullTripPlannerPage.jsx:252:{ name: 'Ichiran Shibuya', type: 'Casual (Tonkotsu Ramen)', cost: '$', rating: 4.7, tags: ['Solo Booths', 'Local Favorite'], note: 'Customizable rich pork broth with signature red sauce.' },
+pages\FullTripPlannerPage.jsx:253:{ name: 'Gyukatsu Motomura', type: 'Mid-range (Deep-fried Beef)', cost: '$$', rating: 4.8, tags: ['Halal options', 'Unique style'], note: 'Sizzle your own stone-cooked medium beef cutlets.' },
+pages\FullTripPlannerPage.jsx:256:{ name: 'Le Jules Verne', type: 'Luxury French Gastronomy', cost: '$$$$', rating: 4.8, tags: ['Eiffel Tower View', 'Michelin Star'], note: 'Elevated dining situated directly inside the Eiffel structure.' },
+pages\FullTripPlannerPage.jsx:257:{ name: 'Angelina Paris', type: 'Charming Cafe (Hot Chocolate & Pastry)', cost: '$$', rating: 4.6, tags: ['Historic', 'World Famous'], note: 'Famous for its ultra-rich African hot chocolate and Mont-Blanc.' },
+pages\FullTripPlannerPage.jsx:258:{ name: 'L\'As du Fallafel', type: 'Cheap Eats (Middle Eastern)', cost: '$', rating: 4.7, tags: ['Vegetarian', 'Fast Service'], note: 'Voted the finest falafel pita in the Marais district.' },
+pages\FullTripPlannerPage.jsx:261:{ name: 'Locavore Ubud', type: 'Modern Gastronomy', cost: '$$$$', rating: 4.9, tags: ['Eco-Luxury', 'Organic'], note: '100% locally sourced premium hyper-seasonal tasting menu.' },
+pages\FullTripPlannerPage.jsx:262:{ name: 'Naughty Nuri\'s', type: 'Casual BBQ Diner', cost: '$$', rating: 4.7, tags: ['Local Style', 'Signature Ribs'], note: 'Legendary flame-grilled sticky pork ribs with stellar martini shakes.' },
+pages\FullTripPlannerPage.jsx:263:{ name: 'Warung Halal Bu Mi', type: 'Cheap Eats (Indonesian Buffet)', cost: '$', rating: 4.6, tags: ['Halal', 'Traditional'], note: 'Build your own plate from a massive array of cooked organic local recipes.' },
+pages\FullTripPlannerPage.jsx:268:{ name: 'Horizon Luxury Skybar', type: 'Fine Dining & Lounge', cost: '$$$$', rating: 4.8, tags: ['Panoramic Views', 'Premium Chef'], note: 'Stunning elevated terrace serving gourmet international molecular gastronomy.' },
+pages\FullTripPlannerPage.jsx:269:{ name: 'Bistro Green Leaf', type: 'Mid-range Local Fare', cost: '$$', rating: 4.6, tags: ['Vegetarian', 'Eco-friendly'], note: 'A cozy garden bistro using direct farm-to-table organic ingredients.' },
+pages\FullTripPlannerPage.jsx:270:{ name: 'Street Food Bazaar', type: 'Cheap Eats & Market', cost: '$', rating: 4.7, tags: ['Local Favorites', 'Fast Service'], note: 'The central gathering hub for historical, time-tested quick recipes and treats.' },
+pages\FullTripPlannerPage.jsx:332:'Shibuya Crossing & Hachiko Statue', 'Senso-ji Temple in Asakusa', 'Tokyo Skytree Observatory',
+pages\FullTripPlannerPage.jsx:354:'The Colosseum Flavian Amphitheatre', 'Trevi Fountain (Throw a Coin)', 'The Pantheon Dome',
+pages\FullTripPlannerPage.jsx:377:'Burj Al Arab Luxury Sail', 'Dubai Marina Yacht Cruise', 'Gold & Spice Souks crossing the Creek',
+pages\FullTripPlannerPage.jsx:379:'Dubai Desert Conservation Safari', 'Jumeirah Mosque cultural tour', 'La Mer Waterfront Boardwalk',
+pages\FullTripPlannerPage.jsx:389:'King Abdullah Park Water Fountains', 'Al Rajhi Grand Mosque', 'King Abdulaziz Historical Center',
+pages\FullTripPlannerPage.jsx:409:'Bahnhofstrasse Luxury Shopping', 'Lake Zurich Promenade Boat Cruise', 'Grossmünster Twin Tower climb',
+pages\FullTripPlannerPage.jsx:420:'Faisal Mosque under Margallas', 'Daman-e-Koh Hillside Viewpoint', 'Pakistan Monument & Museum',
+pages\FullTripPlannerPage.jsx:423:'Monal Restaurant Margalla ridge', 'Shah Allah Ditta Buddhist Caves', 'Rose and Jasmine Garden pathways',
+pages\FullTripPlannerPage.jsx:426:foods: ['Mutton Karahi with Garlic Naan', 'Sikh Kebab & Chicken Tikka platter', 'Sweet Falooda & Rabri scoop', 'Kashmiri Chai (Pink tea) with nuts', 'Samosa Chaat street platter', 'Chicken Biryani with Raita'],
+pages\FullTripPlannerPage.jsx:431:'Lahore Fort (Shahi Qila)', 'Badshahi Mosque grand courtyard', 'Shalimar Mughal Gardens',
+pages\FullTripPlannerPage.jsx:432:'Wazir Khan Mosque mosaic tiles', 'Minar-e-Pakistan heritage park', 'Lahore Museum gallery decks',
+pages\FullTripPlannerPage.jsx:444:'Turtle Beach Hawksbay seaside huts', 'Churna Island snorkeling boat tour', 'Tooba Mosque single-dome',
+pages\FullTripPlannerPage.jsx:457:'Alte Pinakothek Fine Art Gallery', 'Schloss Schleissheim palace park', 'Neuschwanstein Castle day tour'
+pages\FullTripPlannerPage.jsx:466:'Manly Beach Ferry crossing', 'Art Gallery of New South Wales', 'Queen Victoria Building architecture',
+pages\FullTripPlannerPage.jsx:487:'Gullfoss Golden Waterfall cascades', 'Strokkur Active Boiling Geysir', 'Thingvellir National Park Tectonic Rift',
+pages\FullTripPlannerPage.jsx:488:'Reynisfjara Black Sand Beach basalt columns', 'Seljalandsfoss Walk-Behind Waterfall', 'Skógafoss Giant Waterfall',
+pages\FullTripPlannerPage.jsx:605:'Handcrafted Pastry Cups',
+pages\FullTripPlannerPage.jsx:626:description: `${normCity} is a historical treasure nestled in ${normCountry}, presenting visitors with a gorgeous array of sensory highlights, deep localized culture, scenic vistas, and warm hospitality.`,
+pages\FullTripPlannerPage.jsx:753:const formatCost = (usdAmount) => {
+pages\FullTripPlannerPage.jsx:866:'Scanning optimal intercontinental transit vectors...',
+pages\FullTripPlannerPage.jsx:973:Generate a completely customized, high-fidelity travel itinerary and operational dossier in JSON format for a trip from ${originCity}, ${originCountry} to ${activeCity}, ${destCountry}.
+pages\FullTripPlannerPage.jsx:1039:{ "name": "Horizon Luxury Skybar", "type": "Fine Dining & Lounge", "cost": "$$$$", "rating": 4.8, "tags": ["Panoramic Views", "Premium Chef"], "note": "Stunning elevated terrace..." }
+pages\FullTripPlannerPage.jsx:1053:{ "name": "Careem", "purpose": "The premier local ride-hailing app across Saudi Arabia and the Middle East." }
+pages\FullTripPlannerPage.jsx:1056:const systemInstruction = `You are a world-class travel planner API. Generate customized itineraries and travel operational dossiers in structured JSON matching the requested schema. Ensure you generate an array of day objects matching exactly totalDays=${totalDays}.`;
+pages\FullTripPlannerPage.jsx:1123:{ name: 'Osaka', region: 'Kansai South', travelTime: '30 mins via Rapid Rail', trans: 'JR Rapid Rail' },
+pages\FullTripPlannerPage.jsx:1344:cost: rest?.cost || '$$',
+pages\FullTripPlannerPage.jsx:1356:purpose: app?.purpose || 'Local transit application.'
+pages\FullTripPlannerPage.jsx:1712:{ name: 'Luxury Traveler', desc: '5-star suites & private drivers', icon: Gem },
+pages\FullTripPlannerPage.jsx:1758:Select your local billing currency. All estimated costs, flights, and daily budgets will dynamically be converted using current market rates.
+pages\FullTripPlannerPage.jsx:1781:{ tier: 'Budget', symbol: '$', desc: 'Backpacker Hostels & Transit Trams' },
+pages\FullTripPlannerPage.jsx:1782:{ tier: 'Mid-range', symbol: '$$', desc: 'Boutique Hotels & Local Bistros' },
+pages\FullTripPlannerPage.jsx:2119:STEP 3: FULL AI TRAVEL ROADMAP PAGE (THE TRAVEL OS)
+pages\FullTripPlannerPage.jsx:2286:Connecting direct API feeds across multiple travel consolidators to fetch live airfares from {originCity} to {destCity}. Complete with duration, transit nodes, and instant booking options.
+pages\FullTripPlannerPage.jsx:2329:<span className="text-base font-extrabold text-[var(--accent)] font-mono">{formatCost(basePriceUSD)}</span>
+pages\FullTripPlannerPage.jsx:2770:The most economical, traffic-free pathway transit system inside {activeDestination.name}. Perfect for rapid cross-city hops.
+pages\FullTripPlannerPage.jsx:2978:<span className="text-[11px] text-slate-450 dark:text-slate-400 font-light leading-relaxed block">{app.purpose || 'Local transit application.'}</span>
+pages\FullTripPlannerPage.jsx:3042:<td className="p-4 text-[var(--accent)] font-bold">{rest.cost || '$$'}</td>
+pages\FullTripPlannerPage.jsx:3342:<span className="font-medium">{formatCost(budgetBreakdown.flights)}</span>
+pages\FullTripPlannerPage.jsx:3348:<span className="font-medium">{formatCost(budgetBreakdown.hotels)}</span>
+pages\FullTripPlannerPage.jsx:3362:<span className="font-medium">{formatCost(budgetBreakdown.food)}</span>
+pages\FullTripPlannerPage.jsx:3366:<span className="font-medium">{formatCost(budgetBreakdown.activities)}</span>
+pages\FullTripPlannerPage.jsx:3370:<span className="text-[var(--accent)] font-extrabold">{formatCost(budgetBreakdown.total)}</span>
+pages\FullTripPlannerPage.jsx:3455:<span className="text-xs uppercase tracking-widest font-bold text-neutral-500">National Geographic Inspired Travel Dossier</span>
+pages\FullTripPlannerPage.jsx:3486:<h3 className="text-xs uppercase font-extrabold tracking-widest text-amber-600">01. GEOGRAPHIC DOSSIER</h3>
+pages\FullTripPlannerPage.jsx:3498:The regional temperature average indexes {displayWeather?.temp} in {displayWeather?.condition} conditions. Optimal photography windows generally span early {activeDestination.bestTime}.
+pages\GlobeDemoPage.jsx:74:{/* Simulated Live telemetry board */}
+pages\GlobeDemoPage.jsx:80:<span className="text-xs font-bold uppercase tracking-widest font-heading text-luxury-primary dark:text-white">Active Telemetry Scan</span>
+pages\GlobeDemoPage.jsx:102:<span className="block text-[9px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold mb-0.5">Atmosphere Type</span>
+pages\HomePage.jsx:2:import HeroSection from '../components/home/HeroSection';
+pages\HomePage.jsx:7:import ToolsSuiteSection from '../components/home/ToolsSuiteSection';
+pages\HomePage.jsx:39:<div className="reveal"><HeroSection /></div>
+pages\HomePage.jsx:44:<div className="reveal"><ToolsSuiteSection /></div>
+pages\PrivacyPage.jsx:38:We collect general specifications you type in the search bar and the budget configurator (including departure/destination spots, duration, dates, traveler metrics, stay styles) to process optimal calculations in real-time. When you use the Contact form, we collect your name and email to resolve coordinates.
+pages\TripAIPage.jsx:32:UtensilsCrossed,
+pages\TripAIPage.jsx:58:const triggerLocalReply = (textToSend) => {
+pages\TripAIPage.jsx:60:const lower = textToSend.toLowerCase();
+pages\TripAIPage.jsx:70:reply = `✨ **Curated Travel Dossier for ${matchedDest.flag} ${matchedDest.name}, ${matchedDest.country}**:\n\n` +
+pages\TripAIPage.jsx:84:} else if (lower.includes('budget') || lower.includes('cost')) {
+pages\TripAIPage.jsx:87:reply = `✨ **Journey Calibration Complete**: I have scanned worldwide parameters for "${textToSend}". I advise structuring a 6-day stay, allocating approximately 40% for premium accommodations, 30% for local culinary dining, and 30% for activities. Would you like me to compile a comprehensive, day-by-day flight and hotel itinerary report for this?`;
+pages\TripAIPage.jsx:97:const handleSend = async (textToSend = inputText) => {
+pages\TripAIPage.jsx:98:if (!textToSend.trim()) return;
+pages\TripAIPage.jsx:103:text: textToSend,
+pages\TripAIPage.jsx:118:promptContext += `User: ${textToSend}`;
+pages\TripAIPage.jsx:122:Your purpose is to help travelers plan trips intelligently with concise, accurate, elegant, and highly useful responses.
+pages\TripAIPage.jsx:356:triggerLocalReply(textToSend);
+pages\TripAIPage.jsx:361:triggerLocalReply(textToSend);
+pages\TripAIPage.jsx:367:triggerLocalReply(textToSend);
+pages\TripAIPage.jsx:372:// Custom Markdown & Dossier Renderer
+pages\TripAIPage.jsx:430:badgeBg = 'bg-rose-500/10 text-rose-600 dark:text-rose-455';
+pages\TripAIPage.jsx:437:IconComponent = UtensilsCrossed;
+pages\TripAIPage.jsx:498:{ period: 'Today', items: ['Plan a 5-day trip to Bali for 2', 'Ubud stay cost analysis', 'Check Japan visa requirements'] },
+pages\TripAIPage.jsx:702:{/* Rich Dossier Formatter rendering */}

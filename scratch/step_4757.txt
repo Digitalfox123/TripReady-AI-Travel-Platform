@@ -1,0 +1,127 @@
+Created At: 2026-05-30T13:09:52Z
+Completed At: 2026-05-30T13:09:53Z
+File Path: `file:///C:/Users/hafiz/.gemini/antigravity/scratch/trip-ready/src/pages/DestinationPage.jsx`
+Total Lines: 3317
+Total Bytes: 201001
+Showing lines 1 to 400
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import { useState, useEffect, useRef } from 'react';
+2: import { useParams, useNavigate, Link } from 'react-router-dom';
+3: import { useTheme } from '../hooks/useTheme';
+4: import { Globe as CobeGlobe } from '../components/ui/cobe-globe';
+5: import {
+6:   Sun,
+7:   Cloud,
+8:   CloudRain,
+9:   CloudSnow,
+10:   Wind,
+11:   Droplets,
+12:   Shield,
+13:   Phone,
+14:   MapPin,
+15:   Map,
+16:   Navigation,
+17:   Calendar,
+18:   Info,
+19:   Heart,
+20:   Star,
+21:   CheckSquare,
+22:   RefreshCw,
+23:   Send,
+24:   DollarSign,
+25:   ArrowRight,
+26:   Building2,
+27:   UtensilsCrossed,
+28:   Car,
+29:   Ticket,
+30:   BookOpen,
+31:   Clock,
+32:   Lock,
+33:   Globe,
+34:   Plus,
+35:   Check,
+36:   Award,
+37:   Activity,
+38:   Compass,
+39:   Leaf,
+40:   Mountain,
+41:   Palmtree,
+42:   Flame,
+43:   Landmark,
+44:   Building,
+45:   Trees,
+46:   Snowflake,
+47:   Zap,
+48:   Sparkles,
+49:   PawPrint,
+50:   Gem,
+51:   AlertTriangle,
+52:   Sunset,
+53:   Sunrise,
+54:   Eye,
+55:   Gauge,
+56:   Umbrella,
+57:   Thermometer,
+58:   Train,
+59:   Smartphone,
+60:   Glasses,
+61:   Shirt,
+62:   Languages,
+63:   Download,
+64:   FileText,
+65:   Volume2,
+66:   Edit3,
+67:   Trash2,
+68:   HeartPulse
+69: } from 'lucide-react';
+70: import { topDestinations, currencies, travelCategories, countries } from '../data';
+71: import { getCityImage } from '../utils/imageLookup';
+72: 
+73: // Helper function to map category ID to styled Lucide icon
+74: export function getCategoryIcon(id, className = "w-3.5 h-3.5") {
+75:   switch (id) {
+76:     case 'nature':
+77:       return <Leaf className={class
+<truncated 11073 bytes>
+       // Draw Lens Flare overlay for Sunny condition
+361:       if (isSunny && mouse.x !== -1000 && isHovered) {
+362:         const flareX = mouse.x;
+363:         const flareY = mouse.y;
+364:         
+365:         ctx.beginPath();
+366:         const primaryGrad = ctx.createRadialGradient(flareX, flareY, 0, flareX, flareY, 130);
+367:         primaryGrad.addColorStop(0, 'rgba(251, 191, 36, 0.22)');
+368:         primaryGrad.addColorStop(0.25, 'rgba(251, 191, 36, 0.07)');
+369:         primaryGrad.addColorStop(0.6, 'rgba(245, 158, 11, 0.015)');
+370:         primaryGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+371:         ctx.fillStyle = primaryGrad;
+372:         ctx.arc(flareX, flareY, 130, 0, Math.PI * 2);
+373:         ctx.fill();
+374: 
+375:         const centerX = width / 2;
+376:         const centerY = height / 2;
+377:         const dirX = centerX - flareX;
+378:         const dirY = centerY - flareY;
+379: 
+380:         const flarePoints = [0.35, 0.7, -0.25];
+381:         flarePoints.forEach((multiplier, i) => {
+382:           const fx = centerX + dirX * multiplier;
+383:           const fy = centerY + dirY * multiplier;
+384:           const radius = Math.abs(18 - i * 4);
+385:           ctx.beginPath();
+386:           const flareGrad = ctx.createRadialGradient(fx, fy, 0, fx, fy, radius);
+387:           flareGrad.addColorStop(0, `rgba(251, 191, 36, ${0.12 - i * 0.02})`);
+388:           flareGrad.addColorStop(0.5, `rgba(244, 63, 94, ${0.04 - i * 0.01})`);
+389:           flareGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+390:           ctx.fillStyle = flareGrad;
+391:           ctx.arc(fx, fy, radius, 0, Math.PI * 2);
+392:           ctx.fill();
+393:         });
+394:       }
+395: 
+396:       // Update and draw entities
+397:       particles.forEach((p) => {
+398:         p.update(mouse.x, mouse.y, isHovered);
+399:         p.draw();
+400:       });
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

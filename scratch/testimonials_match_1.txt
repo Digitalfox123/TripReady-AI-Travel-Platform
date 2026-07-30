@@ -1,0 +1,22 @@
+Created At: 2026-05-31T18:55:32Z
+Completed At: 2026-05-31T18:55:33Z
+
+				The command completed successfully.
+				Output:
+				<truncated 6 lines>
+-----------------------------------------
+Match 3: Length = 4358
+Snippet 2: ine number, colon, and leading space.\n1: import { Heart, Quote } from 'lucide-react';\n2: import { featuredTestimonials, scrollingTestimonials } from '../../data';\n3: \n4: export default function TestimonialsSection() {\n5:   const duplicatedTestimonials = [...scrollingTestimonials, ...scrollingTestimonials];\n6: \n7:   return (\n8:     <section className=\"section-padding bg-luxury-bg dark:bg-dark-600 border-t border-luxury-border dark:border-white/[0.04] relative overflow-hidden\">\n9:       <div className=\"max-w-7xl mx-auto relative z-10\">\n10:         \n11:         {/* Section Header */}\n12:         <div className=\"text-center mb-20\">\n13:           <div className=\"inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-luxury-border dark:border-white/[0.08] bg-white dark:bg-white/[0.03] text-[10px] font-bold text-luxury-secondary dark:text-slate-400 uppercase tracking-widest mb-4\">\n14:             <Heart className=\"w-3.5 h-3.5 text-luxury-accent\" />\n15:             <span>Customer Trust</span>\n16:           </div>\n17:           <h2 className=\"section
+-----------------------------------------
+Match 4: Length = 3445
+Snippet 2: rt, Quote } from 'lucide-react';\n+import { Heart, Quote, Compass } from 'lucide-react';\n import { featuredTestimonials, scrollingTestimonials } from '../../data';\n \n export default function TestimonialsSection() {\n@@ -36,7 +36,9 @@\n \n                 <div className=\"flex items-center justify-between pt-6 border-t border-luxury-border dark:border-white/[0.04]\">\n                   <div className=\"flex items-center gap-3\">\n-                    <span className=\"text-3xl select-none\">{testimonial.avatar}</span>\n+                    <div className=\"w-10 h-10 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] flex items-center 
+<truncated 3656 bytes>
+estimonials } from '../../data';\\nimport { TestimonialsColumn } from '../ui/testimonials-columns-1';\\n\\nconst travelTestimonials = [\\n  {\\n    text: \\\"Trip Ready revolutionized our travel planning, streamlining cost analysis and itineraries. The cloud-based platform keeps us productive and organized, even remotely.\\\",\\n    image: \\\"https://randomuser.me/api/portraits/women/1.jpg\\\",\\n    name: \\\"Briana Patton\\\",\\n    role: \\\"Operations Manager\\\",\\n  },\\n  {\\n    text: \\\"Getting Trip Ready set up was smooth and quick. The customizable, user-friendly interface made mapping our team retreat effortless.\\\",\\n    image: \\\"https://randomuser.me/api/portraits/men/2.jpg\\\",\\n    name: \\\"Bilal Ahmed\\\",\\n    role: \\\"IT Manager\\\",\\n  },\\n  {\\n    text: \\\"The concierge support team is exceptional, guiding us through setup and providing ongoing assistance, ensuring our global satisfaction.\\\",\\n    image: \\\"https://randomuser.me/api/portr
+-----------------------------------------
+Match 9: Length = 875
+Snippet: export const featuredTestimonials = [\r\nsrc\\data\\index.js:1247:export const scrollingTestimonials = [\r\nsrc\\data\\index.js:1263:export const currencies = [\r\nsrc\\data\\index.js:1287:export const chatbotFeatures = [\r\nsrc\\data\\index.js:1297:export const travelTypes = [\r\nsrc\\data\\index.js:1307:export const budgetPreferences = [\r\n\r\n\r\n\n"}
+-----------------------------------------
+Match 10: Length = 1337
+Snippet: export const featuredTestimonials = [\r\nsrc\\data\\index.js:1247:export const scrollingTestimonials = [\r\nsrc\\data\\index.js:1263:export const currencies = [\r\nsrc\\data\\index.js:1287:export const chatbotFeatures = [\r\nsrc\\data\\index.js:1297:export const travelTypes = [\r\nsrc\\data\\index.js:1307:export const budgetPreferences = [\r\n\r\n\r\n\n\nLog: file:///C:/Users/hafiz/.gemini/antigravity/brain/8aea9138-58d5-4892-b520-33e32f04da5c/.system_generated/tasks/task-4006.log\n</SYSTEM_MESSAGE>"}
+-----------------------------------------
+

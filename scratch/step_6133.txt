@@ -1,0 +1,49 @@
+Created At: 2026-05-31T17:36:27Z
+Completed At: 2026-05-31T17:36:27Z
+File Path: `file:///C:/Users/hafiz/.gemini/antigravity/scratch/trip-ready/src/pages/DestinationPage.jsx`
+Total Lines: 3998
+Total Bytes: 240990
+Showing lines 1020 to 1060
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1020: 
+1021:     return {
+1022:       id: id || 'custom',
+1023:       name: nameCap || 'Curated Destination',
+1024:       country: matchedCountry.name,
+1025:       flag: matchedCountry.flag,
+1026:       rank: 'AI Curated',
+1027:       image: getCityImage(nameCap, matchedCountry.name),
+1028:       preview: `An extraordinary, culturally rich journey to the heart of ${matchedCountry.name}.`,
+1029:       description: `${nameCap} is a spectacular world-class destination located in ${matchedCountry.name}. It represents a beautiful combination of deep heritage, local warmth, and stunning scenic landscapes, providing an unforgettable travel experience for adventurers and leisure seekers alike.`,
+1030:       weather: { temp: '26°C', condition: 'Sunny & Pleasant', humidity: '50%', airQuality: 'Excellent' },
+1031:       bestTime: 'October - April',
+1032:       budget: { daily: '$90-220', hotel: '$60-180', food: '$20-50', transport: '$10-25' },
+1033:       safety: 'Safe & Welcoming',
+1034:       timezone: 'Local Time',
+1035:       attractions: [`Historic ${nameCap} Center`, `Scenic ${nameCap} Overlook`, `Central ${nameCap} Culture Square`, `Heritage Museum of ${matchedCountry.name}`],
+1036:       foods: ['Traditional Specialty', 'Local Spiced Stew', 'Signature Pastry'],
+1037:       transport: ['Local Transit System', 'Chauffeured Car Charter', 'Walkable Boulevards'],
+1038:       culture: `Respect local customs and dress codes. A friendly smile and basic courtesy go a long way.`,
+1039:       visa: `eVisa or visa-free entry is provided for most international travelers to ${matchedCountry.name}.`
+1040:     };
+1041:   };
+1042: 
+1043:   const destination = getActiveDestination();
+1044:   const { imageUrl: premiumImage } = usePremiumImage(destination.name, destination.country);
+1045:   destination.image = premiumImage;
+1046:   const { isDark } = useTheme();
+1047: 
+1048:   // Curate and inject destinations array dynamically to prevent directory schema crash
+1049:   const mappedCategories = travelCategories.slice(0, 9).map((cat) => {
+1050:     let destinations = [];
+1051:     if (cat.id === 'nature') {
+1052:       destinations = ['Bali', 'Costa Rica', 'Norway', 'New Zealand', 'Amazon Rainforest', 'Hunza Valley'];
+1053:     } else if (cat.id === 'mountains') {
+1054:       destinations = ['Swiss Alps', 'Patagonia', 'Himalayas', 'Rocky Mountains', 'Andes', 'Mount Fuji', 'Dolomites', 'Kilimanjaro', 'Hunza Valley'];
+1055:     } else if (cat.id === 'beaches') {
+1056:       destinations = ['Bali', 'Santorini', 'Phuket', 'Cancún', 'Costa Rica'];
+1057:     } else if (cat.id === 'deserts') {
+1058:       destinations = ['Sahara', 'Dubai Desert', 'Dubai'];
+1059:     } else if (cat.id === 'historical') {
+1060:       destinations = ['Tokyo', 'Paris', 'Rome', 'London', 'Kyoto', 'Machu Picchu'];
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
