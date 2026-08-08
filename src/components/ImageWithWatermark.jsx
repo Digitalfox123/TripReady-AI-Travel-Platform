@@ -11,20 +11,31 @@ export default function ImageWithWatermark({
 }) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
+  const [currentSrc, setCurrentSrc] = useState(src);
   const imgRef = useRef(null);
 
   // Reset loaded state when src changes
   useEffect(() => {
+    setCurrentSrc(src);
     setLoaded(false);
     setError(false);
   }, [src]);
 
   // Handle cached image completes immediately before event registration
   useEffect(() => {
-    if (imgRef.current && imgRef.current.complete) {
+    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
       setLoaded(true);
     }
-  }, [src]);
+  }, [currentSrc]);
+
+  const handleError = () => {
+    if (currentSrc && !currentSrc.includes('images.unsplash.com')) {
+      // Automatic fallback to clean Unsplash travel photo
+      setCurrentSrc('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80');
+    } else {
+      setError(true);
+    }
+  };
 
   const hasPosition = /absolute|relative|fixed/.test(wrapperClassName);
   const positionClass = hasPosition ? '' : 'relative';
@@ -68,7 +79,7 @@ export default function ImageWithWatermark({
 
       {/* Error state */}
       {error && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 text-slate-400 text-xs">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-900 text-slate-400 text-xs">
           <Compass className="w-5 h-5 mb-1 animate-bounce text-slate-350 dark:text-slate-650" />
           <span>Image Unavailable</span>
         </div>
@@ -77,13 +88,13 @@ export default function ImageWithWatermark({
       {/* The Actual Image */}
       <img
         ref={imgRef}
-        src={src || 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80'}
+        src={currentSrc || 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80'}
         alt={alt}
-        className={`${className} transition-all duration-700 ${
+        className={`${className} transition-all duration-500 ${
           loaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-105 blur-md'
         }`}
         onLoad={() => setLoaded(true)}
-        onError={() => setError(true)}
+        onError={handleError}
       />
     </div>
   );

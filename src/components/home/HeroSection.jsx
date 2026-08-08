@@ -216,6 +216,8 @@ export default function HeroSection() {
 
     const handleScroll = () => {
       if (!active) return;
+      // Skip heavy parallax calculations on mobile screens (<768px) for lag-free touch scrolling
+      if (window.innerWidth < 768) return;
       if (frameId) cancelAnimationFrame(frameId);
       
       frameId = requestAnimationFrame(() => {
@@ -1043,11 +1045,14 @@ export default function HeroSection() {
               ].map((partner) => (
                 <div key={`a-${partner.domain}`} className="flex items-center gap-2.5 px-2 select-none shrink-0 group/item cursor-default">
                   <img 
-                    src={`https://img.logo.dev/${partner.domain}?token=${import.meta.env.VITE_LOGO_DEV_PUBLISHABLE_KEY}&size=60&format=png`}
+                    src={`https://img.logo.dev/${partner.domain}?token=${import.meta.env.VITE_LOGO_DEV_PUBLISHABLE_KEY || 'pk_bYH-YceiR-KgJx79TnahZg'}&size=60&format=png`}
                     alt={partner.name}
                     className="h-5 w-5 sm:h-6 sm:w-6 object-contain filter grayscale opacity-50 group-hover/item:grayscale-0 group-hover/item:opacity-100 transition-all duration-500"
                     loading="lazy"
                     draggable={false}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
                   />
                   <span className="text-[12px] sm:text-[13px] font-semibold text-slate-400 dark:text-slate-555 group-hover/item:text-slate-700 dark:group-hover/item:text-slate-200 transition-colors duration-500 tracking-wide">
                     {partner.name}
@@ -1068,11 +1073,14 @@ export default function HeroSection() {
               ].map((partner) => (
                 <div key={`b-${partner.domain}`} className="flex items-center gap-2.5 px-2 select-none shrink-0 group/item cursor-default">
                   <img 
-                    src={`https://img.logo.dev/${partner.domain}?token=${import.meta.env.VITE_LOGO_DEV_PUBLISHABLE_KEY}&size=60&format=png`}
+                    src={`https://img.logo.dev/${partner.domain}?token=${import.meta.env.VITE_LOGO_DEV_PUBLISHABLE_KEY || 'pk_bYH-YceiR-KgJx79TnahZg'}&size=60&format=png`}
                     alt={partner.name}
                     className="h-5 w-5 sm:h-6 sm:w-6 object-contain filter grayscale opacity-50 group-hover/item:grayscale-0 group-hover/item:opacity-100 transition-all duration-500"
                     loading="lazy"
                     draggable={false}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
                   />
                   <span className="text-[12px] sm:text-[13px] font-semibold text-slate-400 dark:text-slate-555 group-hover/item:text-slate-700 dark:group-hover/item:text-slate-200 transition-colors duration-500 tracking-wide">
                     {partner.name}

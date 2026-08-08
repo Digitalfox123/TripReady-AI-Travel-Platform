@@ -90,8 +90,8 @@ export default function JourneyFlowSection() {
           <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 [transform-style:preserve-3d]">
             
             {/* Card 1: Destinations (Postcard Parallax style) */}
-            <div className="glass-card bg-gradient-to-b from-white to-slate-50/50 dark:from-[#080e1e]/90 dark:to-[#040814]/95 border border-slate-150 dark:border-white/[0.05] rounded-[32px] overflow-hidden shadow-[0_15px_40px_rgba(2,8,19,0.03)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.5)] hover:shadow-[0_30px_70px_rgba(2,8,19,0.08)] dark:hover:shadow-[0_35px_75px_rgba(0,0,0,0.6)] transition-all duration-500 flex flex-col justify-between h-[390px] group [transform:translateZ(0px)] hover:[transform:translateZ(10px)]">
-              <div className="p-8 pb-4 space-y-2">
+            <div className="glass-card bg-gradient-to-b from-white to-slate-50/50 dark:from-[#080e1e]/90 dark:to-[#040814]/95 border border-slate-150 dark:border-white/[0.05] rounded-[32px] overflow-hidden shadow-[0_15px_40px_rgba(2,8,19,0.03)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.5)] hover:shadow-[0_30px_70px_rgba(2,8,19,0.08)] dark:hover:shadow-[0_35px_75px_rgba(0,0,0,0.6)] transition-all duration-500 flex flex-col justify-between h-auto lg:h-[390px] group [transform:translateZ(0px)] hover:[transform:translateZ(10px)]">
+              <div className="p-6 sm:p-8 pb-4 space-y-2">
                 <span className="text-[9px] font-mono tracking-widest text-indigo-500 dark:text-indigo-400 font-bold uppercase">01 • EXPLORE</span>
                 <h3 className="font-heading text-2xl font-bold text-luxury-primary dark:text-white tracking-tight">
                   Destinations
@@ -102,7 +102,7 @@ export default function JourneyFlowSection() {
               </div>
 
               {/* Bottom half: Image with overlay pills & Parallax frame */}
-              <div className="relative h-52 w-full px-6 pb-6 mt-auto overflow-hidden">
+              <div className="relative h-48 sm:h-52 w-full px-4 sm:px-6 pb-6 mt-auto overflow-hidden">
                 <div className="relative w-full h-full rounded-2xl overflow-hidden border border-slate-200/60 dark:border-white/10 shadow-lg group-hover:shadow-2xl transition-all duration-500">
                   <ImageWithWatermark
                     src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80"
@@ -114,10 +114,10 @@ export default function JourneyFlowSection() {
                   
                   {/* Floating pill categories */}
                   <div className="absolute bottom-4 inset-x-4 flex items-center gap-2 overflow-x-auto no-scrollbar">
-                    <span className="px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-black/75 backdrop-blur-md border border-white/20 dark:border-white/10 text-[9px] font-bold text-luxury-primary dark:text-white shadow-md whitespace-nowrap">
+                    <span className="px-3 py-1 rounded-full bg-white/90 dark:bg-black/75 backdrop-blur-md border border-white/20 dark:border-white/10 text-[9px] font-bold text-luxury-primary dark:text-white shadow-md whitespace-nowrap">
                       Japan (Kyoto)
                     </span>
-                    <span className="px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-black/75 backdrop-blur-md border border-white/20 dark:border-white/10 text-[9px] font-bold text-luxury-primary dark:text-white shadow-md whitespace-nowrap">
+                    <span className="px-3 py-1 rounded-full bg-white/90 dark:bg-black/75 backdrop-blur-md border border-white/20 dark:border-white/10 text-[9px] font-bold text-luxury-primary dark:text-white shadow-md whitespace-nowrap">
                       Iceland (Reykjavik)
                     </span>
                     
@@ -126,7 +126,7 @@ export default function JourneyFlowSection() {
                       <ArrowRight className="w-3.5 h-3.5" />
                     </div>
 
-                    <span className="px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-black/75 backdrop-blur-md border border-white/20 dark:border-white/10 text-[9px] font-bold text-luxury-primary dark:text-white shadow-md whitespace-nowrap">
+                    <span className="px-3 py-1 rounded-full bg-white/90 dark:bg-black/75 backdrop-blur-md border border-white/20 dark:border-white/10 text-[9px] font-bold text-luxury-primary dark:text-white shadow-md whitespace-nowrap">
                       France (Paris)
                     </span>
                   </div>
@@ -135,8 +135,8 @@ export default function JourneyFlowSection() {
             </div>
 
             {/* Card 2: Global Travel Info (Glowing branched sphere style) */}
-            <div className="glass-card bg-gradient-to-b from-white to-slate-50/50 dark:from-[#080e1e]/90 dark:to-[#040814]/95 border border-slate-150 dark:border-white/[0.05] rounded-[32px] overflow-hidden shadow-[0_15px_40px_rgba(2,8,19,0.03)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.5)] hover:shadow-[0_30px_70px_rgba(2,8,19,0.08)] dark:hover:shadow-[0_35px_75px_rgba(0,0,0,0.6)] transition-all duration-500 flex flex-col justify-between h-[390px] group [transform:translateZ(0px)] hover:[transform:translateZ(10px)]">
-              <div className="p-8 pb-4 space-y-2">
+            <div className="glass-card bg-gradient-to-b from-white to-slate-50/50 dark:from-[#080e1e]/90 dark:to-[#040814]/95 border border-slate-150 dark:border-white/[0.05] rounded-[32px] overflow-hidden shadow-[0_15px_40px_rgba(2,8,19,0.03)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.5)] hover:shadow-[0_30px_70px_rgba(2,8,19,0.08)] dark:hover:shadow-[0_35px_75px_rgba(0,0,0,0.6)] transition-all duration-500 flex flex-col justify-between h-auto lg:h-[390px] group [transform:translateZ(0px)] hover:[transform:translateZ(10px)]">
+              <div className="p-6 sm:p-8 pb-4 space-y-2">
                 <span className="text-[9px] font-mono tracking-widest text-purple-500 dark:text-purple-400 font-bold uppercase">02 • TRAVEL INFO</span>
                 <h3 className="font-heading text-2xl font-bold text-luxury-primary dark:text-white tracking-tight">
                   Travel Rules
@@ -147,7 +147,7 @@ export default function JourneyFlowSection() {
               </div>
 
               {/* Branching Avatars/Badges Graphic */}
-              <div className="relative h-48 w-full bg-slate-50/40 dark:bg-black/15 border-t border-slate-100 dark:border-white/5 overflow-hidden">
+              <div className="relative h-44 sm:h-48 w-full bg-slate-50/40 dark:bg-black/15 border-t border-slate-100 dark:border-white/5 overflow-hidden">
                 
                 {/* SVG Connecting Paths with dynamic glowing gradient lines */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -160,38 +160,38 @@ export default function JourneyFlowSection() {
                 </svg>
 
                 {/* Central Parent Sphere - Ultra-minimalist modern globe */}
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1329] flex items-center justify-center shadow-md dark:shadow-2xl z-10 group/globe">
-                  <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center">
-                    <Globe className="w-5 h-5 text-indigo-500 dark:text-indigo-400 group-hover/globe:rotate-12 transition-transform duration-500" />
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1329] flex items-center justify-center shadow-md dark:shadow-2xl z-10 group/globe">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center">
+                    <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500 dark:text-indigo-400 group-hover/globe:rotate-12 transition-transform duration-500" />
                   </div>
                 </div>
 
                 {/* 5 Child Badges at the bottom - premium, thinned glassmorphism designs */}
-                <div className="absolute bottom-5 inset-x-0 w-full flex justify-between px-3.5">
+                <div className="absolute bottom-4 sm:bottom-5 inset-x-0 w-full flex justify-between px-2 sm:px-3.5">
                   
                   {/* VISA CHECKLIST */}
-                  <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 flex items-center justify-center shadow-sm hover:border-blue-500/30 hover:scale-110 transition-all duration-300 shrink-0 ml-[1%]" title="Visa Checklists">
-                    <FileCheck className="w-4.5 h-4.5 text-blue-500" strokeWidth={2} />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 flex items-center justify-center shadow-sm hover:border-blue-500/30 hover:scale-110 transition-all duration-300 shrink-0" title="Visa Checklists">
+                    <FileCheck className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-blue-500" strokeWidth={2} />
                   </div>
 
                   {/* SAFETY INDEX */}
-                  <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 flex items-center justify-center shadow-sm hover:border-purple-500/30 hover:scale-110 transition-all duration-300 shrink-0" title="Safety Index">
-                    <Shield className="w-4.5 h-4.5 text-purple-500" strokeWidth={2} />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 flex items-center justify-center shadow-sm hover:border-purple-500/30 hover:scale-110 transition-all duration-300 shrink-0" title="Safety Index">
+                    <Shield className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-purple-500" strokeWidth={2} />
                   </div>
 
                   {/* CURRENCY EXCHANGE */}
-                  <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 flex items-center justify-center shadow-sm hover:border-amber-500/30 hover:scale-110 transition-all duration-300 shrink-0" title="Currency Converter">
-                    <Coins className="w-4.5 h-4.5 text-amber-500" strokeWidth={2} />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 flex items-center justify-center shadow-sm hover:border-amber-500/30 hover:scale-110 transition-all duration-300 shrink-0" title="Currency Converter">
+                    <Coins className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-500" strokeWidth={2} />
                   </div>
 
                   {/* LANGUAGE GUIDE */}
-                  <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 flex items-center justify-center shadow-sm hover:border-emerald-500/30 hover:scale-110 transition-all duration-300 shrink-0" title="Language Guide">
-                    <Languages className="w-4.5 h-4.5 text-emerald-500" strokeWidth={2} />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 flex items-center justify-center shadow-sm hover:border-emerald-500/30 hover:scale-110 transition-all duration-300 shrink-0" title="Language Guide">
+                    <Languages className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-emerald-500" strokeWidth={2} />
                   </div>
 
                   {/* TRANSIT GUIDE */}
-                  <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 flex items-center justify-center shadow-sm hover:border-cyan-500/30 hover:scale-110 transition-all duration-300 shrink-0 mr-[1%]" title="Transit App Logos">
-                    <Navigation className="w-4 h-4 text-cyan-500 transform rotate-45" strokeWidth={2} />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 flex items-center justify-center shadow-sm hover:border-cyan-500/30 hover:scale-110 transition-all duration-300 shrink-0" title="Transit App Logos">
+                    <Navigation className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-500 transform rotate-45" strokeWidth={2} />
                   </div>
 
                 </div>
@@ -199,18 +199,18 @@ export default function JourneyFlowSection() {
             </div>
 
             {/* Card 3: Dynamic Planner (3D Card Stack style) */}
-            <div className="md:col-span-2 glass-card bg-gradient-to-r from-amber-500/10 via-emerald-500/5 to-transparent dark:from-amber-500/[0.03] dark:via-emerald-500/[0.01] border border-slate-150 dark:border-white/[0.05] rounded-[32px] overflow-hidden shadow-[0_15px_40px_rgba(2,8,19,0.03)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.5)] hover:shadow-[0_30px_70px_rgba(2,8,19,0.08)] dark:hover:shadow-[0_35px_75px_rgba(0,0,0,0.6)] transition-all duration-500 flex flex-col md:flex-row justify-between items-center p-8 gap-8 min-h-[290px] group [transform:translateZ(0px)] hover:[transform:translateZ(10px)] text-left">
+            <div className="md:col-span-2 glass-card bg-gradient-to-r from-amber-500/10 via-emerald-500/5 to-transparent dark:from-amber-500/[0.03] dark:via-emerald-500/[0.01] border border-slate-150 dark:border-white/[0.05] rounded-[32px] overflow-hidden shadow-[0_15px_40px_rgba(2,8,19,0.03)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.5)] hover:shadow-[0_30px_70px_rgba(2,8,19,0.08)] dark:hover:shadow-[0_35px_75px_rgba(0,0,0,0.6)] transition-all duration-500 flex flex-col md:flex-row justify-between items-center p-6 sm:p-8 gap-6 sm:gap-8 min-h-[260px] group [transform:translateZ(0px)] hover:[transform:translateZ(10px)] text-left">
               
               <div className="md:w-[55%] space-y-4">
                 <span className="text-[9px] font-mono tracking-widest text-emerald-500 dark:text-emerald-400 font-bold uppercase">03 • PLANNER</span>
-                <h3 className="font-heading text-3xl font-bold text-luxury-primary dark:text-white leading-none tracking-tight">
+                <h3 className="font-heading text-2xl sm:text-3xl font-bold text-luxury-primary dark:text-white leading-none tracking-tight">
                   Easy Planning
                 </h3>
                 <p className="text-slate-500 dark:text-slate-400 text-xs font-light leading-relaxed font-body">
                   Create day-by-day plans. Manage budgets, map walking routes, and keep your schedules handy with an offline checklist.
                 </p>
                 
-                <div className="flex gap-3 pt-2">
+                <div className="flex flex-wrap gap-3 pt-2">
                   <button className="px-5 py-2.5 rounded-xl bg-emerald-600 dark:bg-emerald-500 text-white font-medium text-xs tracking-wide hover:bg-emerald-700 dark:hover:bg-emerald-600 hover:scale-[1.03] hover:shadow-lg hover:shadow-emerald-500/10 active:scale-[0.97] transition-all cursor-pointer">
                     Start Planning
                   </button>
@@ -221,31 +221,31 @@ export default function JourneyFlowSection() {
               </div>
 
               {/* Graphic right: 3D Overlapping paper cards with perspective */}
-              <div className="md:w-[45%] w-full relative h-48 flex items-center justify-center [perspective:800px] [transform-style:preserve-3d]">
+              <div className="md:w-[45%] w-full relative h-44 sm:h-48 flex items-center justify-center [perspective:800px] [transform-style:preserve-3d]">
                 
                 {/* Back Card (Travel Map snippet, tilted back) */}
-                <div className="absolute top-0 right-4 w-[185px] h-[135px] rounded-2xl border border-slate-250 dark:border-white/[0.06] bg-slate-50 dark:bg-[#080f21] shadow-lg p-3 flex flex-col justify-between transform [transform:rotateY(-15deg)_rotateX(10deg)_translateZ(-20px)] opacity-70 group-hover:opacity-90 group-hover:[transform:rotateY(-5deg)_rotateX(5deg)_translateZ(-10px)] transition-all duration-500 select-none">
+                <div className="absolute top-0 right-2 sm:right-4 w-[165px] sm:w-[185px] h-[120px] sm:h-[135px] rounded-2xl border border-slate-250 dark:border-white/[0.06] bg-slate-50 dark:bg-[#080f21] shadow-lg p-3 flex flex-col justify-between transform [transform:rotateY(-15deg)_rotateX(10deg)_translateZ(-20px)] opacity-70 group-hover:opacity-90 group-hover:[transform:rotateY(-5deg)_rotateX(5deg)_translateZ(-10px)] transition-all duration-500 select-none">
                   <div className="flex justify-between items-center">
                     <span className="text-[8px] font-mono text-slate-400">ROUTE GRID</span>
                     <MapPin className="w-3 h-3 text-red-500 animate-pulse" />
                   </div>
                   <div className="h-10 bg-slate-150/70 dark:bg-white/5 rounded-lg overflow-hidden border border-slate-200/50 dark:border-white/5 flex items-center justify-center">
-                    <span className="text-[7.5px] font-mono text-slate-450 dark:text-slate-500">Kyoto Landmark Mapping</span>
+                    <span className="text-[7.5px] font-mono text-slate-455 dark:text-slate-500">Kyoto Landmark Mapping</span>
                   </div>
-                  <span className="text-[9px] text-slate-450 dark:text-slate-400 font-mono">Kyoto route map</span>
+                  <span className="text-[9px] text-slate-455 dark:text-slate-400 font-mono">Kyoto route map</span>
                 </div>
 
                 {/* Front Card (Curly Document checklist with volumetric drop shadow) */}
-                <div className="absolute top-8 right-12 w-[195px] h-[135px] rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#121b38] shadow-[10px_20px_40px_rgba(2,8,19,0.12)] dark:shadow-[10px_20px_55px_rgba(0,0,0,0.5)] p-4 flex flex-col justify-between transform [transform:rotateY(10deg)_rotateX(5deg)_translateZ(20px)] group-hover:[transform:rotateY(2deg)_rotateX(2deg)_translateZ(30px)] transition-all duration-500 border-l-[3.5px] border-l-emerald-500">
+                <div className="absolute top-6 sm:top-8 right-8 sm:right-12 w-[175px] sm:w-[195px] h-[120px] sm:h-[135px] rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#121b38] shadow-[10px_20px_40px_rgba(2,8,19,0.12)] dark:shadow-[10px_20px_55px_rgba(0,0,0,0.5)] p-3.5 sm:p-4 flex flex-col justify-between transform [transform:rotateY(10deg)_rotateX(5deg)_translateZ(20px)] group-hover:[transform:rotateY(2deg)_rotateX(2deg)_translateZ(30px)] transition-all duration-500 border-l-[3.5px] border-l-emerald-500">
                   <div className="flex items-center gap-2 border-b border-slate-100 dark:border-white/5 pb-2">
-                    <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-500/15 flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3 text-emerald-500" />
+                    <div className="w-4.5 h-4.5 sm:w-5 sm:h-5 rounded-full bg-emerald-100 dark:bg-emerald-500/15 flex items-center justify-center shrink-0">
+                      <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500" />
                     </div>
-                    <span className="text-[9px] font-heading font-extrabold text-luxury-primary dark:text-white uppercase tracking-wider">Itinerary Checklist</span>
+                    <span className="text-[8.5px] sm:text-[9px] font-heading font-extrabold text-luxury-primary dark:text-white uppercase tracking-wider">Itinerary Checklist</span>
                   </div>
                   
                   {/* Checklist lines */}
-                  <div className="space-y-1.5 text-[8.5px] text-slate-655 dark:text-slate-350">
+                  <div className="space-y-1 sm:space-y-1.5 text-[8px] sm:text-[8.5px] text-slate-655 dark:text-slate-350">
                     <div className="flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
                       <span className="truncate">Confirm Kyoto hotel booking</span>
@@ -266,7 +266,7 @@ export default function JourneyFlowSection() {
           </div>
 
           {/* Right Area: Tall Glass Smartphone Mockup Card */}
-          <div className="lg:col-span-1 glass-card bg-gradient-to-b from-white to-slate-50/50 dark:from-[#080e1e]/90 dark:to-[#040814]/95 border border-slate-150 dark:border-white/[0.05] rounded-[32px] overflow-hidden shadow-[0_15px_40px_rgba(2,8,19,0.03)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.5)] hover:shadow-[0_30px_70px_rgba(2,8,19,0.08)] dark:hover:shadow-[0_35px_75px_rgba(0,0,0,0.6)] transition-all duration-500 flex flex-col justify-between min-h-[600px] h-full p-8 relative group [transform:translateZ(0px)] hover:[transform:translateZ(10px)]">
+          <div className="lg:col-span-1 glass-card bg-gradient-to-b from-white to-slate-50/50 dark:from-[#080e1e]/90 dark:to-[#040814]/95 border border-slate-150 dark:border-white/[0.05] rounded-[32px] overflow-hidden shadow-[0_15px_40px_rgba(2,8,19,0.03)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.5)] hover:shadow-[0_30px_70px_rgba(2,8,19,0.08)] dark:hover:shadow-[0_35px_75px_rgba(0,0,0,0.6)] transition-all duration-500 flex flex-col justify-between min-h-0 lg:min-h-[600px] h-auto lg:h-full p-6 sm:p-8 relative group [transform:translateZ(0px)] hover:[transform:translateZ(10px)]">
             
             {/* Phone Screen Bevel Glass reflection overlay */}
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.015] dark:via-white/[0.007] to-transparent transform -translate-x-full group-hover:translate-x-full duration-1000 ease-out pointer-events-none" />

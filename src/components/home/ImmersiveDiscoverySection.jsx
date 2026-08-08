@@ -255,7 +255,7 @@ export default function ImmersiveDiscoverySection() {
             {/* CARD 1 — DISCOVER */}
             <TiltCard 
               glowColor="blue"
-              className="aspect-square flex flex-col justify-between shadow-[0_20px_45px_-12px_rgba(0,0,0,0.6)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)]" 
+              className="min-h-[360px] sm:min-h-[400px] md:aspect-square flex flex-col justify-between p-5 sm:p-6 shadow-[0_20px_45px_-12px_rgba(0,0,0,0.6)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)]" 
               hoverGlowClass="hover:shadow-[0_30px_70px_-10px_rgba(27,61,232,0.45)] dark:hover:shadow-[0_35px_80px_-10px_rgba(27,61,232,0.7)]"
               style={{ background: 'linear-gradient(135deg, #0A0F1E 30%, #1B3DE8 120%)' }}
             >
@@ -335,7 +335,7 @@ export default function ImmersiveDiscoverySection() {
             {/* CARD 2 — UNDERSTAND */}
             <TiltCard 
               glowColor="purple"
-              className="aspect-square flex flex-col justify-between shadow-[0_20px_45px_-12px_rgba(0,0,0,0.6)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)]" 
+              className="min-h-[360px] sm:min-h-[400px] md:aspect-square flex flex-col justify-between p-5 sm:p-6 shadow-[0_20px_45px_-12px_rgba(0,0,0,0.6)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)]" 
               hoverGlowClass="hover:shadow-[0_30px_70px_-10px_rgba(45,27,232,0.45)] dark:hover:shadow-[0_35px_80px_-10px_rgba(45,27,232,0.7)]"
               style={{ background: 'linear-gradient(135deg, #0A0F1E 30%, #2D1BE8 120%)' }}
             >
@@ -419,7 +419,7 @@ export default function ImmersiveDiscoverySection() {
             {/* CARD 3 — PLAN */}
             <TiltCard 
               glowColor="cyan"
-              className="aspect-square flex flex-col justify-between shadow-[0_20px_45px_-12px_rgba(0,0,0,0.6)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)]" 
+              className="min-h-[360px] sm:min-h-[400px] md:aspect-square flex flex-col justify-between p-5 sm:p-6 shadow-[0_20px_45px_-12px_rgba(0,0,0,0.6)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)]" 
               hoverGlowClass="hover:shadow-[0_30px_70px_-10px_rgba(13,47,191,0.45)] dark:hover:shadow-[0_35px_80px_-10px_rgba(13,47,191,0.7)]"
               style={{ background: 'linear-gradient(135deg, #0A0F1E 30%, #0D2FBF 120%)' }}
             >

@@ -112,13 +112,23 @@ export function Globe({
     let globe = null
     let animationId
     let phi = 0
-    let ro = null
+    let isVisible = true
+
+    // Pause WebGL rendering loop when canvas is offscreen to save mobile battery and prevent scroll lag
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting
+      },
+      { threshold: 0.05 }
+    )
+    observer.observe(canvas)
 
     function init() {
       const width = canvas.offsetWidth
       if (width === 0 || globe) return
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const isMobile = window.innerWidth < 768
+      const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 1.5)
       const cfg = configRef.current
       try {
         globe = createGlobe(canvas, {
@@ -129,7 +139,7 @@ export function Globe({
           theta: cfg.theta,
           dark: cfg.dark,
           diffuse: cfg.diffuse,
-          mapSamples: cfg.mapSamples,
+          mapSamples: isMobile ? 8000 : cfg.mapSamples,
           mapBrightness: cfg.mapBrightness,
           baseColor: cfg.baseColor,
           markerColor: cfg.markerColor,
@@ -157,6 +167,10 @@ export function Globe({
 
       function animate() {
         if (!globe) return
+        if (!isVisible) {
+          animationId = requestAnimationFrame(animate)
+          return
+        }
         const currentCfg = configRef.current
         if (!isPausedRef.current) {
           phi += currentCfg.speed
@@ -223,6 +237,7 @@ export function Globe({
     }
 
     return () => {
+      if (observer) observer.disconnect()
       if (ro) ro.disconnect()
       if (animationId) cancelAnimationFrame(animationId)
       if (globe) {
