@@ -4,7 +4,7 @@
  * caching, fallback mechanisms, and smart travel ranking algorithm.
  */
 
-const YOUTUBE_API_KEY = "AIzaSyA4vKNSM7UZ8FDMIlxv0JSfIFDeqnPgUb4";
+const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY || "AIzaSyA4vKNSM7UZ8FDMIlxv0JSfIFDeqnPgUb4";
 const BASE_URL = "https://www.googleapis.com/youtube/v3";
 const CACHE_PREFIX = "tripready_yt_cache_v1_";
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
