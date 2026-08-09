@@ -951,17 +951,21 @@ export default function HeroSection() {
                 } ${isDark ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                 draggable={false}
               />
-              {/* Light Mode Mockup */}
+              {/* Light Mode Mockup — Enhanced with crisp contrast, brightness & blue ambient shadow */}
               <img
                 src="/iphone-mockup-tilted-light-trans.png"
                 alt="TripReady Mobile Experience (Light)"
-                className={`absolute w-full h-full object-contain select-none transition-all duration-700 ease-out filter z-20 ${
+                className={`absolute w-full h-full object-contain select-none transition-all duration-700 ease-out filter z-20 brightness-[1.03] contrast-[1.07] saturate-[1.04] ${
                   isMockupCentered 
-                    ? 'rotate-[-2.5deg] scale-105 drop-shadow-[0_50px_100px_rgba(0,0,0,0.15)]' 
-                    : 'rotate-0 scale-100 drop-shadow-[0_40px_80px_rgba(0,0,0,0.15)]'
+                    ? 'rotate-[-2.5deg] scale-105 drop-shadow-[0_40px_90px_rgba(37,99,235,0.22)]' 
+                    : 'rotate-0 scale-100 drop-shadow-[0_30px_70px_rgba(37,99,235,0.15)]'
                 } ${isDark ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
                 draggable={false}
               />
+              {/* Light mode glass glow backdrop */}
+              {!isDark && (
+                <div className="absolute inset-x-8 top-10 bottom-10 bg-gradient-to-b from-blue-500/10 via-indigo-500/5 to-transparent rounded-[50px] blur-2xl pointer-events-none z-10" />
+              )}
             </div>
 
             {/* ── Right Testimonial Card (Glassmorphism & Closer Translation) ── */}

@@ -19,6 +19,7 @@ import {
   Camera
 } from 'lucide-react';
 import { blogPosts } from '../data/blogData';
+import { updateEntitySEO, clearEntitySEO } from '../utils/seoHelper';
 
 // ── Inline Markdown Utility Parser ──────────────────────────────────
 const parseInline = (text) => {

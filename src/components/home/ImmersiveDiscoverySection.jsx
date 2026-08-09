@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MapPin, Globe, Shield, Calendar, Star, Check, Plane, Heart, MessageCircle, Send, Bookmark } from 'lucide-react';
+import { MapPin, Globe, Shield, Calendar, Star, Check, Plane, ArrowRight, Sparkles, Compass, CheckCircle2 } from 'lucide-react';
 import { GlowCard } from '../ui/spotlight-card';
 
-// Custom React hook to remove solid black backgrounds and cache as transparent data URLs (removes checkerboards)
+// Custom React hook to key out solid black backgrounds for transparent images
 function useTransparentImage(src, isBlackBg = true) {
   const [processedSrc, setProcessedSrc] = useState(null);
 
@@ -29,12 +29,10 @@ function useTransparentImage(src, isBlackBg = true) {
             const b = data[i+2];
             const brightness = Math.max(r, g, b);
             
-            // Key out black pixels
-            if (brightness < 12) {
-              data[i+3] = 0; // Fully transparent
-            } else if (brightness < 36) {
-              // Smooth transition
-              data[i+3] = ((brightness - 12) / 24) * 255;
+            if (brightness < 14) {
+              data[i+3] = 0;
+            } else if (brightness < 38) {
+              data[i+3] = ((brightness - 14) / 24) * 255;
             }
           }
         }
@@ -42,7 +40,6 @@ function useTransparentImage(src, isBlackBg = true) {
         ctx.putImageData(imgData, 0, 0);
         setProcessedSrc(canvas.toDataURL('image/png'));
       } catch (e) {
-        console.error("Error processing transparent background:", e);
         setProcessedSrc(src);
       }
     };
@@ -54,24 +51,23 @@ function useTransparentImage(src, isBlackBg = true) {
   return processedSrc;
 }
 
-// Premium 3D Tilt Card wrapper with SaaS specs (1px solid white/8% border, 24px border radius, shadow, 24px padding)
-function TiltCard({ children, className, hoverGlowClass, glowColor = 'blue', style = {} }) {
+// 3D Tilt Card wrapper with smooth responsiveness & touch support
+function TiltCard({ children, className, glowColor = 'blue', style = {} }) {
   const cardRef = useRef(null);
   const [transformStyle, setTransformStyle] = useState('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)');
 
   const handleMouseMove = (e) => {
-    if (!cardRef.current) return;
+    if (!cardRef.current || window.innerWidth < 768) return;
     const card = cardRef.current;
     const rect = card.getBoundingClientRect();
     
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
     
-    // Controlled SaaS-style subtle tilt
-    const tiltX = -y * 8;
-    const tiltY = x * 8;
+    const tiltX = -y * 6;
+    const tiltY = x * 6;
     
-    setTransformStyle(`perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.01, 1.01, 1.01)`);
+    setTransformStyle(`perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.015, 1.015, 1.015)`);
   };
 
   const handleMouseLeave = () => {
@@ -85,7 +81,7 @@ function TiltCard({ children, className, hoverGlowClass, glowColor = 'blue', sty
       customSize={true}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className={`border border-white/[0.08] rounded-[24px] p-6 relative flex flex-col justify-between transition-all duration-300 ease-out shadow-[0_8px_30px_rgba(0,0,0,0.3)] ${hoverGlowClass} select-none cursor-default ${className}`}
+      className={`group relative rounded-[28px] border transition-all duration-500 ease-out select-none ${className}`}
       style={{ 
         transform: transformStyle, 
         transformStyle: 'preserve-3d',
@@ -101,8 +97,6 @@ function TiltCard({ children, className, hoverGlowClass, glowColor = 'blue', sty
 export default function ImmersiveDiscoverySection() {
   const sectionRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
-
-  // Process transparent globe asset on component mount to key out background
   const transparentGlobe = useTransparentImage('/earth_globe_pure_black.png');
 
   const handleMouseMove = (e) => {
@@ -120,213 +114,162 @@ export default function ImmersiveDiscoverySection() {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="section-padding bg-[var(--bg-primary)] text-[var(--text-primary)] border-t border-[var(--border)] relative overflow-hidden transition-colors duration-500"
-      style={{ contentVisibility: 'auto' }}
+      className="py-16 sm:py-24 bg-[var(--bg-primary)] text-[var(--text-primary)] border-t border-[var(--border)] relative overflow-hidden transition-colors duration-500"
     >
       {/* Background vector coordinate grid overlay */}
-      <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.008] pointer-events-none select-none bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:28px_28px] z-0" />
+      <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.015] pointer-events-none select-none bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:32px_32px] z-0" />
       
       {/* Dynamic Cursor-Following Volumetric Ambient Glow */}
       <div 
-        className="absolute inset-0 pointer-events-none z-0 transition-opacity duration-500 ease-out bg-[radial-gradient(600px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(79,107,237,0.06),transparent_60%)] dark:bg-[radial-gradient(600px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(99,102,241,0.015),transparent_60%)]"
-        style={{
-          opacity: isHovered ? 1 : 0,
-        }}
+        className="absolute inset-0 pointer-events-none z-0 transition-opacity duration-500 ease-out bg-[radial-gradient(600px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(37,99,235,0.07),transparent_60%)] dark:bg-[radial-gradient(600px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(59,130,246,0.02),transparent_60%)]"
+        style={{ opacity: isHovered ? 1 : 0 }}
       />
 
-      {/* Subtle static background glowing ambient light */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-indigo-500/10 via-purple-500/5 to-transparent dark:from-indigo-500/[0.01] dark:via-purple-500/[0.003] rounded-full blur-[120px] pointer-events-none z-0" />
+      {/* Subtle ambient light Orbs */}
+      <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
+      <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] bg-indigo-500/10 dark:bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none z-0" />
 
-      {/* Premium CSS-only Volumetric Cloud Cluster (Right) - Zero jagged edges, perfectly soft & glowing */}
-      <div className="absolute top-[-10%] right-[-10%] w-[35vw] h-[35vw] max-w-[450px] min-w-[260px] pointer-events-none z-0 select-none">
-        {/* Base soft white-blue body */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/95 to-blue-50/40 dark:from-blue-950/15 dark:to-transparent rounded-full blur-[70px] opacity-90 dark:opacity-40" />
-        {/* Soft cyan volumetric highlight */}
-        <div className="absolute top-[15%] left-[20%] w-[65%] h-[65%] bg-gradient-to-tr from-cyan-300/20 to-indigo-300/10 dark:from-cyan-500/5 dark:to-indigo-500/5 rounded-full blur-[45px] opacity-70 animate-[float_6s_ease-in-out_infinite]" />
-        {/* Glowing core */}
-        <div className="absolute top-[25%] left-[30%] w-[45%] h-[45%] bg-white dark:bg-slate-900/10 rounded-full blur-[25px] opacity-95 dark:opacity-30" />
-      </div>
-
-      {/* Premium CSS-only Volumetric Cloud Cluster (Left) - Perfectly soft & glowing */}
-      <div className="absolute bottom-[5%] left-[-8%] w-[25vw] h-[25vw] max-w-[320px] min-w-[180px] pointer-events-none z-0 select-none">
-        {/* Base soft body */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-white/90 to-indigo-50/30 dark:from-indigo-950/15 dark:to-transparent rounded-full blur-[60px] opacity-80 dark:opacity-30" />
-        {/* Soft violet volumetric highlight */}
-        <div className="absolute bottom-[10%] right-[10%] w-[55%] h-[55%] bg-gradient-to-bl from-purple-300/15 to-blue-300/15 dark:from-purple-500/5 dark:to-blue-500/5 rounded-full blur-[35px] opacity-60 animate-[float_5s_ease-in-out_infinite_1.5s]" />
-      </div>
-
-      {/* Self-contained keyframes for UI details */}
+      {/* Self-contained keyframes */}
       <style>{`
         @keyframes customPulse {
-          0%, 100% { transform: scale(1) translateY(0); opacity: 0.85; }
-          50% { transform: scale(1.1) translateY(-2px); opacity: 1; filter: drop-shadow(0 0 4px rgba(79,107,237,0.6)); }
+          0%, 100% { transform: scale(1); opacity: 0.85; }
+          50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 6px rgba(37,99,235,0.8)); }
         }
         @keyframes drawRoute {
-          0% { stroke-dashoffset: 200; }
+          0% { stroke-dashoffset: 240; }
           100% { stroke-dashoffset: 0; }
         }
         @keyframes spinSlow {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
-        @keyframes floatMapPin {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-4px); }
-        }
         @keyframes floatPin1 {
           0%, 100% { transform: translateY(0) scale(1); }
-          50% { transform: translateY(-5px) scale(1.05); }
+          50% { transform: translateY(-6px) scale(1.08); }
         }
         @keyframes floatPin2 {
           0%, 100% { transform: translateY(0) scale(1); }
-          50% { transform: translateY(-3px) scale(0.95); }
+          50% { transform: translateY(-4px) scale(0.95); }
         }
-        @keyframes floatPin3 {
-          0%, 100% { transform: translateY(0) scale(1); }
-          50% { transform: translateY(-4px) scale(1.02); }
-        }
-
-        .animate-pulse-pin { animation: customPulse 2s infinite ease-in-out; }
-        .animate-draw-route { stroke-dasharray: 200; animation: drawRoute 8s linear infinite; }
-        .animate-spin-slow { animation: spinSlow 45s linear infinite; }
-        .animate-float-pin { animation: floatMapPin 3s ease-in-out infinite; }
+        .animate-draw-route { stroke-dasharray: 240; animation: drawRoute 7s linear infinite; }
+        .animate-spin-slow { animation: spinSlow 50s linear infinite; }
       `}</style>
 
-      <div className="max-w-7xl mx-auto px-4 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* SECTION HEADER */}
-        <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20 space-y-4 select-none">
-          <div className="inline-flex items-center gap-1.5 bg-[#EEF1FD] dark:bg-blue-950/40 text-[#4F6BED] dark:text-blue-400 text-sm font-semibold px-4 py-1 rounded-full mb-2 border border-blue-500/10 shadow-sm animate-float-pin">
-            <span>How it works</span>
-            <Plane className="w-3.5 h-3.5 rotate-45 text-[#4F6BED] dark:text-blue-400" />
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 md:mb-20 space-y-4 select-none">
+          <div className="inline-flex items-center gap-2 bg-blue-500/10 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full border border-blue-500/20 shadow-sm">
+            <Sparkles className="w-4 h-4 text-blue-500 animate-pulse" />
+            <span>How It Works</span>
+            <Plane className="w-3.5 h-3.5 rotate-45 text-blue-500" />
           </div>
-          <h2 className="section-title text-center text-balance !mb-2">
-            From idea to a perfect trip
+
+          <h2 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-luxury-primary dark:text-white leading-[1.1]">
+            From idea to a <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500">perfect trip</span>
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base font-light font-body max-w-2xl mx-auto leading-relaxed">
-            A simple flow that turns your travel dreams into{' '}
-            <span className="relative inline-block font-semibold text-slate-800 dark:text-white">
-              reality.
-              <svg className="absolute left-0 -bottom-1.5 w-full h-2 text-[#4F6BED] dark:text-blue-455" viewBox="0 0 100 10" preserveAspectRatio="none">
-                <path d="M0,5 Q50,9 100,5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-              </svg>
-            </span>
+
+          <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg font-light max-w-2xl mx-auto leading-relaxed">
+            A simple 3-step workflow designed to transform your travel aspirations into organized, stress-free reality.
           </p>
         </div>
 
-        {/* CARDS WRAPPER GRID */}
+        {/* CARDS CONTAINER GRID */}
         <div className="relative max-w-6xl mx-auto">
           
-          {/* Animated Connecting Paths (Desktop only) */}
-          <div className="absolute inset-0 w-full h-full pointer-events-none z-0 hidden lg:block text-[#00D4FF]/30">
+          {/* Connecting Curved Arches (Desktop >1024px) */}
+          <div className="absolute inset-0 w-full h-full pointer-events-none z-0 hidden lg:block text-blue-500/30">
             <svg className="w-full h-full" viewBox="0 0 1152 420" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-              <defs>
-                <filter id="glow-teal" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="3" result="blur" />
-                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                </filter>
-                <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#00D4FF"/>
-                </marker>
-              </defs>
-              
               <path 
-                d="M 335,210 C 362,145 398,145 425,210" 
-                stroke="#00D4FF" 
+                d="M 340,210 C 370,140 400,140 430,210" 
+                stroke="currentColor" 
                 strokeWidth="2" 
-                strokeDasharray="5 5" 
-                markerEnd="url(#arrow)" 
-                filter="url(#glow-teal)"
+                strokeDasharray="6 6" 
               />
               <path 
-                d="M 720,210 C 747,145 783,145 810,210" 
-                stroke="#00D4FF" 
+                d="M 720,210 C 750,140 780,140 810,210" 
+                stroke="currentColor" 
                 strokeWidth="2" 
-                strokeDasharray="5 5" 
-                markerEnd="url(#arrow)" 
-                filter="url(#glow-teal)"
+                strokeDasharray="6 6" 
               />
             </svg>
           </div>
 
-          {/* SaaS Grid layout: equal height items stretch automatically */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch relative z-10">
+          {/* SaaS Grid layout - 1 col on mobile, 2 cols on tablet, 3 cols on desktop */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch relative z-10">
             
             {/* CARD 1 — DISCOVER */}
             <TiltCard 
               glowColor="blue"
-              className="min-h-[360px] sm:min-h-[400px] md:aspect-square flex flex-col justify-between p-5 sm:p-6 shadow-[0_20px_45px_-12px_rgba(0,0,0,0.6)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)]" 
-              hoverGlowClass="hover:shadow-[0_30px_70px_-10px_rgba(27,61,232,0.45)] dark:hover:shadow-[0_35px_80px_-10px_rgba(27,61,232,0.7)]"
-              style={{ background: 'linear-gradient(135deg, #0A0F1E 30%, #1B3DE8 120%)' }}
+              className="bg-[#0A0F1E] text-white border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:shadow-[0_30px_70px_rgba(37,99,235,0.4)] p-6 sm:p-7 flex flex-col justify-between"
+              style={{ background: 'linear-gradient(145deg, #0A0F1E 30%, #172554 100%)' }}
             >
-              <div className="relative h-full flex flex-col justify-between">
+              <div className="relative h-full flex flex-col justify-between space-y-6">
                 <div>
                   {/* Badge */}
-                  <div className="flex items-start justify-between">
-                    <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full border border-cyan-500/20 bg-cyan-950/40 text-cyan-400 text-[10px] font-bold font-mono tracking-wider shadow-[0_0_8px_rgba(6,182,212,0.15)]">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="inline-flex items-center justify-center px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-950/60 text-cyan-400 text-xs font-bold font-mono tracking-widest shadow-[0_0_12px_rgba(6,182,212,0.2)]">
                       01
+                    </span>
+                    <span className="text-[11px] font-semibold text-cyan-300/80 uppercase tracking-wider flex items-center gap-1">
+                      <Compass className="w-3.5 h-3.5" /> Exploration
                     </span>
                   </div>
 
                   {/* Title & Description */}
-                  <div className="text-left mt-4" style={{ transform: 'translateZ(20px)' }}>
-                    <h3 className="text-[22px] font-bold text-white leading-snug">
+                  <div className="text-left" style={{ transform: 'translateZ(20px)' }}>
+                    <h3 className="text-2xl font-bold text-white leading-tight">
                       Discover
                     </h3>
-                    <p className="text-[13px] text-white/60 mt-1.5 leading-relaxed font-light line-clamp-3">
-                      Explore destinations, top places, experiences and travel inspiration from around the world.
+                    <p className="text-sm text-slate-300/80 mt-2 leading-relaxed font-light">
+                      Explore global destinations, top sights, curated experiences and hidden gems worldwide.
                     </p>
                   </div>
                 </div>
 
-                {/* Inner Visual Container (Bottom Half) */}
+                {/* Inner Visual Container */}
                 <div 
-                  className="w-full h-[145px] overflow-hidden rounded-[20px] bg-[#0A0F1E]/50 border border-white/[0.04] flex items-center justify-center relative select-none shadow-[inset_0_4px_16px_rgba(0,0,0,0.8),0_10px_25px_rgba(0,0,0,0.4)]"
+                  className="w-full h-44 rounded-2xl bg-[#0A0F1E]/80 border border-white/10 flex items-center justify-center relative select-none shadow-[inset_0_4px_20px_rgba(0,0,0,0.8)] overflow-hidden"
                   style={{ transformStyle: 'preserve-3d' }}
                 >
-                  {/* Glowing blue/cyan light halo */}
-                  <div className="absolute w-24 h-24 rounded-full bg-[#1B3DE8]/30 blur-2xl z-0 animate-pulse" />
+                  {/* Glowing core halo */}
+                  <div className="absolute w-28 h-28 rounded-full bg-blue-600/30 blur-2xl z-0 animate-pulse" />
 
                   {/* 3D Globe Asset */}
                   {transparentGlobe ? (
                     <img 
                       src={transparentGlobe} 
                       alt="3D Globe"
-                      className="w-28 h-28 object-contain z-10 animate-spin-slow drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)]" 
-                      style={{ transform: 'translateZ(10px)' }}
+                      className="w-32 h-32 object-contain z-10 animate-spin-slow drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)]" 
+                      style={{ transform: 'translateZ(15px)' }}
                       loading="eager"
                     />
                   ) : (
-                    <div className="w-20 h-20 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 z-10 animate-spin-slow">
-                      <Globe className="w-10 h-10 text-cyan-400 opacity-60" />
+                    <div className="w-24 h-24 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 z-10 animate-spin-slow">
+                      <Globe className="w-12 h-12 text-cyan-400 opacity-80" />
                     </div>
                   )}
                   
                   {/* Floating map pins */}
                   <div 
-                    className="absolute top-10 left-16 z-20 animate-[floatPin1_4s_infinite_ease-in-out]"
+                    className="absolute top-8 left-12 z-20 animate-[floatPin1_4s_infinite_ease-in-out]"
                     style={{ transform: 'translateZ(25px)' }}
                   >
-                    <MapPin size={16} className="text-cyan-400 fill-cyan-400/20 drop-shadow-[0_0_8px_#00D4FF]" />
+                    <MapPin size={18} className="text-cyan-400 fill-cyan-400/30 drop-shadow-[0_0_10px_#00D4FF]" />
                   </div>
                   <div 
-                    className="absolute bottom-8 right-14 z-20 animate-[floatPin2_3s_infinite_ease-in-out_1s]"
+                    className="absolute bottom-8 right-12 z-20 animate-[floatPin2_3.5s_infinite_ease-in-out_1s]"
                     style={{ transform: 'translateZ(20px)' }}
                   >
-                    <MapPin size={14} className="text-blue-400 fill-blue-400/20 drop-shadow-[0_0_6px_#1B3DE8]" />
-                  </div>
-                  <div 
-                    className="absolute top-16 right-16 z-20 animate-[floatPin3_5s_infinite_ease-in-out_0.5s]"
-                    style={{ transform: 'translateZ(15px)' }}
-                  >
-                    <MapPin size={12} className="text-cyan-300 fill-cyan-300/20 drop-shadow-[0_0_5px_#00D4FF]" />
+                    <MapPin size={16} className="text-blue-400 fill-blue-400/30 drop-shadow-[0_0_8px_#2563EB]" />
                   </div>
                 </div>
 
-                {/* Read More Link */}
-                <div className="text-left mt-2 z-20">
-                  <span className="text-[11px] font-medium text-white/50 hover:text-white/80 transition-colors cursor-pointer">
-                    Read more &rarr;
+                {/* Action CTA Link */}
+                <div className="pt-2 text-left">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors">
+                    <span>Explore Destinations</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </div>
               </div>
@@ -335,82 +278,85 @@ export default function ImmersiveDiscoverySection() {
             {/* CARD 2 — UNDERSTAND */}
             <TiltCard 
               glowColor="purple"
-              className="min-h-[360px] sm:min-h-[400px] md:aspect-square flex flex-col justify-between p-5 sm:p-6 shadow-[0_20px_45px_-12px_rgba(0,0,0,0.6)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)]" 
-              hoverGlowClass="hover:shadow-[0_30px_70px_-10px_rgba(45,27,232,0.45)] dark:hover:shadow-[0_35px_80px_-10px_rgba(45,27,232,0.7)]"
-              style={{ background: 'linear-gradient(135deg, #0A0F1E 30%, #2D1BE8 120%)' }}
+              className="bg-[#0A0F1E] text-white border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:shadow-[0_30px_70px_rgba(124,58,237,0.4)] p-6 sm:p-7 flex flex-col justify-between"
+              style={{ background: 'linear-gradient(145deg, #0A0F1E 30%, #2e1065 100%)' }}
             >
-              <div className="relative h-full flex flex-col justify-between">
+              <div className="relative h-full flex flex-col justify-between space-y-6">
                 <div>
                   {/* Badge */}
-                  <div className="flex items-start justify-between">
-                    <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full border border-cyan-500/20 bg-cyan-950/40 text-cyan-400 text-[10px] font-bold font-mono tracking-wider shadow-[0_0_8px_rgba(6,182,212,0.15)]">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="inline-flex items-center justify-center px-3 py-1 rounded-full border border-purple-500/30 bg-purple-950/60 text-purple-400 text-xs font-bold font-mono tracking-widest shadow-[0_0_12px_rgba(168,85,247,0.2)]">
                       02
+                    </span>
+                    <span className="text-[11px] font-semibold text-purple-300/80 uppercase tracking-wider flex items-center gap-1">
+                      <Shield className="w-3.5 h-3.5" /> Intelligence
                     </span>
                   </div>
 
                   {/* Title & Description */}
-                  <div className="text-left mt-4" style={{ transform: 'translateZ(20px)' }}>
-                    <h3 className="text-[22px] font-bold text-white leading-snug">
+                  <div className="text-left" style={{ transform: 'translateZ(20px)' }}>
+                    <h3 className="text-2xl font-bold text-white leading-tight">
                       Understand
                     </h3>
-                    <p className="text-[13px] text-white/60 mt-1.5 leading-relaxed font-light line-clamp-3">
-                      Get complete country insights including visa, safety, costs, culture, transport & more.
+                    <p className="text-sm text-slate-300/80 mt-2 leading-relaxed font-light">
+                      Get complete country intelligence: visa policies, safety index, budgets & local transport.
                     </p>
                   </div>
                 </div>
 
-                {/* Inner Visual Container (Bottom Half) */}
+                {/* Inner Visual Container */}
                 <div 
-                  className="w-full h-[145px] overflow-hidden rounded-[20px] bg-[#0A0F1E]/50 border border-white/[0.04] flex items-center justify-center relative select-none shadow-[inset_0_4px_16px_rgba(0,0,0,0.8),0_10px_25px_rgba(0,0,0,0.4)]"
+                  className="w-full h-44 rounded-2xl bg-[#0A0F1E]/80 border border-white/10 flex items-center justify-center relative select-none shadow-[inset_0_4px_20px_rgba(0,0,0,0.8)] overflow-hidden p-3"
                   style={{ transformStyle: 'preserve-3d' }}
                 >
                   {/* Glowing background halo */}
-                  <div className="absolute w-24 h-24 rounded-full bg-[#2D1BE8]/30 blur-2xl z-0" />
+                  <div className="absolute w-28 h-28 rounded-full bg-purple-600/25 blur-2xl z-0" />
 
-                  {/* Sleek dark UI info panel with glassmorphism frosted effect */}
+                  {/* Glassmorphic UI Info Panel */}
                   <div 
-                    className="w-[190px] bg-[#0A0F1E]/60 backdrop-blur-md border border-white/10 rounded-xl p-3 shadow-[0_25px_50px_-10px_rgba(0,0,0,0.85)] space-y-2 z-10 transition-transform duration-300 hover:scale-105"
+                    className="w-full max-w-[210px] bg-[#0A0F1E]/80 backdrop-blur-xl border border-white/15 rounded-xl p-3.5 shadow-2xl space-y-2.5 z-10 transition-transform duration-300 group-hover:scale-105"
                     style={{ transform: 'translateZ(25px)' }}
                   >
                     {/* Row 1 - Visa */}
-                    <div className="flex justify-between items-center text-[10px]">
-                      <span className="text-white/60 font-light flex items-center gap-1.5">
-                        <Check className="w-3.5 h-3.5 text-cyan-400" />
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-slate-300 font-light flex items-center gap-1.5">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                         <span>Visa</span>
                       </span>
-                      <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full border border-cyan-500/30 bg-cyan-950/40 text-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.2)]">
-                        Easy
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/40 bg-emerald-950/60 text-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.2)]">
+                        Visa Free
                       </span>
                     </div>
 
-                    {/* Row 2 - Best Season */}
-                    <div className="flex justify-between items-center text-[10px]">
-                      <span className="text-white/60 font-light flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-blue-400" />
+                    {/* Row 2 - Best Time */}
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-slate-300 font-light flex items-center gap-1.5">
+                        <Calendar className="w-4 h-4 text-cyan-400" />
                         <span>Best Time</span>
                       </span>
-                      <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full border border-blue-500/30 bg-blue-950/40 text-blue-400 shadow-[0_0_6px_rgba(45,27,232,0.2)]">
-                        Apr-Oct
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-cyan-500/40 bg-cyan-950/60 text-cyan-300 shadow-[0_0_8px_rgba(6,182,212,0.2)]">
+                        Apr - Oct
                       </span>
                     </div>
 
                     {/* Row 3 - Safety */}
-                    <div className="flex justify-between items-center text-[10px]">
-                      <span className="text-white/60 font-light flex items-center gap-1.5">
-                        <Shield className="w-3.5 h-3.5 text-white/85" />
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-slate-300 font-light flex items-center gap-1.5">
+                        <Shield className="w-4 h-4 text-purple-400" />
                         <span>Safety</span>
                       </span>
-                      <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full border border-white/10 bg-white/5 text-white shadow-[0_0_6px_rgba(255,255,255,0.1)]">
-                        High
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-purple-500/40 bg-purple-950/60 text-purple-300 shadow-[0_0_8px_rgba(168,85,247,0.2)]">
+                        98% High
                       </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Read More Link */}
-                <div className="text-left mt-2 z-20">
-                  <span className="text-[11px] font-medium text-white/50 hover:text-white/80 transition-colors cursor-pointer">
-                    Read more &rarr;
+                {/* Action CTA Link */}
+                <div className="pt-2 text-left">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-purple-400 group-hover:text-purple-300 transition-colors">
+                    <span>View Country Insights</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </div>
               </div>
@@ -419,91 +365,94 @@ export default function ImmersiveDiscoverySection() {
             {/* CARD 3 — PLAN */}
             <TiltCard 
               glowColor="cyan"
-              className="min-h-[360px] sm:min-h-[400px] md:aspect-square flex flex-col justify-between p-5 sm:p-6 shadow-[0_20px_45px_-12px_rgba(0,0,0,0.6)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)]" 
-              hoverGlowClass="hover:shadow-[0_30px_70px_-10px_rgba(13,47,191,0.45)] dark:hover:shadow-[0_35px_80px_-10px_rgba(13,47,191,0.7)]"
-              style={{ background: 'linear-gradient(135deg, #0A0F1E 30%, #0D2FBF 120%)' }}
+              className="bg-[#0A0F1E] text-white border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:shadow-[0_30px_70px_rgba(6,182,212,0.4)] p-6 sm:p-7 flex flex-col justify-between md:col-span-2 lg:col-span-1"
+              style={{ background: 'linear-gradient(145deg, #0A0F1E 30%, #0e7490 100%)' }}
             >
-              <div className="relative h-full flex flex-col justify-between">
+              <div className="relative h-full flex flex-col justify-between space-y-6">
                 <div>
                   {/* Badge */}
-                  <div className="flex items-start justify-between">
-                    <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full border border-cyan-500/20 bg-cyan-950/40 text-cyan-400 text-[10px] font-bold font-mono tracking-wider shadow-[0_0_8px_rgba(6,182,212,0.15)]">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="inline-flex items-center justify-center px-3 py-1 rounded-full border border-blue-500/30 bg-blue-950/60 text-blue-400 text-xs font-bold font-mono tracking-widest shadow-[0_0_12px_rgba(59,130,246,0.2)]">
                       03
+                    </span>
+                    <span className="text-[11px] font-semibold text-cyan-300/80 uppercase tracking-wider flex items-center gap-1">
+                      <Plane className="w-3.5 h-3.5 rotate-45" /> AI Planner
                     </span>
                   </div>
 
                   {/* Title & Description */}
-                  <div className="text-left mt-4" style={{ transform: 'translateZ(20px)' }}>
-                    <h3 className="text-[22px] font-bold text-white leading-snug">
+                  <div className="text-left" style={{ transform: 'translateZ(20px)' }}>
+                    <h3 className="text-2xl font-bold text-white leading-tight">
                       Plan
                     </h3>
-                    <p className="text-[13px] text-white/60 mt-1.5 leading-relaxed font-light line-clamp-3">
-                      Create a personalized itinerary with AI based on your style, budget and preferences.
+                    <p className="text-sm text-slate-300/80 mt-2 leading-relaxed font-light">
+                      Create personalized AI itineraries with day-by-day routes based on your style & budget.
                     </p>
                   </div>
                 </div>
 
-                {/* Inner Visual Container (Bottom Half) */}
+                {/* Inner Visual Container */}
                 <div 
-                  className="w-full h-[145px] overflow-hidden rounded-[20px] bg-[#0A0F1E]/50 border border-white/[0.04] flex items-center justify-center relative select-none shadow-[inset_0_4px_16px_rgba(0,0,0,0.8),0_10px_25px_rgba(0,0,0,0.4)]"
+                  className="w-full h-44 rounded-2xl bg-[#0A0F1E]/80 border border-white/10 flex items-center justify-center relative select-none shadow-[inset_0_4px_20px_rgba(0,0,0,0.8)] overflow-hidden"
                   style={{ transformStyle: 'preserve-3d' }}
                 >
-                  {/* Grid pattern */}
-                  <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:12px_12px]" />
+                  {/* Grid background */}
+                  <div className="absolute inset-0 opacity-15 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:14px_14px]" />
 
-                  {/* Curved Glowing Route Line */}
+                  {/* Curved Glowing Route Arc */}
                   <svg className="absolute inset-0 w-full h-full text-cyan-400" viewBox="0 0 200 120" fill="none">
                     <path
-                      d="M 20,90 Q 70,30 110,70 T 180,30"
-                      stroke="url(#route-glow)"
-                      strokeWidth="3"
+                      d="M 20,90 Q 70,25 120,75 T 180,30"
+                      stroke="url(#route-glow-clean)"
+                      strokeWidth="3.5"
                       strokeLinecap="round"
-                      strokeDasharray="4 4"
+                      strokeDasharray="5 5"
                       className="animate-draw-route"
                     />
                     <defs>
-                      <linearGradient id="route-glow" x1="0%" y1="100%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#1B3DE8" />
-                        <stop offset="55%" stopColor="#00D4FF" />
-                        <stop offset="100%" stopColor="#2D1BE8" />
+                      <linearGradient id="route-glow-clean" x1="0%" y1="100%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#2563EB" />
+                        <stop offset="50%" stopColor="#00D4FF" />
+                        <stop offset="100%" stopColor="#a855f7" />
                       </linearGradient>
                     </defs>
                   </svg>
 
-                  {/* Floating Pins on the route */}
-                  <div className="absolute left-[35px] bottom-[30px] animate-[floatPin1_3s_infinite_ease-in-out]">
-                    <MapPin className="w-3.5 h-3.5 text-cyan-400 fill-cyan-400/20 drop-shadow-[0_0_6px_rgba(6,182,212,0.8)]" />
+                  {/* Map Pin Waypoints */}
+                  <div className="absolute left-[36px] bottom-[30px] animate-[floatPin1_3s_infinite_ease-in-out]">
+                    <MapPin className="w-4 h-4 text-cyan-400 fill-cyan-400/30 drop-shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
                   </div>
-                  <div className="absolute right-[30px] top-[25px] animate-[floatPin2_4s_infinite_ease-in-out]">
-                    <MapPin className="w-3.5 h-3.5 text-blue-500 fill-blue-500/20 drop-shadow-[0_0_6px_rgba(27,61,232,0.8)]" />
+                  <div className="absolute right-[28px] top-[26px] animate-[floatPin2_4s_infinite_ease-in-out]">
+                    <MapPin className="w-4 h-4 text-purple-400 fill-purple-400/30 drop-shadow-[0_0_8px_rgba(168,85,247,0.9)]" />
                   </div>
 
                   {/* Budget Chip */}
                   <div 
-                    className="absolute left-6 top-4 bg-[#0A0F1E]/80 backdrop-blur-md border border-white/10 rounded-lg px-2 py-1 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.7)] flex flex-col items-start leading-none transition-transform duration-300 hover:scale-105"
+                    className="absolute left-5 top-4 bg-[#0A0F1E]/90 backdrop-blur-xl border border-white/15 rounded-xl px-3 py-1.5 shadow-2xl flex flex-col items-start leading-none transition-transform duration-300 group-hover:scale-105"
                     style={{ transform: 'translateZ(30px)' }}
                   >
-                    <span className="text-[7px] text-white/40 uppercase tracking-wider mb-0.5">Budget</span>
-                    <span className="text-cyan-400 font-extrabold text-[11px]">$1,850</span>
+                    <span className="text-[9px] text-slate-400 uppercase tracking-widest font-semibold mb-1">Budget</span>
+                    <span className="text-cyan-400 font-extrabold text-xs">$1,850</span>
                   </div>
 
-                  {/* Star Rating Badge */}
+                  {/* Rating Badge */}
                   <div 
-                    className="absolute right-6 bottom-4 bg-[#0A0F1E]/80 backdrop-blur-md border border-white/10 rounded-lg px-2 py-1 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.7)] flex items-center gap-1 transition-transform duration-300 hover:scale-105"
+                    className="absolute right-5 bottom-4 bg-[#0A0F1E]/90 backdrop-blur-xl border border-white/15 rounded-xl px-3 py-1.5 shadow-2xl flex items-center gap-1.5 transition-transform duration-300 group-hover:scale-105"
                     style={{ transform: 'translateZ(25px)' }}
                   >
-                    <Star className="w-3.5 h-3.5 text-cyan-400 fill-cyan-400" />
+                    <Star className="w-4 h-4 text-amber-400 fill-amber-400 animate-pulse" />
                     <div className="flex flex-col items-start leading-none">
-                      <span className="text-[7px] text-white/40 uppercase tracking-wider mb-0.5">Score</span>
-                      <span className="text-white font-extrabold text-[10px]">9.4/10</span>
+                      <span className="text-[9px] text-slate-400 uppercase tracking-widest font-semibold mb-1">AI Score</span>
+                      <span className="text-white font-extrabold text-xs">9.8/10</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Read More Link */}
-                <div className="text-left mt-2 z-20">
-                  <span className="text-[11px] font-medium text-white/50 hover:text-white/80 transition-colors cursor-pointer">
-                    Read more &rarr;
+                {/* Action CTA Link */}
+                <div className="pt-2 text-left">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors">
+                    <span>Start AI Trip Planner</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </div>
               </div>
