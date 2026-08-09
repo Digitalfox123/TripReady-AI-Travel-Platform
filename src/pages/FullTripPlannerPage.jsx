@@ -4236,21 +4236,23 @@ className={`p-5 rounded-2xl border text-left transition-all duration-300 relativ
                 </div>
               </div>
 
-              {/* Floating widgets deck card */}
-              <div className="flex flex-row md:flex-col gap-3 w-full md:w-auto shrink-0 print:hidden">
-                <div className="bg-slate-950/80 backdrop-blur-xl border border-white/10 rounded-3xl p-5 flex-1 md:flex-none text-left min-w-[160px] shadow-lg">
-                  <span className="block text-[8px] uppercase tracking-widest text-slate-400 font-extrabold mb-1">Trip duration</span>
-                  <span className="font-heading text-lg font-black text-white">{totalDays} full days</span>
+              {/* Floating widgets deck card — 100% responsive across all mobile & desktop screens */}
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:flex md:flex-col gap-3 w-full md:w-auto shrink-0 print:hidden">
+                <div className="bg-slate-950/85 backdrop-blur-xl border border-white/10 rounded-2xl p-4 text-left w-full shadow-lg">
+                  <span className="block text-[9px] uppercase tracking-widest text-slate-400 font-extrabold mb-1">Trip duration</span>
+                  <span className="font-heading text-base sm:text-lg font-black text-white block truncate">{totalDays} full days</span>
                 </div>
-                <div className="bg-slate-950/80 backdrop-blur-xl border border-white/10 rounded-3xl p-5 flex-1 md:flex-none text-left min-w-[160px] shadow-lg">
-                  <span className="block text-[8px] uppercase tracking-widest text-slate-400 font-extrabold mb-1">Climate index</span>
-                  <span className="font-heading text-lg font-black text-white">{displayWeather?.temp || '24°C'} <span className="text-[11px] text-slate-400 font-light font-sans">/ {displayWeather?.condition || 'Clear'}</span></span>
+                <div className="bg-slate-950/85 backdrop-blur-xl border border-white/10 rounded-2xl p-4 text-left w-full shadow-lg">
+                  <span className="block text-[9px] uppercase tracking-widest text-slate-400 font-extrabold mb-1">Climate index</span>
+                  <span className="font-heading text-base sm:text-lg font-black text-white block truncate">
+                    {displayWeather?.temp || '24°C'} <span className="text-[10px] text-slate-400 font-light font-sans">/ {displayWeather?.condition || 'Clear'}</span>
+                  </span>
                 </div>
 
                 <button
                   onClick={handleSaveThisTrip}
                   disabled={tripSaved || isSavingTrip}
-                  className={`rounded-3xl p-5 flex items-center justify-center gap-2 flex-1 md:flex-none text-center min-w-[160px] shadow-lg transition-all border ${
+                  className={`col-span-2 sm:col-span-2 md:col-span-1 rounded-2xl p-4 flex items-center justify-center gap-2 text-center w-full shadow-lg transition-all border ${
                     tripSaved 
                       ? 'bg-emerald-600/25 border-emerald-500/35 text-emerald-400 cursor-default' 
                       : 'bg-[var(--accent)] hover:bg-[var(--accent)]/90 hover:border-[var(--accent)] border-[var(--accent)]/20 text-white hover:scale-102 active:scale-98 cursor-pointer'
@@ -4349,8 +4351,8 @@ className={`p-5 rounded-2xl border text-left transition-all duration-300 relativ
             {/* LEFT 2-COLUMNS: THE SYSTEM VIEWS */}
             <div className="lg:col-span-2 space-y-10 text-left print:col-span-1">
               
-              {/* Tab Navigation header */}
-              <div className="bg-slate-100/60 dark:bg-white/[0.02] p-1.5 rounded-full border border-slate-200/50 dark:border-white/[0.04] flex flex-wrap gap-1 max-w-full overflow-x-auto scrollbar-none print:hidden">
+              {/* Tab Navigation header — Clean SaaS rectangular design */}
+              <div className="bg-slate-100 dark:bg-[#0c1424] p-2 rounded-2xl border border-slate-200 dark:border-white/10 flex flex-nowrap sm:flex-wrap gap-1.5 max-w-full overflow-x-auto scrollbar-none print:hidden shadow-xs">
                 {[
                   { id: 'roadmap', label: 'Day-by-Day Timeline', icon: Compass },
                   { id: 'flights', label: 'Real Flight Pricing', icon: Plane, locked: !user },
@@ -4372,12 +4374,12 @@ className={`p-5 rounded-2xl border text-left transition-all duration-300 relativ
                           setActiveDashboardTab(tab.id);
                         }
                       }}
-                      className={`px-4 py-2.5 rounded-full text-xs font-semibold flex items-center gap-2 transition-all duration-300 cursor-pointer ${
+                      className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all duration-300 cursor-pointer ${
                         isActive
-                          ? 'bg-white dark:bg-white/10 text-[var(--accent)] dark:text-white font-bold shadow-xs'
+                          ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-500/20'
                           : tab.locked
                           ? 'text-slate-400 dark:text-slate-600 opacity-60 cursor-not-allowed'
-                          : 'text-slate-550 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-50/50 dark:hover:bg-white/[0.01]'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/5'
                       }`}
                     >
                       <TabIcon className="w-3.5 h-3.5 shrink-0" />

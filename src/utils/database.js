@@ -1,6 +1,7 @@
 import { supabase } from './supabaseClient';
 import { attractionKnowledgeBase } from '../data/attractionKnowledgeBase';
 import { pilgrimageGuides } from '../data/pilgrimageData';
+import { getCountryIntelligence } from '../data/countryIntelligence';
 
 // Curated list of popular destinations to boost search ranking
 const CURATED_BOOSTS = {
@@ -291,15 +292,53 @@ export async function searchDestinations(query, limit = 10) {
 // ============================================
 
 export async function getCountryBySlug(slug) {
+  if (!slug) return null;
+  const cleanSlug = slug.toLowerCase().trim().replace(/[^a-z0-9-]/g, '');
+
   try {
-    // 1. Fetch country
-    const { data: country, error: cErr } = await supabase
+    // 1. Fetch country from Supabase exact slug match
+    let { data: country, error: cErr } = await supabase
       .from('countries')
       .select('*')
-      .eq('slug', slug)
+      .eq('slug', cleanSlug)
       .single();
 
-    if (cErr || !country) return null;
+    // 2. If not found by exact slug, try ilike search by name or code
+    if (cErr || !country) {
+      const searchName = cleanSlug.replace(/-/g, ' ');
+      const { data: altCountries } = await supabase
+        .from('countries')
+        .select('*')
+        .or(`name.ilike.%${searchName}%,slug.ilike.%${cleanSlug}%`)
+        .limit(1);
+
+      if (altCountries && altCountries.length > 0) {
+        country = altCountries[0];
+      }
+    }
+
+    // 3. Robust fallback if Supabase returns no match
+    if (!country) {
+      const cleanName = cleanSlug.replace(/-/g, ' ');
+      const intel = getCountryIntelligence(cleanName);
+      const formattedTitle = cleanName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+      country = {
+        id: cleanSlug,
+        name: intel?.countryName || formattedTitle,
+        slug: cleanSlug,
+        flag: intel?.flag || '🌍',
+        capital: intel?.facts?.capital || 'Capital Hub',
+        region: intel?.continent || 'Worldwide',
+        subregion: intel?.continent || 'Global Destination',
+        iso2: intel?.countryCode || 'XX',
+        iso3: intel?.countryCode || 'XXX',
+        currency_code: intel?.currencyCode || 'USD',
+        currency_symbol: intel?.currencySymbol || '$',
+        population: intel?.facts?.population || 'N/A',
+        overview: intel?.insights?.whyLove || `Explore travel guides, top sights, regional cities, local transit apps and custom itineraries for ${formattedTitle}.`
+      };
+    }
 
     // 2. Fetch states in parallel
     const [statesRes, citiesRes] = await Promise.all([

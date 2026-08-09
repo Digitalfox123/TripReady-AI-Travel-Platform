@@ -59,6 +59,7 @@ import { getCountryIntelligence } from '../data/countryIntelligence';
 import { useLiveRates } from '../utils/currencyService';
 import { fetchLiveVisaRequirement, simulateVisaRequirement } from '../utils/rapidApiService';
 import { supabase } from '../utils/supabaseClient';
+import allCountriesList from '../data/countries.json';
 
 // ── Reusable DynamicImage Component (uses usePremiumImage hook safely outside loops) ──
 function DynamicImage({ name, country, className = '', alt = '', queryOverride = null }) {
@@ -1806,8 +1807,8 @@ export default function CountryExplorerPage() {
                               onChange={(e) => setPassportCountry(e.target.value)}
                               className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-[var(--accent)] font-medium cursor-pointer"
                             >
-                              {['United States', 'United Kingdom', 'Pakistan', 'India', 'Germany', 'United Arab Emirates', 'Saudi Arabia', 'Canada', 'Switzerland', 'Japan', 'France', 'Australia', 'Turkey'].map((cntry) => (
-                                <option key={cntry} value={cntry}>{cntry} Passport</option>
+                              {(allCountriesList || []).map((c) => (
+                                <option key={c.code || c.name} value={c.name}>{c.flag || ''} {c.name} Passport</option>
                               ))}
                             </select>
                           </div>

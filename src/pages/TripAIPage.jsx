@@ -741,23 +741,56 @@ Never generate fake hotels/prices. If user asks short questions, give short prec
         <div className="absolute top-[-10%] left-[20%] w-[550px] h-[550px] rounded-full bg-blue-500/[0.02] dark:bg-blue-600/[0.05] blur-[120px] pointer-events-none z-0" />
         <div className="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-indigo-500/[0.02] dark:bg-indigo-600/[0.04] blur-[100px] pointer-events-none z-0" />
 
-        {/* Top Right Close Button */}
-        <div className="absolute top-6 right-6 z-30 select-none">
-          <button 
-            onClick={() => navigate('/')}
-            className="w-10 h-10 rounded-full bg-white dark:bg-[#181818] border border-gray-250 dark:border-neutral-800/80 text-slate-500 dark:text-slate-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-neutral-800 shadow-sm hover:shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center"
-            title="Close Chat"
-          >
-            <X size={18} />
-          </button>
-        </div>        {/* Toggle button on mobile */}
-        <div className="absolute top-4.5 left-4.5 z-25 lg:hidden select-none">
-          <button 
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2.5 rounded-xl bg-[#F4F4F4] dark:bg-[#151515] text-black dark:text-white hover:bg-gray-250 dark:hover:bg-[#2C2C2C] border border-gray-200 dark:border-neutral-800 shadow-sm transition-colors cursor-pointer"
-          >
-            {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
+        {/* Top Header Navigation Bar — Sleek, aligned glassmorphic controls */}
+        <div className="relative z-30 w-full px-4 py-3 border-b border-gray-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0C0E14]/80 backdrop-blur-md flex items-center justify-between select-none">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 rounded-xl bg-gray-100 dark:bg-white/10 text-slate-800 dark:text-white hover:bg-gray-200 dark:hover:bg-white/15 transition-all cursor-pointer lg:hidden"
+              title="Toggle Menu"
+            >
+              {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
+
+            <div className="flex items-center gap-2.5">
+              <LogoIcon />
+              <div className="text-left hidden sm:block">
+                <h3 className="text-sm font-extrabold text-slate-900 dark:text-white leading-none">TripReady AI</h3>
+                <span className="text-[10px] text-blue-500 font-semibold font-mono">v3.0 Concierge</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Header Options (Mode Switcher + Close Button) */}
+          <div className="flex items-center gap-2">
+            {/* 3-Dots / Options Mode Switcher Button */}
+            <button
+              onClick={() => setModelDropdownOpen(!modelDropdownOpen)}
+              className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                deepSearchActive || thinkActive || editImageActive
+                  ? 'bg-blue-600 border-blue-500 text-white shadow-sm'
+                  : 'bg-gray-100 dark:bg-white/10 border-gray-200 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-gray-200 dark:hover:bg-white/15'
+              }`}
+              title="Chatbot Modes & Options"
+            >
+              <SlidersHorizontal size={14} />
+              <span className="hidden xs:inline">Modes</span>
+              <div className="flex gap-0.5 ml-0.5">
+                <span className="w-1 h-1 rounded-full bg-current" />
+                <span className="w-1 h-1 rounded-full bg-current" />
+                <span className="w-1 h-1 rounded-full bg-current" />
+              </div>
+            </button>
+
+            {/* Top Right Close Button */}
+            <button 
+              onClick={() => navigate('/')}
+              className="p-2 rounded-xl bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-all cursor-pointer flex items-center justify-center"
+              title="Close Chat"
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         {/* Scrollable Conversation Stack */}
