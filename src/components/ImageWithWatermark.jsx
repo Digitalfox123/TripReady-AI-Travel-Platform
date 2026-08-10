@@ -28,12 +28,25 @@ export default function ImageWithWatermark({
     }
   }, [currentSrc]);
 
+  const GUARANTEED_TRAVEL_FALLBACKS = [
+    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&q=80',
+    'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200&q=80',
+    'https://images.unsplash.com/photo-1473116763269-255448993f66?w=1200&q=80',
+    'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&q=80',
+    'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1200&q=80',
+    'https://images.unsplash.com/photo-1565506737357-af89222625ad?w=1200&q=80'
+  ];
+
   const handleError = () => {
-    if (currentSrc && !currentSrc.includes('images.unsplash.com')) {
-      // Automatic fallback to clean Unsplash travel photo
-      setCurrentSrc('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80');
+    // Pick deterministic fallback from guaranteed list based on alt text or random index
+    const hash = (alt || '').split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const fallbackUrl = GUARANTEED_TRAVEL_FALLBACKS[hash % GUARANTEED_TRAVEL_FALLBACKS.length];
+    
+    if (currentSrc !== fallbackUrl) {
+      setCurrentSrc(fallbackUrl);
+      setError(false);
     } else {
-      setError(true);
+      setError(false); // Never show grey missing box
     }
   };
 

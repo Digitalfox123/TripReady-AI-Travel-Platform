@@ -406,55 +406,46 @@ export function useDestinationGallery(destinationName, countryName, count = 4) {
     const primaryImg = getCityImage(cityStr, countryStr);
     const results = baseKbImages.length > 0 ? [...baseKbImages] : [primaryImg];
 
+    const normCityLower = (cityStr || '').toLowerCase();
     const cLower = (countryStr || '').toLowerCase();
     let countrySpecificFallbacks = [];
-    if (cLower.includes('pakistan')) {
+
+    if (cLower.includes('pakistan') || normCityLower.includes('changa') || normCityLower.includes('manga') || normCityLower.includes('lahore') || normCityLower.includes('islamabad')) {
       countrySpecificFallbacks = [
-        'https://images.unsplash.com/photo-1565506737357-af89222625ad?w=1200&q=80',
-        'https://images.unsplash.com/photo-1584810359583-96fc3448beaa?w=1200&q=80',
-        'https://images.unsplash.com/photo-1595844730298-b9f1ff982792?w=1200&q=80',
-        'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?w=1200&q=80',
-        'https://images.unsplash.com/photo-1614082242765-7c9880d3ddd3?w=1200&q=80',
+        'https://images.unsplash.com/photo-1565506737357-af89222625ad?w=1200&q=80', // Faisal Mosque
+        'https://images.unsplash.com/photo-1584810359583-96fc3448beaa?w=1200&q=80', // Badshahi Mosque
+        'https://images.unsplash.com/photo-1595844730298-b9f1ff982792?w=1200&q=80', // Passu Cones Karakoram
+        'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?w=1200&q=80', // Mazar-e-Quaid
+        'https://images.unsplash.com/photo-1614082242765-7c9880d3ddd3?w=1200&q=80', // Shangrila Lake
       ];
-    } else if (cLower.includes('saudi') || cLower.includes('arabia')) {
+    } else if (cLower.includes('saudi') || cLower.includes('arabia') || normCityLower.includes('makkah') || normCityLower.includes('riyadh')) {
       countrySpecificFallbacks = [
         'https://images.unsplash.com/photo-1586724230021-4c38356a1b7c?w=1200&q=80',
         'https://images.unsplash.com/photo-1598902108854-10e335adac99?w=1200&q=80',
         'https://images.unsplash.com/photo-1564769625905-50e9ad63095a?w=1200&q=80',
         'https://images.unsplash.com/photo-1601058268499-e52658bdfaf1?w=1200&q=80',
-        'https://images.unsplash.com/photo-1627998797960-951fcdae95a9?w=1200&q=80',
       ];
-    } else if (cLower.includes('japan')) {
+    } else if (cLower.includes('japan') || normCityLower.includes('tokyo') || normCityLower.includes('kyoto')) {
       countrySpecificFallbacks = [
         'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=1200&q=80',
         'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200&q=80',
         'https://images.unsplash.com/photo-1590253509302-39c4d715978a?w=1200&q=80',
         'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1200&q=80',
       ];
-    } else if (cLower.includes('italy')) {
-      countrySpecificFallbacks = [
-        'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&q=80',
-        'https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=1200&q=80',
-        'https://images.unsplash.com/photo-1528114039593-4366cc08227d?w=1200&q=80',
-      ];
-    } else if (cLower.includes('france')) {
-      countrySpecificFallbacks = [
-        'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&q=80',
-        'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1200&q=80',
-      ];
     }
 
     const fallbackList = [
       ...countrySpecificFallbacks,
-      'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200&q=80',
       'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&q=80',
+      'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200&q=80',
       'https://images.unsplash.com/photo-1473116763269-255448993f66?w=1200&q=80',
-      'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1200&q=80'
+      'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&q=80',
+      'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1200&q=80'
     ];
 
     for (const fb of fallbackList) {
       if (results.length >= count) break;
-      if (fb !== primaryImg && !results.includes(fb)) {
+      if (!results.includes(fb)) {
         results.push(fb);
       }
     }

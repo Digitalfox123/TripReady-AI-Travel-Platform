@@ -3774,13 +3774,13 @@ function DestinationPageContent({ destination }) {
           </div>
 
           {loadingGallery ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
               {[1, 2, 3, 4].map((n) => (
-                <div key={n} className="aspect-video sm:aspect-square rounded-3xl bg-slate-200 dark:bg-white/[0.04] animate-pulse" />
+                <div key={n} className="aspect-video sm:aspect-square rounded-2xl sm:rounded-3xl bg-slate-200 dark:bg-white/[0.04] animate-pulse" />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
               {galleryImages.map((img, idx) => (
                 <div
                   key={idx}
@@ -3788,7 +3788,7 @@ function DestinationPageContent({ destination }) {
                     setLightboxImg(img);
                     setShowLightbox(true);
                   }}
-                  className="group relative rounded-[28px] overflow-hidden aspect-video sm:aspect-square bg-slate-100 dark:bg-dark-300 border border-[var(--border)] cursor-pointer shadow-premium hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300"
+                  className="group relative rounded-2xl sm:rounded-[28px] overflow-hidden aspect-[4/3] sm:aspect-square bg-slate-100 dark:bg-dark-300 border border-[var(--border)] cursor-pointer shadow-premium hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300"
                 >
                   <ImageWithWatermark 
                     src={img} 
@@ -3796,8 +3796,8 @@ function DestinationPageContent({ destination }) {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                     wrapperClassName="w-full h-full bg-transparent border-none rounded-none shadow-none"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
-                    <span className="text-[9px] uppercase font-bold tracking-widest text-white font-mono">View Full HD Photo</span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 sm:p-5">
+                    <span className="text-[8px] sm:text-[9px] uppercase font-bold tracking-widest text-white font-mono">View Full HD Photo</span>
                   </div>
                 </div>
               ))}

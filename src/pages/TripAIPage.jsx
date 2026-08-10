@@ -482,8 +482,16 @@ Never generate fake hotels/prices. If user asks short questions, give short prec
   return (
     <div className="h-screen w-screen bg-[#FDFDFD] dark:bg-gradient-to-b dark:from-[#0F131E] dark:to-[#07080C] text-[#1A1A1A] dark:text-white flex overflow-hidden font-body transition-colors duration-500">
       
+      {/* Mobile backdrop overlay to close sidebar when clicking outside */}
+      {sidebarOpen && (
+        <div 
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 lg:hidden transition-opacity"
+        />
+      )}
+
       <aside 
-        className={`fixed inset-y-0 left-0 z-40 bg-[#F4F4F4] dark:bg-[#0C0E14] border-r border-gray-250/80 dark:border-white/[0.05] flex flex-col justify-between transition-all duration-300 ease-in-out lg:static ${
+        className={`fixed inset-y-0 left-0 z-50 bg-[#F4F4F4] dark:bg-[#0C0E14] border-r border-gray-250/80 dark:border-white/[0.05] flex flex-col justify-between transition-all duration-300 ease-in-out lg:static ${
           sidebarCollapsed ? 'w-[72px]' : 'w-[260px]'
         } ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
@@ -562,13 +570,22 @@ Never generate fake hotels/prices. If user asks short questions, give short prec
                   tripready
                   <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] ml-0.5 self-baseline mb-0.5" />
                 </span>
-                <button 
-                  onClick={() => setSidebarCollapsed(true)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-black dark:hover:text-white hover:bg-gray-200/50 dark:hover:bg-white/[0.03] transition-colors cursor-pointer"
-                  title="Collapse Sidebar"
-                >
-                  <PanelLeftClose size={16} />
-                </button>
+                <div className="flex items-center gap-1">
+                  <button 
+                    onClick={() => setSidebarCollapsed(true)}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-black dark:hover:text-white hover:bg-gray-200/50 dark:hover:bg-white/[0.03] transition-colors cursor-pointer hidden lg:block"
+                    title="Collapse Sidebar"
+                  >
+                    <PanelLeftClose size={16} />
+                  </button>
+                  <button 
+                    onClick={() => setSidebarOpen(false)}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-black dark:hover:text-white hover:bg-gray-200/50 dark:hover:bg-white/[0.03] transition-colors cursor-pointer lg:hidden"
+                    title="Close Sidebar Menu"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
               </div>
 
               {/* Conversations Section */}
@@ -752,12 +769,10 @@ Never generate fake hotels/prices. If user asks short questions, give short prec
               {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
 
-            <div className="flex items-center gap-2.5">
-              <LogoIcon />
-              <div className="text-left hidden sm:block">
-                <h3 className="text-sm font-extrabold text-slate-900 dark:text-white leading-none">TripReady AI</h3>
-                <span className="text-[10px] text-blue-500 font-semibold font-mono">v3.0 Concierge</span>
-              </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-extrabold tracking-wide uppercase px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-mono">
+                AI Concierge v3.0
+              </span>
             </div>
           </div>
 
