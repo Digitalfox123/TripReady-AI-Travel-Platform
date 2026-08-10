@@ -93,8 +93,8 @@ export default function ImmersiveDiscoverySection() {
             <Plane className="w-3.5 h-3.5 rotate-45 text-blue-500" />
           </div>
 
-          <h2 className="font-heading text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-luxury-primary dark:text-white leading-tight">
-            From idea to a <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500">perfect trip</span>
+          <h2 className="font-heading text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight antialiased">
+            From idea to a <span className="text-blue-600 dark:text-blue-400 font-black">perfect trip</span>
           </h2>
 
           <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-base font-light max-w-xl mx-auto leading-relaxed">

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Shield, MapPin } from 'lucide-react';
+import { Search, Shield, MapPin, Bell, Mic, Plane, Calendar, ChevronRight, Wifi, Battery, Home, Compass, Briefcase, Settings } from 'lucide-react';
 import { countries, travelTypes, budgetPreferences, topDestinations } from '../../data';
 import { useTheme } from '../../hooks/useTheme';
 import { supabase } from '../../utils/supabaseClient';
@@ -940,31 +940,14 @@ export default function HeroSection() {
                 </div>
               </div>
 
-              {/* Dark Mode Mockup */}
-              <img
-                src="/iphone-mockup-tilted-trans.png"
-                alt="TripReady Mobile Experience (Dark)"
-                className={`absolute w-full h-full object-contain select-none transition-all duration-700 ease-out filter z-20 ${
-                  isMockupCentered 
-                    ? 'rotate-[-2.5deg] scale-105 drop-shadow-[0_50px_100px_rgba(0,0,0,0.45)]' 
-                    : 'rotate-0 scale-100 drop-shadow-[0_40px_80px_rgba(0,0,0,0.15)]'
-                } ${isDark ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-                draggable={false}
-              />
-              {/* Light Mode Mockup — Enhanced with crisp contrast, brightness & blue ambient shadow */}
-              <img
-                src="/iphone-mockup-tilted-light-trans.png"
-                alt="TripReady Mobile Experience (Light)"
-                className={`absolute w-full h-full object-contain select-none transition-all duration-700 ease-out filter z-20 brightness-[1.03] contrast-[1.07] saturate-[1.04] ${
-                  isMockupCentered 
-                    ? 'rotate-[-2.5deg] scale-105 drop-shadow-[0_40px_90px_rgba(37,99,235,0.22)]' 
-                    : 'rotate-0 scale-100 drop-shadow-[0_30px_70px_rgba(37,99,235,0.15)]'
-                } ${isDark ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-                draggable={false}
-              />
+              {/* 100% Crisp Ultra-HD Vector iPhone 16 Pro Mockup Interface (0% Blur / 0% Phatna) */}
+              <div className="absolute inset-0 flex items-center justify-center z-20">
+                <VectorIphoneMockup isDark={isDark} isCentered={isMockupCentered} />
+              </div>
+
               {/* Light mode glass glow backdrop */}
               {!isDark && (
-                <div className="absolute inset-x-8 top-10 bottom-10 bg-gradient-to-b from-blue-500/10 via-indigo-500/5 to-transparent rounded-[50px] blur-2xl pointer-events-none z-10" />
+                <div className="absolute inset-x-8 top-10 bottom-10 bg-gradient-to-b from-blue-500/15 via-indigo-500/8 to-transparent rounded-[50px] blur-2xl pointer-events-none z-10" />
               )}
             </div>
 
@@ -1096,5 +1079,185 @@ export default function HeroSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+// ── Ultra-HD Vector iPhone 16 Pro Mockup Interface (0% Blur / 0% Phatna) ──
+function VectorIphoneMockup({ isDark, isCentered }) {
+  return (
+    <div 
+      className={`relative w-[280px] sm:w-[320px] aspect-[9/19.5] mx-auto transition-all duration-700 ease-out select-none ${
+        isCentered 
+          ? 'rotate-[-2.5deg] scale-105 drop-shadow-[0_40px_80px_rgba(0,0,0,0.3)]' 
+          : 'rotate-0 scale-100 drop-shadow-[0_25px_50px_rgba(0,0,0,0.15)]'
+      }`}
+    >
+      {/* Outer Titanium Metallic Chassis Frame */}
+      <div className={`w-full h-full rounded-[48px] p-3 relative shadow-2xl transition-colors duration-500 border-[3.5px] ${
+        isDark 
+          ? 'bg-[#181C24] border-[#374151] shadow-black/80' 
+          : 'bg-[#E5E7EB] border-[#D1D5DB] shadow-slate-900/15'
+      }`}>
+        {/* Metallic Highlight Edge */}
+        <div className="absolute inset-0 rounded-[45px] border border-white/20 pointer-events-none z-30" />
+        
+        {/* Dynamic Island Notch */}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 w-24 h-5 bg-black rounded-full z-40 flex items-center justify-between px-2.5 shadow-md">
+          <div className="w-2 h-2 rounded-full bg-[#0a0a0a] border border-white/10" />
+          <div className="w-1.5 h-1.5 rounded-full bg-[#111] border border-blue-500/30" />
+        </div>
+
+        {/* Inner Vector OLED/LCD Screen */}
+        <div className={`w-full h-full rounded-[38px] overflow-hidden flex flex-col justify-between pt-8 pb-2.5 px-3.5 relative z-10 transition-colors duration-500 antialiased ${
+          isDark 
+            ? 'bg-[#0B0F19] text-white' 
+            : 'bg-[#FFFFFF] text-slate-900 shadow-[inset_0_0_20px_rgba(0,0,0,0.03)]'
+        }`}>
+          
+          {/* Status Bar */}
+          <div className="flex items-center justify-between text-[9.5px] font-bold font-mono px-1 opacity-80">
+            <span>9:41</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[8.5px]">5G</span>
+              <Wifi size={10} />
+              <Battery size={12} className="fill-current" />
+            </div>
+          </div>
+
+          {/* Top User Greeting Bar */}
+          <div className="flex items-center justify-between mt-2">
+            <h4 className="font-heading text-base font-extrabold tracking-tight leading-none text-slate-900 dark:text-white">
+              Welcome back!
+            </h4>
+            <div className="flex items-center gap-1.5">
+              <div className="relative p-1 rounded-full bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300">
+                <Bell size={11} />
+                <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-red-500" />
+              </div>
+              <img 
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" 
+                alt="User Avatar"
+                className="w-6.5 h-6.5 rounded-full object-cover border border-blue-500/30"
+                loading="eager"
+              />
+            </div>
+          </div>
+
+          {/* Search Input Box */}
+          <div className="mt-2 bg-slate-100 dark:bg-white/10 rounded-xl px-2.5 py-1.5 flex items-center justify-between text-xs text-slate-400">
+            <div className="flex items-center gap-1.5">
+              <Search size={11} className="text-slate-400" />
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-light">Search</span>
+            </div>
+            <Mic size={11} className="text-slate-400" />
+          </div>
+
+          {/* Upcoming Trip Card */}
+          <div className="mt-2.5 rounded-xl bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white p-2.5 shadow-md relative overflow-hidden text-left border border-white/10">
+            <div className="flex items-center justify-between text-[8px] text-slate-400 font-bold uppercase tracking-wider">
+              <span>Upcoming Trip</span>
+              <span className="text-blue-400 flex items-center gap-0.5">See more <ChevronRight size={9} /></span>
+            </div>
+            <div className="flex items-end justify-between mt-1">
+              <div>
+                <h5 className="font-heading text-sm font-extrabold leading-none text-white">London</h5>
+                <span className="text-[8px] text-slate-400 block mt-1">Oct 24–28</span>
+              </div>
+              <img 
+                src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=200&auto=format&fit=crop&q=80" 
+                alt="London" 
+                className="w-12 h-9 rounded-md object-cover border border-white/20 shadow-xs"
+                loading="eager"
+              />
+            </div>
+          </div>
+
+          {/* Recent Bookings Card */}
+          <div className="mt-2 space-y-1 text-left">
+            <div className="flex items-center justify-between text-[9px] font-bold text-slate-500 dark:text-slate-400">
+              <span>Recent Bookings</span>
+              <span className="text-blue-600 dark:text-blue-400 text-[8.5px]">See All</span>
+            </div>
+
+            <div className="bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 rounded-lg p-1.5 flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <div className="p-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                  <Briefcase size={11} />
+                </div>
+                <div className="leading-tight">
+                  <span className="text-[9.5px] font-bold text-slate-800 dark:text-white block">Bookings</span>
+                  <span className="text-[8px] text-slate-400 block">London</span>
+                </div>
+              </div>
+              <div className="text-right leading-tight">
+                <span className="text-[9.5px] font-bold text-slate-800 dark:text-white block">$400</span>
+                <span className="text-[8px] text-slate-400 block">Oct 24-28</span>
+              </div>
+            </div>
+
+            <div className="bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 rounded-lg p-1.5 flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <div className="p-1 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                  <Calendar size={11} />
+                </div>
+                <div className="leading-tight">
+                  <span className="text-[9.5px] font-bold text-slate-800 dark:text-white block">Department</span>
+                  <span className="text-[8px] text-slate-400 block">London</span>
+                </div>
+              </div>
+              <div className="text-right leading-tight">
+                <span className="text-[9.5px] font-bold text-slate-800 dark:text-white block">$201</span>
+                <span className="text-[8px] text-slate-400 block">12:00 AM</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Flight Status Card */}
+          <div className="mt-1.5 text-left">
+            <div className="flex items-center justify-between text-[9px] font-bold text-slate-500 dark:text-slate-400 mb-0.5">
+              <span>Flight Status</span>
+              <span className="text-blue-600 dark:text-blue-400 text-[8.5px]">More</span>
+            </div>
+
+            <div className="bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 rounded-lg p-1.5 flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <div className="p-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  <Plane size={11} className="rotate-45" />
+                </div>
+                <div className="leading-tight">
+                  <span className="text-[9.5px] font-bold text-slate-800 dark:text-white block">AHG</span>
+                  <span className="text-[8px] text-slate-400 block">Flight Status</span>
+                </div>
+              </div>
+              <div className="text-right leading-tight">
+                <span className="text-[9.5px] font-bold text-slate-800 dark:text-white block">8:25</span>
+                <span className="text-[8px] text-emerald-500 font-bold block">Head ago</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Dock Navigation Bar */}
+          <div className="mt-2 pt-1.5 border-t border-slate-200/60 dark:border-white/10 flex items-center justify-around text-slate-400 text-[8.5px]">
+            <div className="flex flex-col items-center gap-0.5 text-blue-600 dark:text-blue-400 font-bold">
+              <Home size={12} />
+              <span>Home</span>
+            </div>
+            <div className="flex flex-col items-center gap-0.5">
+              <Compass size={12} />
+              <span>Discover</span>
+            </div>
+            <div className="flex flex-col items-center gap-0.5">
+              <Briefcase size={12} />
+              <span>Bookings</span>
+            </div>
+            <div className="flex flex-col items-center gap-0.5">
+              <Settings size={12} />
+              <span>Settings</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
   );
 }
