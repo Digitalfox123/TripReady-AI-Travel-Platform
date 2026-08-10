@@ -940,10 +940,18 @@ export default function HeroSection() {
                 </div>
               </div>
 
-              {/* 100% Crisp Ultra-HD Vector iPhone 16 Pro Mockup Interface (0% Blur / 0% Phatna) */}
-              <div className="absolute inset-0 flex items-center justify-center z-20">
-                <VectorIphoneMockup isDark={isDark} isCentered={isMockupCentered} />
-              </div>
+              {/* Official 4K Ultra-HD Crisp iPhone 16 Pro Natural Titanium Mockup */}
+              <img
+                src="/iphone-mockup-new.png"
+                alt="TripReady Official Mobile App Experience"
+                className={`absolute w-full h-full object-contain select-none transition-all duration-700 ease-out filter z-20 ${
+                  isMockupCentered 
+                    ? 'rotate-[-2.5deg] scale-105 drop-shadow-[0_50px_100px_rgba(0,0,0,0.4)]' 
+                    : 'rotate-0 scale-100 drop-shadow-[0_35px_70px_rgba(37,99,235,0.18)]'
+                }`}
+                draggable={false}
+                loading="eager"
+              />
 
               {/* Light mode glass glow backdrop */}
               {!isDark && (
