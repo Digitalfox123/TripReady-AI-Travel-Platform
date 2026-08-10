@@ -3812,7 +3812,7 @@ function DestinationPageContent({ destination }) {
       <section id="map" className="section-padding bg-[var(--bg-primary)] border-b border-[var(--border)] relative overflow-hidden">
         {/* Minimalist Backdrop */}
         <div className="absolute inset-0 pointer-events-none select-none z-0 overflow-hidden">
-          <div className="absolute top-[40%] left-[20%] w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle_at_center,rgba(46,91,255,0.015)_0%,transparent_70%)] blur-[80px]" />
+          <div className="absolute top-[40%] left-0 w-full max-w-[500px] h-[300px] rounded-full bg-[radial-gradient(circle_at_center,rgba(46,91,255,0.015)_0%,transparent_70%)] blur-[80px] pointer-events-none overflow-hidden" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 relative z-10">
@@ -4208,13 +4208,13 @@ function DestinationPageContent({ destination }) {
             </div>
 
             {/* Right Column: Interactive Translation Input/Output Simulator */}
-            <div className="col-span-12 lg:col-span-5 glass-card p-6 sm:p-8 flex flex-col justify-between text-left relative overflow-hidden">
+            <div className="col-span-12 lg:col-span-5 glass-card p-4 sm:p-8 flex flex-col justify-between text-left relative overflow-hidden w-full max-w-full">
               <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-blue-500 to-indigo-600" />
               
               <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
-                  <h3 className="text-base font-heading font-normal text-[var(--text-primary)]">Interactive AI Translator</h3>
-                  <span className="text-[9px] text-[var(--text-secondary)] font-mono uppercase">English ➜ {getDestinationLanguage(destination)}</span>
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border)] pb-4">
+                  <h3 className="text-sm sm:text-base font-heading font-bold text-[var(--text-primary)]">Interactive AI Translator</h3>
+                  <span className="text-[9px] text-[var(--text-secondary)] font-mono uppercase bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-full border border-[var(--border)] shrink-0">English ➜ {getDestinationLanguage(destination)}</span>
                 </div>
 
                 <div className="space-y-4">

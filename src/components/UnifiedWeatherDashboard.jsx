@@ -943,7 +943,7 @@ const UnifiedWeatherDashboard = ({
              LEFT PANEL: Minimal Atmospheric View (col-span-8)
            ========================================================================= */}
         <div 
-          className="col-span-1 lg:col-span-8 p-8 relative flex flex-col justify-between overflow-hidden min-h-[640px]"
+          className="col-span-1 lg:col-span-8 p-4 sm:p-8 relative flex flex-col justify-between overflow-hidden min-h-[560px] sm:min-h-[640px] w-full max-w-full"
           style={{ transition: 'all 0.5s ease' }}
         >
           {/* Dynamic Background Gradients */}
@@ -1136,8 +1136,8 @@ const UnifiedWeatherDashboard = ({
               </div>
             </div>
 
-            {/* Active Two Metrics side-by-side */}
-            <div className="flex gap-4">
+            {/* Active Two Metrics side-by-side on tablet/desktop, stacked on narrow mobile */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full max-w-full">
               {renderTwoMetrics()}
             </div>
 

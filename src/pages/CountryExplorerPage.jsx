@@ -1086,7 +1086,7 @@ export default function CountryExplorerPage() {
       
       {/* Dynamic ambient grid background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(99,102,241,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(99,102,241,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none z-0" />
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-[var(--accent)]/[0.02] dark:bg-[var(--accent)]/[0.04] filter blur-[120px] pointer-events-none z-0 animate-[pulse_10s_infinite]" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-full max-w-[600px] h-[300px] rounded-full bg-[var(--accent)]/[0.02] dark:bg-[var(--accent)]/[0.04] filter blur-[120px] pointer-events-none overflow-hidden z-0" />
 
       {!hasSelection ? (
         <div className="w-full flex flex-col">

@@ -22,6 +22,17 @@ export default function MapPanel({
   const clusterGroupRef = useRef(null);
   const markersRef = useRef([]);
 
+  // Window resize listener for responsive Leaflet map tile rendering
+  useEffect(() => {
+    const handleResize = () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.invalidateSize({ animate: false });
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Invalidate Leaflet map size on full screen toggle
   useEffect(() => {
     if (mapInstanceRef.current) {
@@ -215,7 +226,7 @@ export default function MapPanel({
       </div>
 
       {/* Right Map Visualizer Panel */}
-      <div className="lg:w-1/2 w-full">
+      <div className="lg:w-1/2 w-full max-w-full overflow-hidden">
         {isFullScreen && (
           <div 
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80] transition-opacity duration-300 animate-fade-in"
@@ -223,8 +234,8 @@ export default function MapPanel({
           />
         )}
         <div className={isFullScreen 
-          ? "fixed inset-4 sm:inset-10 z-[90] rounded-[32px] overflow-hidden bg-[var(--bg-secondary)] border border-[var(--border)] shadow-2xl transition-all duration-300" 
-          : "aspect-[4/3] rounded-[32px] overflow-hidden bg-[var(--bg-secondary)] border border-[var(--border)] relative shadow-premium transition-all duration-500 min-h-[400px]"
+          ? "fixed inset-2 sm:inset-10 z-[90] rounded-2xl sm:rounded-[32px] overflow-hidden bg-[var(--bg-secondary)] border border-[var(--border)] shadow-2xl transition-all duration-300" 
+          : "w-full max-w-full aspect-[4/3] sm:aspect-[4/3] rounded-2xl sm:rounded-[32px] overflow-hidden bg-[var(--bg-secondary)] border border-[var(--border)] relative shadow-premium transition-all duration-500 min-h-[300px] sm:min-h-[400px]"
         }>
           {/* Full Screen Toggle Button */}
           <button

@@ -19,8 +19,8 @@ export default function PilgrimagePreviewSection() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.01)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.005)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.005)_1px,transparent_1px)] bg-[size:48px_48px] pointer-events-none z-0 opacity-60" />
       
       {/* Background glowing blobs */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-amber-500/10 via-yellow-500/5 to-transparent dark:from-amber-500/5 dark:via-yellow-550/2 rounded-full blur-[120px] pointer-events-none animate-float z-0" />
-      <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent dark:from-indigo-500/5 dark:via-purple-550/2 rounded-full blur-[140px] pointer-events-none animate-float [animation-delay:2s] z-0" />
+      <div className="absolute top-1/4 left-0 w-full max-w-[500px] h-[250px] bg-gradient-to-tr from-amber-500/10 via-yellow-500/5 to-transparent dark:from-amber-500/5 dark:via-yellow-550/2 rounded-full blur-[120px] pointer-events-none overflow-hidden z-0" />
+      <div className="absolute bottom-1/4 right-0 w-full max-w-[600px] h-[250px] bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent dark:from-indigo-500/5 dark:via-purple-550/2 rounded-full blur-[140px] pointer-events-none overflow-hidden z-0" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         

@@ -10,8 +10,8 @@ export default function JourneyFlowSection() {
       <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.008] pointer-events-none select-none bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:28px_28px]" />
       
       {/* Volumetric ambient light mesh */}
-      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-indigo-500/10 via-purple-500/5 to-transparent dark:from-indigo-500/[0.02] dark:via-purple-500/[0.01] rounded-full blur-[140px] pointer-events-none animate-float" />
-      <div className="absolute bottom-1/4 right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-transparent dark:from-emerald-500/[0.02] dark:via-emerald-500/[0.01] rounded-full blur-[160px] pointer-events-none animate-float [animation-delay:2s]" />
+      <div className="absolute top-1/4 left-0 w-full max-w-[600px] h-[300px] bg-gradient-to-tr from-indigo-500/10 via-purple-500/5 to-transparent dark:from-indigo-500/[0.02] dark:via-purple-500/[0.01] rounded-full blur-[140px] pointer-events-none overflow-hidden" />
+      <div className="absolute bottom-1/4 right-0 w-full max-w-[700px] h-[300px] bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-transparent dark:from-emerald-500/[0.02] dark:via-emerald-500/[0.01] rounded-full blur-[160px] pointer-events-none overflow-hidden" />
 
       {/* Premium 3D Floating Travel Elements (Scattered surrounding the header, matching Assemble style) */}
       <div className="absolute inset-x-0 top-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-0 pointer-events-none z-20 hidden xl:block">

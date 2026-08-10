@@ -1226,10 +1226,10 @@ export default function UmrahGuidePage() {
       
       {/* Dynamic light glowing blobs for SaaS depth */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 select-none">
-        <div className="absolute top-[10%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/[0.03] dark:bg-emerald-500/[0.04] rounded-full blur-3xl" />
-        <div className="absolute top-[35%] right-[-10%] w-[600px] h-[600px] bg-amber-500/[0.02] dark:bg-amber-500/[0.03] rounded-full blur-3xl" />
-        <div className="absolute top-[65%] left-[-5%] w-[550px] h-[550px] bg-emerald-500/[0.02] dark:bg-emerald-500/[0.03] rounded-full blur-3xl" />
-        <div className="absolute bottom-[5%] right-[-5%] w-[650px] h-[650px] bg-amber-500/[0.03] dark:bg-amber-500/[0.04] rounded-full blur-3xl" />
+        <div className="absolute top-[10%] left-0 w-full max-w-[500px] h-[300px] bg-emerald-500/[0.03] dark:bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none overflow-hidden" />
+        <div className="absolute top-[35%] right-0 w-full max-w-[600px] h-[300px] bg-amber-500/[0.02] dark:bg-amber-500/[0.03] rounded-full blur-3xl pointer-events-none overflow-hidden" />
+        <div className="absolute top-[65%] left-0 w-full max-w-[550px] h-[300px] bg-emerald-500/[0.02] dark:bg-emerald-500/[0.03] rounded-full blur-3xl pointer-events-none overflow-hidden" />
+        <div className="absolute bottom-[5%] right-0 w-full max-w-[650px] h-[300px] bg-amber-500/[0.03] dark:bg-amber-500/[0.04] rounded-full blur-3xl pointer-events-none overflow-hidden" />
         {/* Grain overlay */}
         <div className="absolute inset-0 opacity-[0.8]" style={{ filter: 'url(#premium-noise)' }} />
       </div>
