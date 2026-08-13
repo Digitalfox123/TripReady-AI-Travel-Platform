@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import CustomSlider from '../components/ui/CustomSlider';
 
 import {
   DollarSign,
@@ -484,21 +485,17 @@ export default function BudgetPlannerPage() {
                     </div>
                   </div>
 
-                  {/* Duration Slider */}
-                  <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <label className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] font-bold font-heading">Trip Duration</label>
-                      <span className="text-xs text-[var(--accent)] font-bold font-mono">{duration} Days</span>
-                    </div>
-                    <input
-                      type="range"
-                      min={1}
-                      max={30}
-                      value={duration}
-                      onChange={(e) => setDuration(Number(e.target.value))}
-                      className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-[var(--bg-tertiary)] accent-[var(--accent)]"
-                    />
-                  </div>
+                  {/* Duration Slider — Image 2 UI/UX Redesign */}
+                  <CustomSlider
+                    label="TRIP DURATION"
+                    min={1}
+                    max={30}
+                    value={duration}
+                    onChange={setDuration}
+                    unit="Days"
+                    ticks={['1d', '5d', '10d', '15d', '20d', '25d', '30d']}
+                    presets={[3, 7, 10, 14, 21]}
+                  />
 
                   {/* Travelers adjustment */}
                   <div>

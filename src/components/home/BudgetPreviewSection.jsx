@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import CustomSlider from '../ui/CustomSlider';
 import {
   Plane,
   Building2,
@@ -296,56 +297,17 @@ export default function BudgetPreviewSection() {
                 </div>
               </div>
 
-              {/* Duration Slider */}
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <label className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest font-heading">
-                    Duration
-                  </label>
-                  <span className="text-xs text-[var(--accent)] font-bold font-mono">{days} Days</span>
-                </div>
-                
-                <input
-                  type="range"
-                  min={1}
-                  max={30}
-                  value={days}
-                  onChange={(e) => setDays(Number(e.target.value))}
-                  className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-[var(--bg-tertiary)] border border-[var(--border)] focus:outline-none accent-[var(--accent)] transition-all hover:scale-[1.002]"
-                  style={{
-                    background: `linear-gradient(to right, var(--accent) 0%, var(--accent) ${((days - 1) / 29 * 100)}%, var(--bg-tertiary) ${((days - 1) / 29 * 100)}%, var(--bg-tertiary) 100%)`
-                  }}
-                />
-
-                {/* Range Slider ticks */}
-                <div className="flex justify-between text-[8px] text-slate-400 dark:text-slate-500 px-1 mt-1.5 font-mono select-none">
-                  <span>1d</span>
-                  <span>5d</span>
-                  <span>10d</span>
-                  <span>15d</span>
-                  <span>20d</span>
-                  <span>25d</span>
-                  <span>30d</span>
-                </div>
-                
-                {/* Quick select duration pills */}
-                <div className="flex gap-2 mt-3">
-                  {[3, 7, 10, 14, 21].map((presetDays) => (
-                    <button
-                      key={presetDays}
-                      type="button"
-                      onClick={() => setDays(presetDays)}
-                      className={`px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-tight border cursor-pointer hover:scale-105 active:scale-95 transition-all ${
-                        days === presetDays
-                          ? 'bg-[var(--accent)] text-white border-transparent shadow-[0_4px_12px_rgba(30,64,175,0.2)]'
-                          : 'bg-white/60 dark:bg-white/[0.01] border-slate-200 dark:border-white/[0.05] text-[var(--text-muted)] hover:bg-white/90 dark:hover:bg-white/5 hover:border-slate-350 dark:hover:border-white/10'
-                      }`}
-                    >
-                      {presetDays}d
-                    </button>
-                  ))}
-                </div>
-              </div>
+              {/* Duration Slider — Image 2 UI/UX Redesign */}
+              <CustomSlider
+                label="DURATION"
+                min={1}
+                max={30}
+                value={days}
+                onChange={setDays}
+                unit="Days"
+                ticks={['1d', '5d', '10d', '15d', '20d', '25d', '30d']}
+                presets={[3, 7, 10, 14, 21]}
+              />
 
               {/* Travel Comfort Style */}
               <div>

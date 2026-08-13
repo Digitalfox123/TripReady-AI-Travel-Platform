@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import CustomSlider from '../components/ui/CustomSlider';
 import YouTubeTravelSection from '../components/YouTubeTravelSection';
 import {
   Calendar,
@@ -1819,35 +1820,29 @@ export default function UmrahGuidePage() {
             </div>
 
             <div className="space-y-6">
-              {/* Sliders for Travelers and Days (Enhanced Range slider track/thumb styling) */}
+              {/* Sliders for Travelers and Days — Image 2 UI/UX Redesign */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <div className="flex justify-between text-xs font-bold font-mono">
-                    <span className="text-slate-400 uppercase tracking-wider">Number of Travelers</span>
-                    <span className="text-emerald-600 dark:text-emerald-450 font-bold">{calcTravelers} Pilgrims</span>
-                  </div>
-                  <input 
-                    type="range" 
-                    min="1" 
-                    max="10" 
+                <div>
+                  <CustomSlider
+                    label="NUMBER OF TRAVELERS"
+                    min={1}
+                    max={10}
                     value={calcTravelers}
-                    onChange={(e) => setCalcTravelers(parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer border border-slate-300/40 dark:border-slate-700/30 accent-emerald-500 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-600 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:active:scale-95 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-emerald-600 [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:transition-all [&::-moz-range-thumb]:hover:scale-110 [&::-moz-range-thumb]:active:scale-95"
+                    onChange={setCalcTravelers}
+                    unit="Pilgrims"
+                    ticks={['1', '3', '5', '7', '10']}
                   />
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex justify-between text-xs font-bold font-mono">
-                    <span className="text-slate-400 uppercase tracking-wider">Duration (Days)</span>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">{calcDays} Days</span>
-                  </div>
-                  <input 
-                    type="range" 
-                    min="3" 
-                    max="30" 
+                <div>
+                  <CustomSlider
+                    label="DURATION (DAYS)"
+                    min={3}
+                    max={30}
                     value={calcDays}
-                    onChange={(e) => setCalcDays(parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer border border-slate-300/40 dark:border-slate-700/30 accent-emerald-500 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-600 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:active:scale-95 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-emerald-600 [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:transition-all [&::-moz-range-thumb]:hover:scale-110 [&::-moz-range-thumb]:active:scale-95"
+                    onChange={setCalcDays}
+                    unit="Days"
+                    ticks={['3d', '7d', '10d', '14d', '21d', '30d']}
                   />
                 </div>
               </div>
