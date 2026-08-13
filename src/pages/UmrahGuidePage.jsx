@@ -427,7 +427,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Al-Masjid an-Nabawi',
     category: 'Religious & Pilgrimage',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/2/23/Al_Masjid_An-Nabawi.jpg',
+    image: '/assets/madinah_masjid_nabawi.jpg',
     description: 'The Prophet\'s Mosque, the second-holiest site in Islam, featuring his tomb and the iconic Green Dome.',
     history: 'Established by Prophet Muhammad in 622 CE on his migration, expanded over centuries into a masterpiece.',
     tips: 'Open 24/7. To pray in the Rawdah, you must book a slot in advance using the Nusuk app.',
@@ -436,16 +436,16 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Rawdah',
     category: 'Religious & Pilgrimage',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Riyadhul_Jannah_Nabawi.jpg',
+    image: '/assets/madinah_rawdah.jpg',
     description: 'A sacred area inside Al-Masjid an-Nabawi, designated as a garden of Paradise.',
     history: 'The Prophet stated: "Between my house and my pulpit lies a garden from the gardens of Paradise."',
     tips: 'Identified by its green carpets (the rest are red). Keep your prayers short to let other pilgrims enter.',
     coords: 'Inside Al-Masjid an-Nabawi'
   },
   {
-    name: 'Prophet\'s Tomb',
+    name: 'Prophet\'s Tomb & Green Dome',
     category: 'Religious & Pilgrimage',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/0/0d/The_Green_Dome%2C_Masjid_Nabawi%2C_Madina.jpg',
+    image: '/assets/madinah_green_dome.png',
     description: 'The final resting place of Prophet Muhammad, Abu Bakr, and Umar under the Green Dome.',
     history: 'Located in what was originally Aisha\'s chamber, incorporated into the mosque during early expansions.',
     tips: 'Lower your voice out of respect when sending greetings, and keep moving to prevent crowd congestion.',
@@ -454,7 +454,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Jannat al-Baqi',
     category: 'Religious & Pilgrimage',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Al-Baqi_cemetery.jpg',
+    image: '/assets/madinah_baqi.png',
     description: 'The oldest and first Islamic cemetery of Madinah, hosting graves of the Prophet\'s family.',
     history: 'Burials here include Uthman, Hasan, Aisha, and thousands of other early companions.',
     tips: 'Located immediately east of the Nabawi Mosque courtyard. Open to men after Fajr and Asr prayers.',
@@ -472,7 +472,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Qiblatain Mosque',
     category: 'Religious & Pilgrimage',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/b/bc/Masjid_al-Qiblatayn.jpg',
+    image: '/assets/madinah_qiblatayn.png',
     description: 'The Mosque of the Two Qiblas, where the revelation came to change the prayer direction.',
     history: 'In 624 CE, during prayer, the Prophet received revelation to turn from Jerusalem toward the Kaaba.',
     tips: 'Features unique architectural details. Easily visited via local hop-on hop-off tourist buses.',
