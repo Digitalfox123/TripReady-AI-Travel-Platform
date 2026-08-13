@@ -324,8 +324,11 @@ export default function TripAIPage() {
 
         const systemInstruction = `You are "tripready AI", a world-class premium travel concierge assistant.
 Answer ONLY what the user asked concisely, elegantly, and naturally.
+STRICT FORMATTING RULE: DO NOT use markdown asterisks or stars (*) or double-asterisks (**) anywhere in your response text. Never print asterisks (* or **).
+For bold text or titles, write clear capitalized titles or headers on new lines.
+For list items, use plain dashes (-) or numbers (1., 2.).
 Tone: Calm, professional, humanized (not robotic, no generic AI fluff or customer support phrases).
-Format: scannable dashboard-friendly layout, short paragraphs, bullet lists, or tables where appropriate.
+Format: scannable dashboard-friendly layout, short paragraphs, bullet lists with dashes (-), or tables where appropriate.
 Capabilities: discover destinations, create itineraries, estimate budgets, advise on weather, food, transit, culture, safety, visa, packing.
 Never generate fake hotels/prices. If user asks short questions, give short precise answers.`;
 
@@ -355,7 +358,7 @@ Never generate fake hotels/prices. If user asks short questions, give short prec
     }
   };
 
-  // Custom Markdown & Collapsible details renderer
+  // Custom Markdown & Collapsible details renderer (Asterisk-free clean output)
   const renderFormattedMessage = (text) => {
     if (!text) return null;
 
@@ -370,6 +373,22 @@ Never generate fake hotels/prices. If user asks short questions, give short prec
       mainContent = text.replace(detailsRegex, '').trim();
     }
 
+    // Helper to render inline text converting **bold** into <strong> and stripping stray *
+    const renderCleanInlineText = (rawStr) => {
+      if (!rawStr) return null;
+      const parts = rawStr.split(/\*\*(.*?)\*\*/g);
+      return parts.map((part, idx) => {
+        if (idx % 2 === 1) {
+          return (
+            <strong key={idx} className="font-bold text-slate-900 dark:text-white mx-0.5">
+              {part.replace(/\*/g, '').trim()}
+            </strong>
+          );
+        }
+        return part.replace(/\*/g, '');
+      });
+    };
+
     return (
       <div className="space-y-3.5 select-text">
         {thinkingContent && (
@@ -378,7 +397,7 @@ Never generate fake hotels/prices. If user asks short questions, give short prec
               View Thought Process
             </summary>
             <div className="mt-2 pl-4 border-l-2 border-gray-300 dark:border-neutral-700 whitespace-pre-line text-left leading-relaxed">
-              {thinkingContent.replace(/<summary>.*?<\/summary>/, '').trim()}
+              {renderCleanInlineText(thinkingContent.replace(/<summary>.*?<\/summary>/, '').trim())}
             </div>
           </details>
         )}
@@ -387,27 +406,17 @@ Never generate fake hotels/prices. If user asks short questions, give short prec
           // Check for h3 headings
           if (paragraph.startsWith('### ')) {
             return (
-              <h3 key={pIdx} className="text-sm sm:text-base font-semibold text-slate-900 dark:text-white mt-4 mb-2 font-heading">
-                {paragraph.slice(4)}
+              <h3 key={pIdx} className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mt-4 mb-2 font-heading">
+                {renderCleanInlineText(paragraph.slice(4))}
               </h3>
             );
           }
 
           // Check for numbered items/headings
           if (/^\d+\.\s/.test(paragraph)) {
-            const boldParts = paragraph.split(/(\*\*[^*]+\*\*)/g);
             return (
               <h4 key={pIdx} className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white mt-4 mb-2 leading-relaxed">
-                {boldParts.map((part, ptIdx) => {
-                  if (part.startsWith('**') && part.endsWith('**')) {
-                    return (
-                      <strong key={ptIdx} className="font-extrabold text-black dark:text-white">
-                        {part.slice(2, -2)}
-                      </strong>
-                    );
-                  }
-                  return part;
-                })}
+                {renderCleanInlineText(paragraph)}
               </h4>
             );
           }
@@ -421,19 +430,9 @@ Never generate fake hotels/prices. If user asks short questions, give short prec
               <ul key={pIdx} className="space-y-2 mt-2 pl-5 list-disc">
                 {items.map((item, iIdx) => {
                   const cleanItem = item.replace(/^[ \t]*[•*-][ \t]*/, '').trim();
-                  const boldParts = cleanItem.split(/(\*\*[^*]+\*\*)/g);
                   return (
                     <li key={iIdx} className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-light font-body">
-                      {boldParts.map((part, ptIdx) => {
-                        if (part.startsWith('**') && part.endsWith('**')) {
-                          return (
-                            <strong key={ptIdx} className="font-semibold text-slate-900 dark:text-white">
-                              {part.slice(2, -2)}
-                            </strong>
-                          );
-                        }
-                        return part;
-                      })}
+                      {renderCleanInlineText(cleanItem)}
                     </li>
                   );
                 })}
@@ -441,19 +440,10 @@ Never generate fake hotels/prices. If user asks short questions, give short prec
             );
           }
 
-          // Plain text paragraph with custom inline bold parser
+          // Plain text paragraph
           return (
             <p key={pIdx} className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-light font-body">
-              {paragraph.split(/(\*\*[^*]+\*\*)/g).map((part, ptIdx) => {
-                if (part.startsWith('**') && part.endsWith('**')) {
-                  return (
-                    <strong key={ptIdx} className="font-semibold text-slate-900 dark:text-white">
-                      {part.slice(2, -2)}
-                    </strong>
-                  );
-                }
-                return part;
-              })}
+              {renderCleanInlineText(paragraph)}
             </p>
           );
         })}
