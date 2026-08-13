@@ -36,7 +36,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../utils/useTranslation';
 import { topDestinations } from '../data';
 import { getGeminiApiKey, hasGeminiKey, askGemini } from '../utils/gemini';
-import { askOpenRouter, hasOpenRouterKey, getOpenRouterApiKey, saveOpenRouterApiKey } from '../utils/openrouter';
 import countriesList from '../data/countries.json';
 
 // Squircle logo icon matching the favicon
@@ -297,65 +296,39 @@ export default function TripAIPage() {
     }
     setIsTyping(true);
 
-    // Build prompt context with history and toggle indicators
-    let promptContext = "";
-    const contextMessages = messages.slice(-6); // last 6 messages context
-    contextMessages.forEach(m => {
-      let textToSendCtx = m.text;
-      if (m.sender === 'user' && m.file) {
-        textToSendCtx = `[Analyzed Document: ${m.file.name}]\n\n${m.text}`;
-      }
-      promptContext += `${m.sender === 'user' ? 'User' : 'Assistant'}: ${textToSendCtx}\n\n`;
-    });
-    
-    let finalPrompt = fullText;
-    if (deepSearchActive) {
-      finalPrompt += "\n\n[User has enabled DEEP SEARCH mode. Please perform an exceptionally detailed, deep-dive analysis. Include historical dates, structural breakdowns, bullet points, budget calculations, and multi-day travel guides with explicit context.]";
-    }
-    if (thinkActive) {
-      finalPrompt += "\n\n[User has enabled THINK mode. Include your internal step-by-step reasoning tokens inside a markdown collapsible details tag like: <details><summary>Thought Process</summary>Step-by-step reasoning...</details> before your final answer.]";
-    }
-    if (editImageActive) {
-      finalPrompt += "\n\n[User has enabled EDIT IMAGE mode. Please describe a high-quality travel image representing this destination or topic, and include a simulated photo showcase in your markdown output.]";
-    }
+    if (hasGeminiKey()) {
+      try {
+        // Build prompt with history and toggle indicators
+        let promptContext = "";
+        const contextMessages = messages.slice(-4); // last 4 messages context for speed
+        contextMessages.forEach(m => {
+          let textToSendCtx = m.text;
+          if (m.sender === 'user' && m.file) {
+            textToSendCtx = `[Analyzed Document: ${m.file.name}]\n\n${m.text}`;
+          }
+          promptContext += `${m.sender === 'user' ? 'User' : 'Assistant'}: ${textToSendCtx}\n\n`;
+        });
+        
+        let finalPrompt = fullText;
+        if (deepSearchActive) {
+          finalPrompt += "\n\n[User has enabled DEEP SEARCH mode. Please perform an exceptionally detailed, deep-dive analysis. Include historical dates, structural breakdowns, bullet points, budget calculations, and multi-day travel guides with explicit context.]";
+        }
+        if (thinkActive) {
+          finalPrompt += "\n\n[User has enabled THINK mode. Please include a section at the very beginning of your response detailing your internal step-by-step reasoning or travel design considerations inside a markdown collapsible details tag like: <details><summary>Thought Process</summary>Your detailed step-by-step reasoning here...</details>. Then provide your final comprehensive answer.]";
+        }
+        if (editImageActive) {
+          finalPrompt += "\n\n[User has enabled EDIT IMAGE mode. Please describe a high-quality travel image representing this destination or topic, and include a simulated photo showcase in your markdown output.]";
+        }
 
-    promptContext += `User: ${finalPrompt}`;
+        promptContext += `User: ${finalPrompt}`;
 
-    const systemInstruction = `You are "tripready AI", a world-class AI travel concierge engine powered by Nvidia Nemotron 120B & OpenRouter.
-Answer ONLY what the user asked concisely, elegantly, accurately, and naturally.
+        const systemInstruction = `You are "tripready AI", a world-class premium travel concierge assistant.
+Answer ONLY what the user asked concisely, elegantly, and naturally.
 Tone: Calm, professional, humanized (not robotic, no generic AI fluff or customer support phrases).
 Format: scannable dashboard-friendly layout, short paragraphs, bullet lists, or tables where appropriate.
 Capabilities: discover destinations, create itineraries, estimate budgets, advise on weather, food, transit, culture, safety, visa, packing.
 Never generate fake hotels/prices. If user asks short questions, give short precise answers.`;
 
-    // 1. Primary Engine: OpenRouter API (nvidia/nemotron-3-super-120b-a12b:free)
-    if (hasOpenRouterKey()) {
-      try {
-        const reply = await askOpenRouter({
-          prompt: promptContext,
-          systemInstruction,
-          enableReasoning: thinkActive || true
-        });
-
-        setIsTyping(false);
-
-        if (reply) {
-          setMessages((prev) => [...prev, { 
-            sender: 'ai', 
-            text: reply, 
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            isStreaming: true
-          }]);
-          return;
-        }
-      } catch (err) {
-        console.error("OpenRouter Nemotron chatbot error, falling back to Gemini:", err);
-      }
-    }
-
-    // 2. Fallback Engine: Gemini API
-    if (hasGeminiKey()) {
-      try {
         const reply = await askGemini(promptContext, systemInstruction);
         setIsTyping(false);
 
@@ -366,18 +339,20 @@ Never generate fake hotels/prices. If user asks short questions, give short prec
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             isStreaming: true
           }]);
-          return;
+        } else {
+          triggerLocalReply(fullText);
         }
       } catch (err) {
         console.error("Gemini chatbot error:", err);
+        setIsTyping(false);
+        triggerLocalReply(fullText);
       }
+    } else {
+      setTimeout(() => {
+        setIsTyping(false);
+        triggerLocalReply(fullText);
+      }, 1000);
     }
-
-    // 3. Fallback Engine: Local Smart Generator
-    setTimeout(() => {
-      setIsTyping(false);
-      triggerLocalReply(fullText);
-    }, 800);
   };
 
   // Custom Markdown & Collapsible details renderer

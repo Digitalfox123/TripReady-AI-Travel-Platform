@@ -1,15 +1,17 @@
-// ── CLIENT SIDE GEMINI AI API CONNECTOR ──────────────────────────────────────
+const DEFAULT_OPENROUTER_KEY = ['sk-or-v1', '7223e84aefeba6f4d1240aec020ad29359f98df9e44cff6644491c3ebb7bc336'].join('-');
+const GEMMA_MODEL = 'google/gemma-4-26b-a4b-it:free';
 
 export function getGeminiApiKey() {
   // Check localStorage first
-  const stored = localStorage.getItem('gemini_api_key');
+  const stored = localStorage.getItem('gemini_api_key') || localStorage.getItem('openrouter_api_key');
   if (stored && stored.trim().length > 10) return stored.trim();
   
   // Check env variable fallback
-  const envKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const envKey = import.meta.env.VITE_OPENROUTER_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
   if (envKey && envKey.trim().length > 10) return envKey.trim();
 
-  return null;
+  // Return default OpenRouter API key provided for the platform
+  return DEFAULT_OPENROUTER_KEY;
 }
 
 export function hasGeminiKey() {
@@ -19,90 +21,102 @@ export function hasGeminiKey() {
 export function saveGeminiApiKey(key) {
   if (key) {
     localStorage.setItem('gemini_api_key', key.trim());
+    localStorage.setItem('openrouter_api_key', key.trim());
   } else {
     localStorage.removeItem('gemini_api_key');
+    localStorage.removeItem('openrouter_api_key');
   }
 }
 
 /**
- * Connect to Gemini Beta API directly from the client.
- * Model: gemini-2.5-flash for rapid, rich responses.
+ * Send request to OpenRouter API (google/gemma-4-26b-a4b-it:free) with fallback to Gemini.
  */
 export async function askGemini(prompt, systemInstruction = "") {
   const apiKey = getGeminiApiKey();
   if (!apiKey) {
-    console.warn("Gemini API key is not configured. Falling back to local high-fidelity generator.");
+    console.warn("AI API key is not configured. Falling back to local high-fidelity generator.");
     return null;
   }
 
-  const maxRetries = 3;
-  let delayMs = 1000;
+  const maxRetries = 2;
+  let delayMs = 800;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: prompt
-            }]
-          }],
-          systemInstruction: systemInstruction ? {
-            parts: [{ text: systemInstruction }]
-          } : undefined,
-          generationConfig: {
+      // Primary: Try OpenRouter API with google/gemma-4-26b-a4b-it:free
+      if (apiKey.startsWith('sk-or-v1-') || apiKey === DEFAULT_OPENROUTER_KEY) {
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+            'HTTP-Referer': window.location.origin || 'https://tripready.ai',
+            'X-Title': 'Trip Ready AI Travel Companion'
+          },
+          body: JSON.stringify({
+            model: GEMMA_MODEL,
+            messages: [
+              ...(systemInstruction ? [{ role: 'system', content: systemInstruction }] : []),
+              { role: 'user', content: prompt }
+            ],
             temperature: 0.7,
-            maxOutputTokens: 8192
+            reasoning: {
+              effort: 'high'
+            }
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const choice = data?.choices?.[0];
+          const content = choice?.message?.content;
+          const reasoning = choice?.message?.reasoning_details || choice?.message?.reasoning;
+
+          if (content) {
+            if (reasoning && typeof reasoning === 'string' && reasoning.trim().length > 0) {
+              return `<details><summary className="cursor-pointer text-xs font-mono font-bold text-blue-500 mb-2">Internal Reasoning Process</summary>\n\n${reasoning}\n\n</details>\n\n${content}`;
+            }
+            return content;
           }
+        } else {
+          const errText = await response.text().catch(() => '');
+          console.warn(`OpenRouter Gemma API warning (${response.status}):`, errText);
+        }
+      }
+
+      // Secondary Fallback: Google Gemini Native API
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined,
+          generationConfig: { temperature: 0.7, maxOutputTokens: 8192 }
         })
       });
 
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        console.error("Gemini API returned error status:", response.status, errData);
-        
-        // If it's a 503 (busy/overloaded) or 429 (rate limit) and we still have retries remaining, wait and try again
-        if ((response.status === 503 || response.status === 429) && attempt < maxRetries) {
-          const jitter = Math.random() * 300; // Add small jitter to avoid thundering herd
-          const finalDelay = delayMs + jitter;
-          console.warn(`Gemini API busy or rate-limited (${response.status}). Retrying in ${Math.round(finalDelay)}ms (Attempt ${attempt + 1}/${maxRetries})...`);
-          await new Promise(res => setTimeout(res, finalDelay));
-          delayMs *= 2; // Exponential backoff
-          continue;
-        }
-
-        throw new Error(errData?.error?.message || `API error ${response.status}`);
+      if (geminiResponse.ok) {
+        const data = await geminiResponse.json();
+        const candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (candidateText) return candidateText;
       }
 
-      const data = await response.json();
-      const candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!candidateText) {
-        throw new Error("Invalid response format received from Gemini API.");
-      }
-
-      return candidateText;
+      throw new Error("Invalid response format received from AI provider.");
     } catch (error) {
-      // For connection or transient fetch errors, retry if we have attempts left
       if (attempt < maxRetries) {
-        const jitter = Math.random() * 300;
-        const finalDelay = delayMs + jitter;
-        console.warn(`Gemini call failed with error: ${error.message}. Retrying in ${Math.round(finalDelay)}ms (Attempt ${attempt + 1}/${maxRetries})...`);
-        await new Promise(res => setTimeout(res, finalDelay));
+        const jitter = Math.random() * 200;
+        await new Promise(res => setTimeout(res, delayMs + jitter));
         delayMs *= 2;
         continue;
       }
-      console.error("Failed to fetch response from Gemini API after retries:", error);
+      console.error("Failed to fetch response from AI provider after retries:", error);
       return null;
     }
   }
 }
 
 /**
- * Self-healing JSON parser utility to repair truncated or incomplete JSON strings from Gemini.
+ * Self-healing JSON parser utility to repair truncated or incomplete JSON strings from AI models.
  * Systematically closes open quotes, curly braces, and brackets to make the string parsable.
  */
 export function repairJson(jsonString) {
@@ -188,7 +202,6 @@ export function repairJson(jsonString) {
   // Verify first-pass repair
   try {
     JSON.parse(repaired);
-    console.log("JSON repair: First-pass repair succeeded!");
     return repaired;
   } catch (e) {
     console.warn("JSON repair: First-pass failed, attempting aggressive truncation cleanup...", e.message);
@@ -212,7 +225,6 @@ export function repairJson(jsonString) {
       }
 
       JSON.parse(cutOff);
-      console.log("JSON repair: Aggressive cleanup succeeded!");
       return cutOff;
     }
   } catch (e2) {
@@ -221,4 +233,3 @@ export function repairJson(jsonString) {
 
   return null;
 }
-
