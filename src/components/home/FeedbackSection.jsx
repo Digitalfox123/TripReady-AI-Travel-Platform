@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { Star, Send, CheckCircle, User, Mail, Globe, MessageSquare } from 'lucide-react';
+import { countries } from '../../data';
 
-const countriesList = [
-  'Australia', 'Brazil', 'Canada', 'France', 'Germany', 'India', 'Italy', 'Japan',
-  'Pakistan', 'Singapore', 'Spain', 'UAE', 'United Kingdom', 'United States', 'Other',
-];
+const countriesList = countries.map(c => c.name);
 
 export default function FeedbackSection() {
   const [formData, setFormData] = useState({ name: '', email: '', country: '', message: '' });

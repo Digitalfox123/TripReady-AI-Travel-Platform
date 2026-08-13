@@ -262,10 +262,27 @@ export default function HeroSection() {
           .from('countries')
           .select('name, flag, code:iso2')
           .order('name', { ascending: true });
-        if (data && !error && data.length > 0) {
+        if (data && !error && data.length >= 200) {
           setDbCountries(data);
         } else {
-          setDbCountries(countries);
+          // Merge Supabase data with comprehensive 250-country dataset
+          const mergedMap = new Map();
+          countries.forEach(c => mergedMap.set(c.name.toLowerCase(), c));
+          if (data && Array.isArray(data)) {
+            data.forEach(c => {
+              if (c && c.name) {
+                const existing = mergedMap.get(c.name.toLowerCase()) || {};
+                mergedMap.set(c.name.toLowerCase(), {
+                  ...existing,
+                  code: c.code || existing.code || 'XX',
+                  name: c.name,
+                  flag: c.flag || existing.flag || '🌍'
+                });
+              }
+            });
+          }
+          const merged = Array.from(mergedMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+          setDbCountries(merged);
         }
       } catch (e) {
         console.warn("Failed to load countries from Supabase, using static fallback:", e);
