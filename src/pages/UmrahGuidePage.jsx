@@ -2060,7 +2060,7 @@ export default function UmrahGuidePage() {
               d="M50,150 Q100,50 170,100 T300,80 T350,120" 
               strokeWidth="1.2" 
               strokeDasharray="4 6" 
-              style={{ strokeDashoffset: 100, animation: 'marquee-scroll 30s linear infinite' }}
+              style={{ strokeDashoffset: 100, animation: 'stroke-dash-scroll 30s linear infinite' }}
             />
             
             {/* Makkah Marker */}

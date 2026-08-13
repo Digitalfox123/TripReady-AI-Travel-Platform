@@ -501,7 +501,7 @@
   animation: pulse-subtle 4s ease-in-out infinite;
 }
 
-@keyframes marquee-scroll {
+@keyframes stroke-dash-scroll {
   from {
     stroke-dashoffset: 200;
   }

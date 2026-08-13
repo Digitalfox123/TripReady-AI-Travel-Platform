@@ -29,7 +29,7 @@ function TiltCard({ children, className = '', style = {} }) {
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className={`group relative rounded-[24px] sm:rounded-[28px] border transition-transform duration-300 ease-out select-none ${className}`}
+      className={`group relative rounded-[28px] border transition-all duration-300 ease-out select-none ${className}`}
       style={{ 
         transform: transformStyle,
         willChange: transformStyle === 'none' ? 'auto' : 'transform',
@@ -60,10 +60,10 @@ export default function ImmersiveDiscoverySection() {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="py-12 sm:py-20 bg-[var(--bg-primary)] text-[var(--text-primary)] border-t border-[var(--border)] relative overflow-hidden transition-colors duration-500"
+      className="py-20 sm:py-28 bg-[var(--bg-primary)] text-[var(--text-primary)] border-t border-[var(--border)] relative overflow-hidden transition-colors duration-500"
     >
       {/* Background coordinate grid overlay */}
-      <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.01] pointer-events-none select-none bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:32px_32px] z-0" />
+      <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.015] pointer-events-none select-none bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:32px_32px] z-0" />
 
       {/* Self-contained lightweight keyframes */}
       <style>{`
@@ -77,27 +77,26 @@ export default function ImmersiveDiscoverySection() {
         }
         @keyframes floatPin1 {
           0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-5px); }
+          50% { transform: translateY(-6px); }
         }
         .animate-draw-route { stroke-dasharray: 240; animation: drawRoute 7s linear infinite; }
-        .animate-spin-slow { animation: spinSlow 50s linear infinite; }
+        .animate-spin-slow { animation: spinSlow 45s linear infinite; }
       `}</style>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* SECTION HEADER */}
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16 space-y-3 select-none">
-          <div className="inline-flex items-center gap-2 bg-blue-500/10 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 text-xs font-semibold px-3.5 py-1 rounded-full border border-blue-500/20 shadow-xs">
-            <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-            <span>How It Works</span>
-            <Plane className="w-3.5 h-3.5 rotate-45 text-blue-500" />
+        {/* SECTION HEADER — Matching Site Standard (Image 3 Reference) */}
+        <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-20 select-none">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.03] text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4 shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-[var(--accent)]" />
+            <span>HOW IT WORKS</span>
           </div>
 
-          <h2 className="font-heading text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight antialiased">
-            From idea to a <span className="text-blue-600 dark:text-blue-400 font-black">perfect trip</span>
+          <h2 className="section-title text-slate-900 dark:text-white">
+            From idea to a <span className="italic font-light text-slate-500 dark:text-slate-400">perfect trip.</span>
           </h2>
 
-          <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-base font-light max-w-xl mx-auto leading-relaxed">
+          <p className="section-subtitle max-w-xl mx-auto text-slate-500 dark:text-slate-400 text-sm sm:text-base mt-3 font-light">
             A simple 3-step workflow designed to transform your travel aspirations into organized reality.
           </p>
         </div>
@@ -105,56 +104,64 @@ export default function ImmersiveDiscoverySection() {
         {/* CARDS CONTAINER GRID */}
         <div className="relative max-w-6xl mx-auto">
           
-          {/* Grid layout: 1 col on mobile, 2 on tablet, 3 on desktop */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7 items-stretch relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch relative z-10">
             
             {/* CARD 1 — DISCOVER */}
             <TiltCard 
-              className="bg-[#0A0F1E] text-white border-white/10 shadow-lg hover:border-blue-500/30 p-5 sm:p-6 flex flex-col justify-between"
-              style={{ background: 'linear-gradient(145deg, #0A0F1E 30%, #172554 100%)' }}
+              className="bg-[#070C18] text-white border-white/10 shadow-xl hover:border-cyan-500/40 p-6 sm:p-7 flex flex-col justify-between group"
+              style={{ background: 'radial-gradient(circle at 80% 20%, rgba(6,182,212,0.12) 0%, transparent 60%), linear-gradient(145deg, #070C18 30%, #0F172A 100%)' }}
             >
-              <div className="relative h-full flex flex-col justify-between space-y-5">
+              <div className="relative h-full flex flex-col justify-between space-y-6">
                 <div>
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-4">
                     <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full border border-cyan-500/30 bg-cyan-950/60 text-cyan-400 text-[11px] font-bold font-mono tracking-widest">
                       01
                     </span>
-                    <span className="text-[10px] font-semibold text-cyan-300/80 uppercase tracking-wider flex items-center gap-1">
-                      <Compass className="w-3.5 h-3.5" /> Exploration
+                    <span className="text-[10px] font-semibold text-cyan-300/90 uppercase tracking-wider flex items-center gap-1.5">
+                      <Compass className="w-3.5 h-3.5 text-cyan-400" /> Exploration
                     </span>
                   </div>
 
                   <div className="text-left">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight">
+                    <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight font-heading">
                       Discover
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-300/80 mt-1.5 leading-relaxed font-light">
+                    <p className="text-xs sm:text-sm text-slate-300/80 mt-2 leading-relaxed font-light">
                       Explore global destinations, top sights, curated experiences and hidden gems worldwide.
                     </p>
                   </div>
                 </div>
 
-                {/* Inner Visual Container */}
-                <div className="w-full h-36 sm:h-40 rounded-xl bg-[#0A0F1E]/80 border border-white/10 flex items-center justify-center relative select-none overflow-hidden">
+                {/* Inner Visual Container — Globe with Transparent PNG */}
+                <div className="w-full h-40 sm:h-44 rounded-2xl bg-[#030712]/70 border border-white/10 flex items-center justify-center relative select-none overflow-hidden group-hover:border-cyan-500/20 transition-colors">
+                  {/* Subtle ambient glow behind globe */}
+                  <div className="absolute inset-0 bg-radial from-cyan-500/15 via-transparent to-transparent opacity-60 blur-xl pointer-events-none" />
+
+                  {/* 3D Spinning Globe — Pure Transparent PNG without black box */}
                   <img 
-                    src="/earth_globe_pure_black.png" 
+                    src="/earth_globe_transparent.png" 
                     alt="3D Globe"
-                    className="w-24 h-24 sm:w-28 sm:h-28 object-contain z-10 animate-spin-slow"
+                    className="w-28 h-28 sm:w-32 sm:h-32 object-contain z-10 animate-spin-slow drop-shadow-[0_0_20px_rgba(6,182,212,0.35)]"
                     loading="lazy"
                     decoding="async"
                   />
                   
-                  <div className="absolute top-6 left-10 z-20 animate-[floatPin1_4s_infinite_ease-in-out]">
-                    <MapPin size={16} className="text-cyan-400 fill-cyan-400/30" />
+                  {/* Floating Map Pins */}
+                  <div className="absolute top-5 left-8 z-20 animate-[floatPin1_4s_infinite_ease-in-out]">
+                    <div className="p-1.5 rounded-full bg-cyan-500/20 backdrop-blur-xs border border-cyan-400/40 text-cyan-300">
+                      <MapPin size={14} className="fill-cyan-400/50" />
+                    </div>
                   </div>
-                  <div className="absolute bottom-6 right-10 z-20 animate-[floatPin1_3.5s_infinite_ease-in-out_1s]">
-                    <MapPin size={14} className="text-blue-400 fill-blue-400/30" />
+                  <div className="absolute bottom-5 right-8 z-20 animate-[floatPin1_3.5s_infinite_ease-in-out_1s]">
+                    <div className="p-1 rounded-full bg-blue-500/20 backdrop-blur-xs border border-blue-400/40 text-blue-300">
+                      <MapPin size={12} className="fill-blue-400/50" />
+                    </div>
                   </div>
                 </div>
 
                 {/* Action CTA Link */}
                 <div className="pt-1 text-left">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors cursor-pointer">
+                  <span className="inline-flex items-center gap-2 text-xs font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors cursor-pointer">
                     <span>Explore Destinations</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </span>
@@ -164,39 +171,39 @@ export default function ImmersiveDiscoverySection() {
 
             {/* CARD 2 — UNDERSTAND */}
             <TiltCard 
-              className="bg-[#0A0F1E] text-white border-white/10 shadow-lg hover:border-purple-500/30 p-5 sm:p-6 flex flex-col justify-between"
-              style={{ background: 'linear-gradient(145deg, #0A0F1E 30%, #2e1065 100%)' }}
+              className="bg-[#070C18] text-white border-white/10 shadow-xl hover:border-purple-500/40 p-6 sm:p-7 flex flex-col justify-between group"
+              style={{ background: 'radial-gradient(circle at 80% 20%, rgba(168,85,247,0.12) 0%, transparent 60%), linear-gradient(145deg, #070C18 30%, #1E1B4B 100%)' }}
             >
-              <div className="relative h-full flex flex-col justify-between space-y-5">
+              <div className="relative h-full flex flex-col justify-between space-y-6">
                 <div>
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-4">
                     <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full border border-purple-500/30 bg-purple-950/60 text-purple-400 text-[11px] font-bold font-mono tracking-widest">
                       02
                     </span>
-                    <span className="text-[10px] font-semibold text-purple-300/80 uppercase tracking-wider flex items-center gap-1">
-                      <Shield className="w-3.5 h-3.5" /> Intelligence
+                    <span className="text-[10px] font-semibold text-purple-300/90 uppercase tracking-wider flex items-center gap-1.5">
+                      <Shield className="w-3.5 h-3.5 text-purple-400" /> Intelligence
                     </span>
                   </div>
 
                   <div className="text-left">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight">
+                    <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight font-heading">
                       Understand
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-300/80 mt-1.5 leading-relaxed font-light">
+                    <p className="text-xs sm:text-sm text-slate-300/80 mt-2 leading-relaxed font-light">
                       Get complete country intelligence: visa policies, safety index, budgets & local transport.
                     </p>
                   </div>
                 </div>
 
-                {/* Inner Visual Container */}
-                <div className="w-full h-36 sm:h-40 rounded-xl bg-[#0A0F1E]/80 border border-white/10 flex items-center justify-center relative select-none overflow-hidden p-3">
-                  <div className="w-full max-w-[200px] bg-[#0A0F1E]/90 border border-white/15 rounded-xl p-3 space-y-2 z-10">
+                {/* Inner Visual Container — Clean Glassmorphic Intelligence Badge */}
+                <div className="w-full h-40 sm:h-44 rounded-2xl bg-[#030712]/70 border border-white/10 flex items-center justify-center relative select-none overflow-hidden p-3.5 group-hover:border-purple-500/20 transition-colors">
+                  <div className="w-full max-w-[210px] bg-slate-900/80 border border-white/15 rounded-xl p-3.5 space-y-2.5 z-10 shadow-lg backdrop-blur-md">
                     <div className="flex justify-between items-center text-xs">
                       <span className="text-slate-300 font-light flex items-center gap-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>Visa</span>
+                        <span>Visa Policy</span>
                       </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/40 bg-emerald-950/60 text-emerald-300">
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/40 bg-emerald-950/70 text-emerald-300">
                         Visa Free
                       </span>
                     </div>
@@ -204,9 +211,9 @@ export default function ImmersiveDiscoverySection() {
                     <div className="flex justify-between items-center text-xs">
                       <span className="text-slate-300 font-light flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Best Time</span>
+                        <span>Best Season</span>
                       </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-cyan-500/40 bg-cyan-950/60 text-cyan-300">
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-cyan-500/40 bg-cyan-950/70 text-cyan-300">
                         Apr - Oct
                       </span>
                     </div>
@@ -214,9 +221,9 @@ export default function ImmersiveDiscoverySection() {
                     <div className="flex justify-between items-center text-xs">
                       <span className="text-slate-300 font-light flex items-center gap-1.5">
                         <Shield className="w-3.5 h-3.5 text-purple-400" />
-                        <span>Safety</span>
+                        <span>Safety Index</span>
                       </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-purple-500/40 bg-purple-950/60 text-purple-300">
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-purple-500/40 bg-purple-950/70 text-purple-300">
                         98% High
                       </span>
                     </div>
@@ -225,7 +232,7 @@ export default function ImmersiveDiscoverySection() {
 
                 {/* Action CTA Link */}
                 <div className="pt-1 text-left">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-purple-400 group-hover:text-purple-300 transition-colors cursor-pointer">
+                  <span className="inline-flex items-center gap-2 text-xs font-semibold text-purple-400 group-hover:text-purple-300 transition-colors cursor-pointer">
                     <span>View Country Insights</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </span>
@@ -235,32 +242,32 @@ export default function ImmersiveDiscoverySection() {
 
             {/* CARD 3 — PLAN */}
             <TiltCard 
-              className="bg-[#0A0F1E] text-white border-white/10 shadow-lg hover:border-cyan-500/30 p-5 sm:p-6 flex flex-col justify-between md:col-span-2 lg:col-span-1"
-              style={{ background: 'linear-gradient(145deg, #0A0F1E 30%, #0e7490 100%)' }}
+              className="bg-[#070C18] text-white border-white/10 shadow-xl hover:border-blue-500/40 p-6 sm:p-7 flex flex-col justify-between md:col-span-2 lg:col-span-1 group"
+              style={{ background: 'radial-gradient(circle at 80% 20%, rgba(59,130,246,0.12) 0%, transparent 60%), linear-gradient(145deg, #070C18 30%, #0369A1 100%)' }}
             >
-              <div className="relative h-full flex flex-col justify-between space-y-5">
+              <div className="relative h-full flex flex-col justify-between space-y-6">
                 <div>
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-4">
                     <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full border border-blue-500/30 bg-blue-950/60 text-blue-400 text-[11px] font-bold font-mono tracking-widest">
                       03
                     </span>
-                    <span className="text-[10px] font-semibold text-cyan-300/80 uppercase tracking-wider flex items-center gap-1">
-                      <Plane className="w-3.5 h-3.5 rotate-45" /> AI Planner
+                    <span className="text-[10px] font-semibold text-blue-300/90 uppercase tracking-wider flex items-center gap-1.5">
+                      <Plane className="w-3.5 h-3.5 rotate-45 text-blue-400" /> AI Planner
                     </span>
                   </div>
 
                   <div className="text-left">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight">
+                    <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight font-heading">
                       Plan
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-300/80 mt-1.5 leading-relaxed font-light">
+                    <p className="text-xs sm:text-sm text-slate-300/80 mt-2 leading-relaxed font-light">
                       Create personalized AI itineraries with day-by-day routes based on your style & budget.
                     </p>
                   </div>
                 </div>
 
-                {/* Inner Visual Container */}
-                <div className="w-full h-36 sm:h-40 rounded-xl bg-[#0A0F1E]/80 border border-white/10 flex items-center justify-center relative select-none overflow-hidden">
+                {/* Inner Visual Container — SVG Route & Badges */}
+                <div className="w-full h-40 sm:h-44 rounded-2xl bg-[#030712]/70 border border-white/10 flex items-center justify-center relative select-none overflow-hidden group-hover:border-blue-500/20 transition-colors">
                   <svg className="absolute inset-0 w-full h-full text-cyan-400" viewBox="0 0 200 120" fill="none">
                     <path
                       d="M 20,90 Q 70,25 120,75 T 180,30"
@@ -279,12 +286,12 @@ export default function ImmersiveDiscoverySection() {
                     </defs>
                   </svg>
 
-                  <div className="absolute left-4 top-3 bg-[#0A0F1E]/90 border border-white/15 rounded-lg px-2.5 py-1 flex flex-col items-start leading-none">
+                  <div className="absolute left-4 top-3 bg-slate-900/85 border border-white/15 rounded-xl px-3 py-1.5 flex flex-col items-start leading-none backdrop-blur-xs shadow-md">
                     <span className="text-[8px] text-slate-400 uppercase tracking-widest font-semibold mb-0.5">Budget</span>
                     <span className="text-cyan-400 font-bold text-xs">$1,850</span>
                   </div>
 
-                  <div className="absolute right-4 bottom-3 bg-[#0A0F1E]/90 border border-white/15 rounded-lg px-2.5 py-1 flex items-center gap-1.5 leading-none">
+                  <div className="absolute right-4 bottom-3 bg-slate-900/85 border border-white/15 rounded-xl px-3 py-1.5 flex items-center gap-1.5 leading-none backdrop-blur-xs shadow-md">
                     <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                     <div className="flex flex-col items-start leading-none">
                       <span className="text-[8px] text-slate-400 uppercase tracking-widest font-semibold mb-0.5">AI Score</span>
@@ -295,7 +302,7 @@ export default function ImmersiveDiscoverySection() {
 
                 {/* Action CTA Link */}
                 <div className="pt-1 text-left">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors cursor-pointer">
+                  <span className="inline-flex items-center gap-2 text-xs font-semibold text-blue-400 group-hover:text-blue-300 transition-colors cursor-pointer">
                     <span>Start AI Trip Planner</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </span>
@@ -311,3 +318,4 @@ export default function ImmersiveDiscoverySection() {
     </section>
   );
 }
+
