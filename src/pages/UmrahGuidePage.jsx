@@ -643,7 +643,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Taiba Souq',
     category: 'Traditional Markets (Souqs)',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Taiba_Bazaar.jpg',
+    image: '/assets/madinah_taiba_souq.png',
     description: 'A bustling traditional indoor bazaar famous for gold jewelry, abayas, and local spices.',
     history: 'Stands as a historical marketplace known for traditional gold trading.',
     tips: 'Excellent place to purchase pure gold and authentic Madinah mint (Na\'na).',
@@ -652,7 +652,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'King Fahd Central Park',
     category: 'Parks & Family Attractions',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/d/de/King_Fahd_Central_Park_Madinah.jpg',
+    image: '/assets/madinah_king_fahd_park.jpg',
     description: 'A huge green park featuring trees, walking tracks, play areas, and a small lake.',
     history: 'The largest public park in Madinah, acting as the green lungs of the city.',
     tips: 'Visit on weekend evenings to experience the lively family atmosphere and local food stalls.',
@@ -661,7 +661,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Prince Mohammed bin Abdulaziz Park',
     category: 'Parks & Family Attractions',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/9/98/Madinah_mountain_park.jpg',
+    image: '/assets/madinah_prince_mohammad_park.jpg',
     description: 'A hilltop park offering stunning panoramic views of the illuminated city of Madinah at night.',
     history: 'Developed on a high altitude point to offer scenic views of the holy city.',
     tips: 'Highly recommended to visit at night. Bring a jacket as the hilltop can get breezy.',
@@ -670,7 +670,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Madinah Zoo',
     category: 'Parks & Family Attractions',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/d/d4/Madinah_zoo_park.jpg',
+    image: '/assets/madinah_zoo.png',
     description: 'A modest animal park featuring local and exotic animals, bird enclosures, and play spaces.',
     history: 'Established to provide local kids and visitors with animal educational experiences.',
     tips: 'Check current operational hours; best visited with young children in the late afternoon.',
@@ -679,7 +679,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Wadi Al-Aqiq',
     category: 'Hidden Gems',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/8/87/Wadi_Aqeeq_Medina.jpg',
+    image: '/assets/madinah_wadi_al_aqeeq.jpg',
     description: 'The blessed valley mentioned in Hadith, featuring green banks and walking pathways.',
     history: 'The Prophet was told by an angel to pray in this blessed valley during his Hajj journey.',
     tips: 'A beautiful place for walking during the winter season when water flows in the valley.',
