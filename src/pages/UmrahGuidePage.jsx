@@ -1254,15 +1254,15 @@ export default function UmrahGuidePage() {
         {/* Bottom blend into page background */}
         <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-slate-50 dark:from-[#020813] to-transparent z-[1] pointer-events-none" />
 
-        {/* Content Layer */}
-        <div className="relative z-10 pt-[78px]">
-          <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex flex-col pt-6 pb-14 min-h-[560px] sm:min-h-[620px]">
+        {/* Content Layer — with extra top padding on mobile to clear fixed navbar */}
+        <div className="relative z-10 pt-28 sm:pt-[78px]">
+          <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex flex-col pt-4 sm:pt-6 pb-14 min-h-[560px] sm:min-h-[620px]">
             
             {/* Top spacer — pushes breadcrumbs down from navbar */}
-            <div className="flex-1" />
+            <div className="flex-1 hidden sm:block" />
 
-            {/* Breadcrumbs — centered between navbar and SPIRITUAL DESTINATION HUB */}
-            <nav className="flex items-center gap-2 text-xs font-semibold select-none">
+            {/* Breadcrumbs — cleanly positioned below navbar on all mobile viewports */}
+            <nav className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-semibold select-none mt-2 sm:mt-0 flex-wrap">
               <Link to="/" className="text-white/60 hover:text-[#10B981] transition-colors duration-200">Home</Link>
               <ChevronRight size={10} className="text-white/30" />
               <Link to="/pilgrimage" className="text-white/60 hover:text-[#10B981] transition-colors duration-200">Pilgrimage Hub</Link>
