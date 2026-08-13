@@ -25,15 +25,12 @@ export default function CustomSlider({
 
   return (
     <div className={`w-full select-none ${className}`}>
-      {/* Optional Top Label & Top Value Header */}
+      {/* Optional Top Label Header */}
       {label && (
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex justify-between items-center mb-1">
           <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest font-heading">
             {label}
           </label>
-          <span className="text-xs font-bold text-blue-600 dark:text-blue-400 font-mono">
-            {displayValue}
-          </span>
         </div>
       )}
 
