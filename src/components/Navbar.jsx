@@ -217,9 +217,9 @@ export default function Navbar({ isDark, toggleTheme }) {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 w-full border-b backdrop-blur-xl flex items-center ${
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 w-full border-b flex items-center ${
           scrolled
-            ? 'bg-white/95 dark:bg-[#020813]/95 border-slate-200/50 dark:border-white/[0.08] shadow-md h-[64px]'
+            ? 'bg-white dark:bg-[#020813] border-slate-200/50 dark:border-white/[0.08] shadow-md h-[64px]'
             : 'bg-transparent border-transparent h-[78px]'
         }`}
       >

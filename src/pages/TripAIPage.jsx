@@ -758,8 +758,8 @@ Never generate fake hotels/prices. If user asks short questions, give short prec
         <div className="absolute top-[-10%] left-[20%] w-[550px] h-[550px] rounded-full bg-blue-500/[0.02] dark:bg-blue-600/[0.05] blur-[120px] pointer-events-none z-0" />
         <div className="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-indigo-500/[0.02] dark:bg-indigo-600/[0.04] blur-[100px] pointer-events-none z-0" />
 
-        {/* Top Header Navigation Bar — Sleek, aligned glassmorphic controls */}
-        <div className="relative z-30 w-full px-4 py-3 border-b border-gray-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0C0E14]/80 backdrop-blur-md flex items-center justify-between select-none">
+        {/* Top Header Navigation Bar — Sleek, aligned controls */}
+        <div className="relative z-30 w-full px-4 py-3 border-b border-gray-200/80 dark:border-white/10 bg-white dark:bg-[#0C0E14] flex items-center justify-between select-none">
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setSidebarOpen(!sidebarOpen)}
