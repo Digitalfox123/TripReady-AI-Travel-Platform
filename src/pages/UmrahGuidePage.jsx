@@ -481,7 +481,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Masjid al-Jumu\'ah',
     category: 'Religious & Pilgrimage',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Masjid_al-Jumuah_Madinah.jpg',
+    image: '/assets/madinah_jumuah.jpg',
     description: 'The mosque marking the site where the Prophet performed the first Friday congregational prayer.',
     history: 'Built on the spot where the Prophet stopped on his way from Quba to central Madinah.',
     tips: 'Located near Quba Mosque. A quick and peaceful visit, especially during weekdays.',
@@ -490,7 +490,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Masjid al-Ghamamah',
     category: 'Religious & Pilgrimage',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/4/4d/Masjid_al-Ghamama.jpg',
+    image: '/assets/madinah_ghamamah.jpg',
     description: 'The Mosque of the Cloud, where the Prophet performed the rain prayer (Istisqa).',
     history: 'A cloud was said to have miraculously shaded the Prophet from the hot sun during outdoor prayers here.',
     tips: 'Located just steps outside the southwest gate of Nabawi Mosque. An excellent photo spot.',
@@ -499,7 +499,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Masjid Abu Bakr',
     category: 'Religious & Pilgrimage',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/7/75/Abu_Bakr_Mosque_Madina.jpg',
+    image: '/assets/madinah_abubakr.jpg',
     description: 'A historic mosque built on the site where Abu Bakr used to lead Eid prayers.',
     history: 'An Ottoman-era structure marking a location of early Islamic Eid congregations.',
     tips: 'Located adjacent to Masjid al-Ghamamah, easily visited on foot from the Nabawi Mosque courtyard.',
@@ -571,7 +571,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Dar Al Madinah Museum',
     category: 'Museums & Cultural',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Dar_Al_Madinah_Museum_interior.jpg',
+    image: '/assets/madinah_dar_al_madinah_museum.jpg',
     description: 'The first specialized museum of Madinah\'s heritage, featuring models of the city\'s expansion.',
     history: 'Provides visual 3D models showing the city at the time of the Prophet and its evolution.',
     tips: 'Hire a museum guide to walk you through the models; the detailed history is highly educational.',
@@ -580,7 +580,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Prophet\'s Biography Museum',
     category: 'Museums & Cultural',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/4/4f/International_Museum_of_the_Prophet_Biography.jpg',
+    image: '/assets/madinah_prophet_biography_museum.jpg',
     description: 'A state-of-the-art digital museum displaying the life, virtues, and miracles of the Prophet.',
     history: 'Inaugurated recently under the supervision of the Muslim World League directly next to Masjid Nabawi.',
     tips: 'Located right outside gate 8 of Masjid Nabawi. Book tickets online in advance.',
