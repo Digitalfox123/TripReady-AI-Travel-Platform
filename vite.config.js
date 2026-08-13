@@ -31,11 +31,14 @@ export default defineConfig({
             if (id.includes('supabase')) {
               return 'vendor-supabase';
             }
-            return 'vendor-others';
+            return 'vendor-libs';
+          }
+          if (id.includes('src/data/')) {
+            return 'data-database';
           }
         }
       }
     },
-    chunkSizeWarningLimit: 1200
+    chunkSizeWarningLimit: 1500
   }
 })

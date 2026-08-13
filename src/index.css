@@ -568,3 +568,31 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
   transition: transform 0.15s ease;
 }
+
+/* ── Global Speed & Mobile Performance Optimizations ─────────────────── */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* GPU hardware acceleration for smooth 60fps scrolling on low-end mobile devices */
+@media (max-width: 768px) {
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Tone down heavy background pulse animations on mobile browsers to save battery & CPU */
+  .animate-pulse, .animate-ping {
+    animation-duration: 4s !important;
+  }
+}
+
+/* Content visibility utility to skip rendering off-screen subtrees until scrolled into view */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 400px;
+}

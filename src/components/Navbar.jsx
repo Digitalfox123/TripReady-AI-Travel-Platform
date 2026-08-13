@@ -65,7 +65,8 @@ export default function Navbar({ isDark, toggleTheme }) {
   const modalRef = useRef(null);
 
   const handleScroll = useCallback(() => {
-    setScrolled(window.scrollY > 24);
+    const isScrolled = window.scrollY > 24;
+    setScrolled(prev => (prev !== isScrolled ? isScrolled : prev));
   }, []);
 
   useEffect(() => {
