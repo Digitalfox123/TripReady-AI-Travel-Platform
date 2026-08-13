@@ -5,32 +5,51 @@ import { useTheme } from './hooks/useTheme';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
+import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider } from './context/AuthContext';
 import { topDestinations } from './data';
 import { blogPosts } from './data/blogData';
 
-// ── Lazy Loaded Secondary Route Pages for Fast Mobile Performance ──
-const DestinationPage = lazy(() => import('./pages/DestinationPage'));
-const BudgetPlannerPage = lazy(() => import('./pages/BudgetPlannerPage'));
-const AboutPage = lazy(() => import('./pages/AboutPage'));
-const ContactPage = lazy(() => import('./pages/ContactPage'));
-const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
-const TermsPage = lazy(() => import('./pages/TermsPage'));
-const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
-const TripAIPage = lazy(() => import('./pages/TripAIPage'));
-const DestinationsExplorerPage = lazy(() => import('./pages/DestinationsExplorerPage'));
-const FullTripPlannerPage = lazy(() => import('./pages/FullTripPlannerPage'));
-const BlogExplorerPage = lazy(() => import('./pages/BlogExplorerPage'));
-const BlogPostPage = lazy(() => import('./pages/BlogPostPage'));
-const CountryExplorerPage = lazy(() => import('./pages/CountryExplorerPage'));
-const CountryPage = lazy(() => import('./pages/CountryPage'));
-const StatePage = lazy(() => import('./pages/StatePage'));
-const CityPage = lazy(() => import('./pages/CityPage'));
-const AttractionPage = lazy(() => import('./pages/AttractionPage'));
-const UmrahGuidePage = lazy(() => import('./pages/UmrahGuidePage'));
-const PilgrimageHubPage = lazy(() => import('./pages/PilgrimageHubPage'));
-const AuthPage = lazy(() => import('./pages/AuthPage'));
-const ProfileDashboardPage = lazy(() => import('./pages/ProfileDashboardPage'));
+// ── Auto-Retrying Dynamic Import Helper to Prevent Blank Screen Crashes ──
+function lazyWithRetry(componentImport) {
+  return lazy(async () => {
+    try {
+      return await componentImport();
+    } catch (error) {
+      console.warn("Chunk load hiccup caught. Auto-recovering page...", error);
+      const lastReload = sessionStorage.getItem('chunk_auto_reload');
+      const now = Date.now();
+      if (!lastReload || now - parseInt(lastReload, 10) > 8000) {
+        sessionStorage.setItem('chunk_auto_reload', now.toString());
+        window.location.reload();
+      }
+      throw error;
+    }
+  });
+}
+
+// ── Lazy Loaded Secondary Route Pages with Auto-Retry ──
+const DestinationPage = lazyWithRetry(() => import('./pages/DestinationPage'));
+const BudgetPlannerPage = lazyWithRetry(() => import('./pages/BudgetPlannerPage'));
+const AboutPage = lazyWithRetry(() => import('./pages/AboutPage'));
+const ContactPage = lazyWithRetry(() => import('./pages/ContactPage'));
+const DisclaimerPage = lazyWithRetry(() => import('./pages/DisclaimerPage'));
+const TermsPage = lazyWithRetry(() => import('./pages/TermsPage'));
+const PrivacyPage = lazyWithRetry(() => import('./pages/PrivacyPage'));
+const TripAIPage = lazyWithRetry(() => import('./pages/TripAIPage'));
+const DestinationsExplorerPage = lazyWithRetry(() => import('./pages/DestinationsExplorerPage'));
+const FullTripPlannerPage = lazyWithRetry(() => import('./pages/FullTripPlannerPage'));
+const BlogExplorerPage = lazyWithRetry(() => import('./pages/BlogExplorerPage'));
+const BlogPostPage = lazyWithRetry(() => import('./pages/BlogPostPage'));
+const CountryExplorerPage = lazyWithRetry(() => import('./pages/CountryExplorerPage'));
+const CountryPage = lazyWithRetry(() => import('./pages/CountryPage'));
+const StatePage = lazyWithRetry(() => import('./pages/StatePage'));
+const CityPage = lazyWithRetry(() => import('./pages/CityPage'));
+const AttractionPage = lazyWithRetry(() => import('./pages/AttractionPage'));
+const UmrahGuidePage = lazyWithRetry(() => import('./pages/UmrahGuidePage'));
+const PilgrimageHubPage = lazyWithRetry(() => import('./pages/PilgrimageHubPage'));
+const AuthPage = lazyWithRetry(() => import('./pages/AuthPage'));
+const ProfileDashboardPage = lazyWithRetry(() => import('./pages/ProfileDashboardPage'));
 
 // Ultra-fast Page Loading Fallback
 function PageLoader() {
@@ -145,34 +164,36 @@ export default function App() {
         {/* Navbar — visible everywhere except on TripAI chatbot page */}
         {pathname !== '/trip-ai' && <Navbar isDark={isDark} toggleTheme={toggleTheme} />}
 
-        {/* Main content */}
+        {/* Main content with Auto-Recovery ErrorBoundary */}
         <main className="flex-1">
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/destinations" element={<DestinationsExplorerPage />} />
-              <Route path="/destination/:id" element={<DestinationPage />} />
-              <Route path="/budget-planner" element={<BudgetPlannerPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/disclaimer" element={<DisclaimerPage />} />
-              <Route path="/terms" element={<TermsPage />} />
-              <Route path="/privacy" element={<PrivacyPage />} />
-              <Route path="/trip-ai" element={<TripAIPage />} />
-              <Route path="/ai-trip-planner" element={<FullTripPlannerPage />} />
-              <Route path="/blog" element={<BlogExplorerPage />} />
-              <Route path="/blog/:id" element={<BlogPostPage />} />
-              <Route path="/country-explorer" element={<CountryExplorerPage />} />
-              <Route path="/country/:slug" element={<CountryPage />} />
-              <Route path="/state/:slug" element={<StatePage />} />
-              <Route path="/city/:slug" element={<CityPage />} />
-              <Route path="/attraction/:slug" element={<AttractionPage />} />
-              <Route path="/pilgrimage" element={<PilgrimageHubPage />} />
-              <Route path="/pilgrimage/umrah" element={<UmrahGuidePage />} />
-              <Route path="/auth" element={<AuthPage />} />
-              <Route path="/dashboard" element={<ProfileDashboardPage />} />
-            </Routes>
-          </Suspense>
+          <ErrorBoundary key={pathname}>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/destinations" element={<DestinationsExplorerPage />} />
+                <Route path="/destination/:id" element={<DestinationPage />} />
+                <Route path="/budget-planner" element={<BudgetPlannerPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/disclaimer" element={<DisclaimerPage />} />
+                <Route path="/terms" element={<TermsPage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/trip-ai" element={<TripAIPage />} />
+                <Route path="/ai-trip-planner" element={<FullTripPlannerPage />} />
+                <Route path="/blog" element={<BlogExplorerPage />} />
+                <Route path="/blog/:id" element={<BlogPostPage />} />
+                <Route path="/country-explorer" element={<CountryExplorerPage />} />
+                <Route path="/country/:slug" element={<CountryPage />} />
+                <Route path="/state/:slug" element={<StatePage />} />
+                <Route path="/city/:slug" element={<CityPage />} />
+                <Route path="/attraction/:slug" element={<AttractionPage />} />
+                <Route path="/pilgrimage" element={<PilgrimageHubPage />} />
+                <Route path="/pilgrimage/umrah" element={<UmrahGuidePage />} />
+                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/dashboard" element={<ProfileDashboardPage />} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
         </main>
 
         {/* Footer — visible everywhere except on TripAI chatbot page */}
