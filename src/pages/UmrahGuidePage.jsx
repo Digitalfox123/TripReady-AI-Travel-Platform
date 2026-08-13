@@ -508,7 +508,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Masjid Ali ibn Abi Talib',
     category: 'Religious & Pilgrimage',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/4/4d/Masjid_Ali_Madinah.jpg',
+    image: '/assets/madinah_masjid_ali.jpg',
     description: 'A historic small mosque built where Ali ibn Abi Talib performed Eid prayers.',
     history: 'Built during the reign of Caliph Umar bin Abdul Aziz and renovated during the Ottoman era.',
     tips: 'Located very close to Masjid al-Ghamamah. Primarily visited for its historical architecture.',
@@ -517,7 +517,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Masjid Umar ibn Al-Khattab',
     category: 'Religious & Pilgrimage',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Umar_Mosque_Madina.jpg',
+    image: '/assets/madinah_masjid_umar.png',
     description: 'A small mosque commemorating the place where Umar ibn al-Khattab prayed.',
     history: 'Part of the cluster of historic mosques in the central district of Madinah.',
     tips: 'Right near Masjid al-Ghamamah, can be viewed from the outside while walking around the perimeter.',
@@ -688,7 +688,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Bir Ghars',
     category: 'Hidden Gems',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/d/dd/Bir_Ghars_well.jpg',
+    image: '/assets/madinah_bir_ghars.png',
     description: 'The historic well from which the Prophet drank and requested to be washed with its water.',
     history: 'One of the primary historic wells linked directly to the Prophet\'s daily life.',
     tips: 'Recently restored with a heritage visitor center. Very peaceful and spiritually significant.',
