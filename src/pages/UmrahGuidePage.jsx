@@ -598,7 +598,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Al Noor Mall',
     category: 'Shopping Malls',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/3/36/Al_Noor_Mall_Madina.jpg',
+    image: '/assets/madinah_al_noor_mall.png',
     description: 'The most popular modern shopping mall in Madinah, housing retail brands and food courts.',
     history: 'Built to provide a premium shopping experience to locals and visitors in northern Madinah.',
     tips: 'Ideal for escaping the afternoon heat. Has a large supermarket for basic travel groceries.',
@@ -607,7 +607,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Al Rashid Mega Mall',
     category: 'Shopping Malls',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/9/91/Al_Rashid_Mall_Medina.jpg',
+    image: '/assets/madinah_al_rashid_mega_mall.jpg',
     description: 'A massive shopping mall featuring a scenic indoor lake and kids entertainment.',
     history: 'A key modern lifestyle and shopping landmark in Madinah.',
     tips: 'Includes high-end international dining outlets and a massive play area for kids.',
@@ -616,7 +616,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Al Manar Mall',
     category: 'Shopping Malls',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Al_Manar_Mall_entrance.jpg',
+    image: '/assets/madinah_al_manar_mall.jpg',
     description: 'A family-oriented shopping mall featuring a variety of fashion and accessory stores.',
     history: 'Designed as a convenient neighborhood shopping hub for local residents.',
     tips: 'Very close to Quba, making it a good stop after visiting Quba Mosque.',
@@ -625,7 +625,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Taiba Commercial Center',
     category: 'Shopping Malls',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Taiba_Commercial_Center_Exterior.jpg',
+    image: '/assets/madinah_taiba_commercial_center.png',
     description: 'A shopping complex located steps away from Al-Masjid an-Nabawi.',
     history: 'Serves as the primary shopping spot for pilgrims staying in northern hotels.',
     tips: 'Best place for buying prayer mats, abayas, dates, and Oud perfumes next to the Haram.',
@@ -634,7 +634,7 @@ const MADINAH_ATTRACTIONS = [
   {
     name: 'Old Bazaar near Al-Masjid an-Nabawi',
     category: 'Traditional Markets (Souqs)',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Old_Bazaar_Street_Medina.jpg',
+    image: '/assets/madinah_old_bazaar.jpg',
     description: 'A lively traditional street market selling local garments, dates, and Islamic souvenirs.',
     history: 'A historic market quarter that has served pilgrims for generations.',
     tips: 'Haggling is highly recommended. Try Ajwa dates here, which are local to Madinah.',
