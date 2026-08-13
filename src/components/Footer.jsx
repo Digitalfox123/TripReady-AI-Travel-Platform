@@ -13,6 +13,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { currencies } from '../data';
 
 
 /* ========== Data ========== */
@@ -215,8 +216,10 @@ export default function Footer() {
                 onChange={(e) => updatePreferences(preferences.language, e.target.value, preferences.theme)}
                 className="bg-transparent border-none outline-none text-[10px] font-bold text-slate-300 cursor-pointer appearance-none pr-5 select-none focus:ring-0 focus:border-none p-0"
               >
-                {['USD', 'PKR', 'AED', 'SAR', 'EUR', 'GBP', 'INR', 'JPY'].map(curr => (
-                  <option key={curr} value={curr} className="bg-[#0f172a] text-slate-200">{curr}</option>
+                {currencies.map(c => (
+                  <option key={c.code} value={c.code} className="bg-[#0f172a] text-slate-200">
+                    {c.code} ({c.symbol})
+                  </option>
                 ))}
               </select>
               <ChevronDown size={10} className="absolute right-3.5 text-slate-500 pointer-events-none" />

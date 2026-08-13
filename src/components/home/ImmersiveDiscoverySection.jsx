@@ -132,28 +132,36 @@ export default function ImmersiveDiscoverySection() {
                   </div>
                 </div>
 
-                {/* Inner Visual Container — Globe with Transparent PNG */}
+                {/* Inner Visual Container — High-Tech Vector 3D Globe (No PNG checkerboard artifacts) */}
                 <div className="w-full h-40 sm:h-44 rounded-2xl bg-[#030712]/70 border border-white/10 flex items-center justify-center relative select-none overflow-hidden group-hover:border-cyan-500/20 transition-colors">
                   {/* Subtle ambient glow behind globe */}
-                  <div className="absolute inset-0 bg-radial from-cyan-500/15 via-transparent to-transparent opacity-60 blur-xl pointer-events-none" />
+                  <div className="absolute inset-0 bg-radial from-cyan-500/20 via-transparent to-transparent opacity-70 blur-xl pointer-events-none" />
 
-                  {/* 3D Spinning Globe — Pure Transparent PNG without black box */}
-                  <img 
-                    src="/earth_globe_transparent.png" 
-                    alt="3D Globe"
-                    className="w-28 h-28 sm:w-32 sm:h-32 object-contain z-10 animate-spin-slow drop-shadow-[0_0_20px_rgba(6,182,212,0.35)]"
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  {/* High-Tech Vector 3D Sphere */}
+                  <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-cyan-950/60 via-slate-900/90 to-blue-950/80 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_30px_rgba(6,182,212,0.25)]">
+                    
+                    {/* Lat/Long Wireframe Rings SVG */}
+                    <svg className="absolute inset-0 w-full h-full text-cyan-400/30 animate-spin-slow" viewBox="0 0 100 100" fill="none">
+                      <circle cx="50" cy="50" r="46" stroke="currentColor" strokeWidth="0.8" strokeDasharray="3 3" />
+                      <ellipse cx="50" cy="50" rx="46" ry="18" stroke="currentColor" strokeWidth="0.8" />
+                      <ellipse cx="50" cy="50" rx="46" ry="34" stroke="currentColor" strokeWidth="0.8" />
+                      <ellipse cx="50" cy="50" rx="18" ry="46" stroke="currentColor" strokeWidth="0.8" />
+                      <line x1="50" y1="4" x2="50" y2="96" stroke="currentColor" strokeWidth="0.8" />
+                      <line x1="4" y1="50" x2="96" y2="50" stroke="currentColor" strokeWidth="0.8" />
+                    </svg>
+
+                    {/* Center Glow Icon */}
+                    <Globe className="w-14 h-14 text-cyan-300 stroke-[1.3] relative z-10 drop-shadow-[0_0_12px_rgba(6,182,212,0.7)]" />
+                  </div>
                   
                   {/* Floating Map Pins */}
                   <div className="absolute top-5 left-8 z-20 animate-[floatPin1_4s_infinite_ease-in-out]">
-                    <div className="p-1.5 rounded-full bg-cyan-500/20 backdrop-blur-xs border border-cyan-400/40 text-cyan-300">
+                    <div className="p-1.5 rounded-full bg-cyan-500/20 backdrop-blur-xs border border-cyan-400/40 text-cyan-300 shadow-sm">
                       <MapPin size={14} className="fill-cyan-400/50" />
                     </div>
                   </div>
                   <div className="absolute bottom-5 right-8 z-20 animate-[floatPin1_3.5s_infinite_ease-in-out_1s]">
-                    <div className="p-1 rounded-full bg-blue-500/20 backdrop-blur-xs border border-blue-400/40 text-blue-300">
+                    <div className="p-1 rounded-full bg-blue-500/20 backdrop-blur-xs border border-blue-400/40 text-blue-300 shadow-sm">
                       <MapPin size={12} className="fill-blue-400/50" />
                     </div>
                   </div>

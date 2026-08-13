@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../utils/supabaseClient';
+import { currencies } from '../data';
 import { 
   User, LayoutDashboard, Compass, Star, Clock, BookOpen, Settings, LogOut, Globe, DollarSign,
   Plus, Edit, Trash2, Copy, Share2, Heart, Shield, FileText, CheckCircle, RefreshCw,
@@ -839,23 +840,18 @@ export default function ProfileDashboardPage() {
                 <p className="text-[10px] text-slate-400 font-light leading-relaxed">
                   Select your preferred currency display. All flight, hotel, packages, and AI-estimated budgets convert dynamically.
                 </p>
-                <div className="flex flex-wrap gap-2.5">
-                  {['USD', 'PKR', 'AED', 'SAR', 'EUR', 'GBP', 'INR', 'JPY'].map((curr) => {
-                    const active = preferences.currency === curr;
-                    return (
-                      <button
-                        key={curr}
-                        onClick={() => handleUpdateCurrency(curr)}
-                        className={`px-4.5 py-2.5 rounded-xl text-xs font-bold transition-all border ${
-                          active 
-                            ? 'bg-blue-500/10 text-blue-500 border-blue-500/30'
-                            : 'bg-transparent text-slate-500 dark:text-slate-350 border-slate-150 dark:border-white/[0.05] hover:bg-slate-50 dark:hover:bg-white/[0.01] cursor-pointer'
-                        }`}
-                      >
-                        {curr}
-                      </button>
-                    );
-                  })}
+                <div className="max-w-xs">
+                  <select
+                    value={preferences.currency}
+                    onChange={(e) => handleUpdateCurrency(e.target.value)}
+                    className="w-full bg-white dark:bg-white/[0.03] text-[var(--text-primary)] border border-luxury-border dark:border-white/[0.08] px-4 py-2.5 rounded-xl font-bold text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer shadow-xs"
+                  >
+                    {currencies.map(c => (
+                      <option key={c.code} value={c.code} className="dark:bg-[#070e1b]">
+                        {c.code} ({c.symbol}) - {c.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

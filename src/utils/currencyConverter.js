@@ -1,26 +1,15 @@
-// Live exchange rate service with local robust fallbacks
+import { currencies } from '../data';
 
-const fallbackRates = {
-  USD: 1.0,
-  PKR: 278.5,
-  AED: 3.67,
-  SAR: 3.75,
-  EUR: 0.92,
-  GBP: 0.78,
-  INR: 83.5,
-  JPY: 157.0
-};
+// Dynamic fallback rates and symbols derived from full currencies list
+const fallbackRates = currencies.reduce((acc, cur) => {
+  acc[cur.code] = cur.rate;
+  return acc;
+}, {});
 
-const currencySymbols = {
-  USD: '$',
-  PKR: 'Rs. ',
-  AED: 'AED ',
-  SAR: 'SR ',
-  EUR: '€',
-  GBP: '£',
-  INR: '₹',
-  JPY: '¥'
-};
+const currencySymbols = currencies.reduce((acc, cur) => {
+  acc[cur.code] = cur.symbol;
+  return acc;
+}, {});
 
 // Fetch latest rates relative to USD
 export async function getLiveExchangeRates() {
@@ -37,9 +26,11 @@ export async function getLiveExchangeRates() {
     const data = await response.json();
     
     if (data && data.rates) {
-      const rates = {};
-      Object.keys(fallbackRates).forEach(code => {
-        rates[code] = data.rates[code] || fallbackRates[code];
+      const rates = { ...data.rates };
+      currencies.forEach(cur => {
+        if (!rates[cur.code]) {
+          rates[cur.code] = cur.rate;
+        }
       });
       
       localStorage.setItem('tripready_live_rates', JSON.stringify({
@@ -70,3 +61,4 @@ export function formatConvertedPrice(usdAmount, targetCurrency, customRates = nu
   
   return `${symbol}${converted.toLocaleString()}`;
 }
+

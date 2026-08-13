@@ -3838,11 +3838,11 @@ return (
                     onChange={(e) => setTravelerCurrency(e.target.value)}
                     className="w-full sm:w-1/2 bg-white dark:bg-white/[0.02] text-[var(--text-primary)] border border-luxury-border dark:border-white/[0.05] px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20 font-medium text-xs transition-all shadow-sm cursor-pointer"
                   >
-                    <option value="USD" className="dark:bg-[#070e1b]">USD ($) - US Dollar</option>
-                    <option value="PKR" className="dark:bg-[#070e1b]">PKR (Rs) - Pakistani Rupee</option>
-                    <option value="EUR" className="dark:bg-[#070e1b]">EUR (€) - Euro</option>
-                    <option value="GBP" className="dark:bg-[#070e1b]">GBP (£) - British Pound</option>
-                    <option value="AED" className="dark:bg-[#070e1b]">AED (د.إ) - UAE Dirham</option>
+                    {currencies.map(c => (
+                      <option key={c.code} value={c.code} className="dark:bg-[#070e1b]">
+                        {c.code} ({c.symbol}) - {c.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -4092,7 +4092,7 @@ className={`p-5 rounded-2xl border text-left transition-all duration-300 relativ
                       setLoadingLogIndex(0);
                       handleGeneratePlan();
                     }}
-                    className="px-6 py-3 rounded-full bg-gradient-to-r from-orange-500 to-indigo-650 text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2.5 shadow-lg hover:shadow-[0_0_24px_rgba(249,115,22,0.35)] transition-all hover:scale-[1.03] active:scale-[0.98] animate-pulse cursor-pointer"
+                    className="px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2.5 shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer"
                   >
                     <span>Generate AI Travel Plan</span>
                     <Sparkles className="w-4 h-4 text-white" />
