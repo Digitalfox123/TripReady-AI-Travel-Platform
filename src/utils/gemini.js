@@ -28,23 +28,27 @@ export function saveGeminiApiKey(key) {
   }
 }
 
-/**
- * Send request to OpenRouter API (google/gemma-4-26b-a4b-it:free) with fallback to Gemini.
- */
+const OPENROUTER_MODELS = [
+  'google/gemma-4-26b-a4b-it:free',
+  'meta-llama/llama-3.3-70b-instruct:free',
+  'deepseek/deepseek-r1:free',
+  'qwen/qwen-2.5-72b-instruct:free',
+  'google/gemma-2-9b-it:free'
+];
+
 export async function askGemini(prompt, systemInstruction = "") {
   const apiKey = getGeminiApiKey();
   if (!apiKey) {
-    console.warn("AI API key is not configured. Falling back to local high-fidelity generator.");
+    console.warn("AI API key is not configured.");
     return null;
   }
 
-  const maxRetries = 2;
-  let delayMs = 800;
+  const isOpenRouterKey = apiKey.startsWith('sk-or-v1-') || apiKey === DEFAULT_OPENROUTER_KEY;
 
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      // Primary: Try OpenRouter API with google/gemma-4-26b-a4b-it:free
-      if (apiKey.startsWith('sk-or-v1-') || apiKey === DEFAULT_OPENROUTER_KEY) {
+  if (isOpenRouterKey) {
+    // Iterate through available OpenRouter free models if one hits upstream rate limits (429)
+    for (const modelName of OPENROUTER_MODELS) {
+      try {
         const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
           headers: {
@@ -54,15 +58,13 @@ export async function askGemini(prompt, systemInstruction = "") {
             'X-Title': 'Trip Ready AI Travel Companion'
           },
           body: JSON.stringify({
-            model: GEMMA_MODEL,
+            model: modelName,
             messages: [
               ...(systemInstruction ? [{ role: 'system', content: systemInstruction }] : []),
               { role: 'user', content: prompt }
             ],
             temperature: 0.7,
-            reasoning: {
-              effort: 'high'
-            }
+            ...(modelName.includes('gemma-4') ? { reasoning: { effort: 'high' } } : {})
           })
         });
 
@@ -80,12 +82,24 @@ export async function askGemini(prompt, systemInstruction = "") {
           }
         } else {
           const errText = await response.text().catch(() => '');
-          console.warn(`OpenRouter Gemma API warning (${response.status}):`, errText);
+          console.warn(`OpenRouter model ${modelName} warning (${response.status}):`, errText);
+          // If rate limited (429) or overloaded (503/404), seamlessly failover to next model in pool
+          if (response.status === 429 || response.status === 503 || response.status === 404) {
+            continue;
+          }
         }
+      } catch (err) {
+        console.warn(`OpenRouter model ${modelName} fetch error:`, err);
+        continue;
       }
+    }
+    return null;
+  }
 
-      // Secondary Fallback: Google Gemini Native API
-      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+  // Native Google Gemini API endpoint (only if user provided a Google AI Studio key starting with AIzaSy)
+  if (apiKey.startsWith('AIzaSy')) {
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -95,24 +109,17 @@ export async function askGemini(prompt, systemInstruction = "") {
         })
       });
 
-      if (geminiResponse.ok) {
-        const data = await geminiResponse.json();
+      if (response.ok) {
+        const data = await response.json();
         const candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
         if (candidateText) return candidateText;
       }
-
-      throw new Error("Invalid response format received from AI provider.");
-    } catch (error) {
-      if (attempt < maxRetries) {
-        const jitter = Math.random() * 200;
-        await new Promise(res => setTimeout(res, delayMs + jitter));
-        delayMs *= 2;
-        continue;
-      }
-      console.error("Failed to fetch response from AI provider after retries:", error);
-      return null;
+    } catch (e) {
+      console.error("Gemini API error:", e);
     }
   }
+
+  return null;
 }
 
 /**

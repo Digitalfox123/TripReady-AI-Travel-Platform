@@ -16,10 +16,10 @@ function lazyWithRetry(componentImport) {
     try {
       return await componentImport();
     } catch (error) {
-      console.warn("Chunk load hiccup caught. Auto-recovering page...", error);
+      console.warn("Module script / chunk load hiccup caught. Auto-recovering page...", error);
       const lastReload = sessionStorage.getItem('chunk_auto_reload');
       const now = Date.now();
-      if (!lastReload || now - parseInt(lastReload, 10) > 8000) {
+      if (!lastReload || now - parseInt(lastReload, 10) > 4000) {
         sessionStorage.setItem('chunk_auto_reload', now.toString());
         window.location.reload();
       }
