@@ -90,8 +90,8 @@ import { getGeminiApiKey, askGemini, repairJson } from '../utils/gemini';
 import { useGeoapifyTravel } from '../hooks/useGeoapifyTravel';
 import AttractionsGrid from '../components/AttractionsGrid';
 import HospitalSection from '../components/HospitalSection';
-import MapPanel from '../components/MapPanel';
 import { attractionKnowledgeBase, realCityFoodAndTransit } from '../data/attractionKnowledgeBase';
+import TripCommandCenter from '../components/trip/TripCommandCenter';
 
 // Helper function to map category ID to styled Lucide icon
 export function getCategoryIcon(id, className = "w-3.5 h-3.5") {
@@ -5252,14 +5252,14 @@ export default function DestinationPage() {
       <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-[var(--bg-primary)] text-[var(--text-primary)] pt-32">
         <div className="max-w-md text-center space-y-6 bg-white dark:bg-[#071125] p-10 rounded-[32px] border border-slate-100 dark:border-white/[0.04] shadow-premium">
           <div className="w-16 h-16 border-4 border-t-[var(--accent)] border-slate-200 dark:border-slate-800 rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="font-heading text-2xl font-bold">Loading Destination Guide...</h2>
+          <h2 className="font-heading text-2xl font-bold">Loading Trip Command Center...</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 font-light">
-            Retrieving destination analytics & weather charts...
+            Retrieving destination analytics & pre-departure intelligence...
           </p>
         </div>
       </div>
     );
   }
 
-  return <DestinationPageContent destination={dbDestination} />;
+  return <TripCommandCenter destination={dbDestination} />;
 }

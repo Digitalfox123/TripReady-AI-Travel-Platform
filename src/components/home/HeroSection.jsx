@@ -363,13 +363,32 @@ export default function HeroSection() {
     const match = topDestinations.find(
       (d) => d.name.toLowerCase() === target.toLowerCase()
     );
-    if (match) {
-      navigate(`/destination/${match.id}`);
-    } else {
-      const slug = target.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-      navigate(`/destination/${slug}`);
-    }
-  }, [destinationCity, destinationCountry, navigate]);
+    const destSlug = match ? match.id : target.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+    const params = new URLSearchParams();
+    if (departureCountry) params.set('originCountry', departureCountry);
+    if (departureCity) params.set('originCity', departureCity);
+    if (destinationCountry) params.set('destCountry', destinationCountry);
+    if (destinationCity) params.set('destCity', destinationCity);
+    if (startDate) params.set('startDate', startDate);
+    if (endDate) params.set('endDate', endDate);
+    if (travelers) params.set('travelers', travelers.toString());
+    if (travelType) params.set('travelType', travelType);
+
+    const queryString = params.toString();
+    navigate(`/destination/${destSlug}${queryString ? `?${queryString}` : ''}`, {
+      state: {
+        originCountry: departureCountry,
+        originCity: departureCity,
+        destinationCountry,
+        destinationCity,
+        startDate,
+        endDate,
+        travelers,
+        travelType
+      }
+    });
+  }, [departureCountry, departureCity, destinationCountry, destinationCity, startDate, endDate, travelers, travelType, navigate]);
 
   return (
     <section 
