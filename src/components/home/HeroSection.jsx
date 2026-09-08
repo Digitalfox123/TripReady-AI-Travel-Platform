@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Shield, MapPin, Bell, Mic, Plane, Calendar, ChevronRight, Wifi, Battery, Home, Compass, Briefcase, Settings } from 'lucide-react';
 import { countries, travelTypes, budgetPreferences, topDestinations } from '../../data';
+import { getBackendCities } from '../../data/backendCities';
 import { useTheme } from '../../hooks/useTheme';
 import { supabase } from '../../utils/supabaseClient';
 
@@ -63,11 +64,11 @@ function SearchableDropdown({ label, value, onChange, options, placeholder, disa
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Type to search..."
+              placeholder={options && options.length > 0 ? `Search ${options.length} cities...` : "Type to search..."}
               className="w-full bg-transparent text-sm text-luxury-primary dark:text-white placeholder-slate-400 outline-none"
             />
           </div>
-          <ul className="max-h-48 overflow-y-auto py-1 no-scrollbar">
+          <ul className="max-h-56 overflow-y-auto py-1 no-scrollbar">
             {filtered.length > 0 ? (
               filtered.map((opt) => (
                 <li key={opt}>
@@ -84,8 +85,18 @@ function SearchableDropdown({ label, value, onChange, options, placeholder, disa
                   </button>
                 </li>
               ))
+            ) : search.trim() ? (
+              <li className="p-1">
+                <button
+                  type="button"
+                  onClick={() => handleSelect(search.trim())}
+                  className="w-full text-left px-4 py-2.5 rounded-xl text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/25 hover:bg-blue-100 font-medium transition-colors"
+                >
+                  Use &quot;{search.trim()}&quot;
+                </button>
+              </li>
             ) : (
-              <li className="px-4 py-3 text-xs text-slate-400 text-center">No results</li>
+              <li className="px-4 py-3 text-xs text-slate-400 text-center">No cities found</li>
             )}
           </ul>
         </div>
@@ -292,60 +303,96 @@ export default function HeroSection() {
     loadCountries();
   }, []);
 
-  // Fetch cities for departure country
+  // Fetch cities for departure country (Instant backend cache + live Supabase sync)
   useEffect(() => {
     if (!departureCountry) {
       setDepartureCities([]);
       return;
     }
-    async function loadCities() {
+
+    let isSubscribed = true;
+
+    // 1. Immediately hydrate with all real cities saved in backend (0ms latency, always succeeds)
+    const cachedCities = getBackendCities(departureCountry);
+    if (cachedCities && cachedCities.length > 0) {
+      setDepartureCities(cachedCities);
+    } else {
+      const staticMatch = countries.find(c => c.name.toLowerCase() === departureCountry.toLowerCase());
+      if (staticMatch && staticMatch.cities) {
+        setDepartureCities(staticMatch.cities);
+      }
+    }
+
+    // 2. Concurrently query live Supabase in case new cities were created
+    async function syncLiveCities() {
       try {
         const { data, error } = await supabase
           .from('cities')
           .select('name')
-          .eq('country_name', departureCountry)
+          .ilike('country_name', departureCountry)
           .order('name', { ascending: true });
-        if (data && !error) {
-          setDepartureCities(data.map(c => c.name));
-        } else {
-          const staticMatch = countries.find(c => c.name === departureCountry);
-          setDepartureCities(staticMatch ? staticMatch.cities : []);
+
+        if (isSubscribed && data && data.length > 0 && !error) {
+          const liveNames = data.map(c => c.name).filter(Boolean);
+          const baseList = cachedCities || [];
+          const merged = Array.from(new Set([...baseList, ...liveNames])).sort((a, b) => a.localeCompare(b));
+          setDepartureCities(merged);
         }
       } catch (e) {
-        console.warn("Failed to load departure cities, using static fallback:", e);
-        const staticMatch = countries.find(c => c.name === departureCountry);
-        setDepartureCities(staticMatch ? staticMatch.cities : []);
+        console.warn("Live Supabase departure cities sync:", e);
       }
     }
-    loadCities();
+    syncLiveCities();
+
+    return () => {
+      isSubscribed = false;
+    };
   }, [departureCountry]);
 
-  // Fetch cities for destination country
+  // Fetch cities for destination country (Instant backend cache + live Supabase sync)
   useEffect(() => {
     if (!destinationCountry) {
       setDestinationCities([]);
       return;
     }
-    async function loadCities() {
+
+    let isSubscribed = true;
+
+    // 1. Immediately hydrate with all real cities saved in backend (0ms latency, always succeeds)
+    const cachedCities = getBackendCities(destinationCountry);
+    if (cachedCities && cachedCities.length > 0) {
+      setDestinationCities(cachedCities);
+    } else {
+      const staticMatch = countries.find(c => c.name.toLowerCase() === destinationCountry.toLowerCase());
+      if (staticMatch && staticMatch.cities) {
+        setDestinationCities(staticMatch.cities);
+      }
+    }
+
+    // 2. Concurrently query live Supabase in case new cities were created
+    async function syncLiveCities() {
       try {
         const { data, error } = await supabase
           .from('cities')
           .select('name')
-          .eq('country_name', destinationCountry)
+          .ilike('country_name', destinationCountry)
           .order('name', { ascending: true });
-        if (data && !error) {
-          setDestinationCities(data.map(c => c.name));
-        } else {
-          const staticMatch = countries.find(c => c.name === destinationCountry);
-          setDestinationCities(staticMatch ? staticMatch.cities : []);
+
+        if (isSubscribed && data && data.length > 0 && !error) {
+          const liveNames = data.map(c => c.name).filter(Boolean);
+          const baseList = cachedCities || [];
+          const merged = Array.from(new Set([...baseList, ...liveNames])).sort((a, b) => a.localeCompare(b));
+          setDestinationCities(merged);
         }
       } catch (e) {
-        console.warn("Failed to load destination cities, using static fallback:", e);
-        const staticMatch = countries.find(c => c.name === destinationCountry);
-        setDestinationCities(staticMatch ? staticMatch.cities : []);
+        console.warn("Live Supabase destination cities sync:", e);
       }
     }
-    loadCities();
+    syncLiveCities();
+
+    return () => {
+      isSubscribed = false;
+    };
   }, [destinationCountry]);
 
   const handleDepartureCountryChange = (c) => {

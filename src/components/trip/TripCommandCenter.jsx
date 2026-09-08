@@ -61,6 +61,7 @@ import {
 } from 'lucide-react';
 import { resolveDestinationIntelligence } from '../../data/commandCenterIntelligence';
 import { countries, topDestinations, currencies } from '../../data';
+import { getBackendCities } from '../../data/backendCities';
 import { fetchLiveVisaRequirement, simulateVisaRequirement, fetchLiveNews } from '../../utils/rapidApiService';
 
 export default function TripCommandCenter({ destination }) {
@@ -1722,9 +1723,10 @@ export default function TripCommandCenter({ destination }) {
                   <select
                     value={editOriginCountry}
                     onChange={(e) => {
-                      setEditOriginCountry(e.target.value);
-                      const match = countries.find(c => c.name === e.target.value);
-                      setEditOriginCity(match?.cities?.[0] || '');
+                      const newCountry = e.target.value;
+                      setEditOriginCountry(newCountry);
+                      const backendList = getBackendCities(newCountry);
+                      setEditOriginCity(backendList && backendList.length > 0 ? backendList[0] : '');
                     }}
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200"
                   >
@@ -1741,11 +1743,17 @@ export default function TripCommandCenter({ destination }) {
                   </label>
                   <input
                     type="text"
+                    list="modal-origin-cities"
                     value={editOriginCity}
                     onChange={(e) => setEditOriginCity(e.target.value)}
-                    placeholder="e.g. Lahore, Karachi"
+                    placeholder="e.g. Lahore, Geneva, Zurich"
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200"
                   />
+                  <datalist id="modal-origin-cities">
+                    {getBackendCities(editOriginCountry).map((city) => (
+                      <option key={city} value={city} />
+                    ))}
+                  </datalist>
                 </div>
               </div>
 
