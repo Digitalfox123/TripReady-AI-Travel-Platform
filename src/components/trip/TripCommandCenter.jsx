@@ -38,11 +38,12 @@ import { supabase } from '../../utils/supabaseClient';
 export default function TripCommandCenter({ destination }) {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { user } = useAuth();
+  const authContext = useAuth();
+  const user = authContext?.user || null;
 
   // ── 1. Extract and Normalize Trip Context ──────────────────────────────────
-  const destName = destination?.name || searchParams.get('destCity') || location.state?.destinationCity || 'Paris';
-  const destCountry = destination?.country || searchParams.get('destCountry') || location.state?.destinationCountry || 'France';
+  const destName = destination?.name || searchParams.get('destCity') || location.state?.destinationCity || 'Geneva';
+  const destCountry = destination?.country || searchParams.get('destCountry') || location.state?.destinationCountry || 'Switzerland';
 
   const [originCountry, setOriginCountry] = useState(
     location.state?.originCountry || searchParams.get('originCountry') || 'Pakistan'
@@ -65,16 +66,23 @@ export default function TripCommandCenter({ destination }) {
 
   // ── 2. Destination Type Determination ─────────────────────────────────────
   const destinationType = useMemo(() => {
-    if (destination?.rank) {
-      if (destination.rank.includes('Country')) return 'country';
-      if (destination.rank.includes('Attraction')) return 'attraction';
-      if (destination.rank.includes('State')) return 'state';
+    try {
+      if (destination?.rank && typeof destination.rank === 'string') {
+        if (destination.rank.includes('Country')) return 'country';
+        if (destination.rank.includes('Attraction')) return 'attraction';
+        if (destination.rank.includes('State')) return 'state';
+        return 'city';
+      }
+      const slugLower = String(destination?.id || destName || '').toLowerCase();
+      const isCountry = Array.isArray(countries) && countries.some(c => 
+        (c?.name && c.name.toLowerCase() === slugLower) || 
+        (c?.code && c.code.toLowerCase() === slugLower)
+      );
+      if (isCountry) return 'country';
+      return 'city';
+    } catch {
       return 'city';
     }
-    const slugLower = (destination?.id || destName).toLowerCase();
-    const isCountry = countries.some(c => c.name.toLowerCase() === slugLower || c.code.toLowerCase() === slugLower);
-    if (isCountry) return 'country';
-    return 'city';
   }, [destination, destName]);
 
   // ── 3. Edit Trip Modal State ──────────────────────────────────────────────
@@ -93,22 +101,29 @@ export default function TripCommandCenter({ destination }) {
 
   // ── 5. Destination Intelligence ───────────────────────────────────────────
   const intel = useMemo(() => {
-    return resolveDestinationIntelligence(destName, destCountry);
+    return resolveDestinationIntelligence(destName, destCountry) || {};
   }, [destName, destCountry]);
 
   // ── 6. Date & Duration Calculations ───────────────────────────────────────
   const { durationDays, dateRangeFormatted } = useMemo(() => {
-    if (!startDate || !endDate) {
-      return { durationDays: 7, dateRangeFormatted: 'Jun 15 – Jun 22, 2026' };
+    try {
+      if (!startDate || !endDate) {
+        return { durationDays: 7, dateRangeFormatted: 'Jun 15 – Jun 22, 2026' };
+      }
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        return { durationDays: 7, dateRangeFormatted: 'Flexible Dates' };
+      }
+      const diffTime = Math.abs(end - start);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+      const days = isNaN(diffDays) || diffDays < 1 ? 7 : diffDays;
+      const options = { month: 'short', day: 'numeric', year: 'numeric' };
+      const formatted = `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${end.toLocaleDateString('en-US', options)}`;
+      return { durationDays: days, dateRangeFormatted: formatted };
+    } catch {
+      return { durationDays: 7, dateRangeFormatted: 'Flexible Dates' };
     }
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const diffTime = Math.abs(end - start);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    const days = isNaN(diffDays) || diffDays < 1 ? 7 : diffDays;
-    const options = { month: 'short', day: 'numeric', year: 'numeric' };
-    const formatted = `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${end.toLocaleDateString('en-US', options)}`;
-    return { durationDays: days, dateRangeFormatted: formatted };
   }, [startDate, endDate]);
 
   // ── 7. Open-Meteo Live Weather Telemetry ──────────────────────────────────
@@ -233,44 +248,48 @@ export default function TripCommandCenter({ destination }) {
 
   // ── 12. Data-Driven Destination Highlights (Backend-driven) ──────────────
   const backendAttractions = useMemo(() => {
-    const slugNorm = destName.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const foundKey = Object.keys(attractionKnowledgeBase).find(key => {
-      const kNorm = key.toLowerCase().replace(/[^a-z0-9]/g, '');
-      return slugNorm === kNorm || slugNorm.includes(kNorm) || kNorm.includes(slugNorm);
-    });
-
-    if (foundKey && attractionKnowledgeBase[foundKey] && attractionKnowledgeBase[foundKey].length > 0) {
-      return attractionKnowledgeBase[foundKey].map(a => ({
-        id: a.id,
-        name: a.name,
-        category: a.category || 'Must See',
-        duration: a.visitDuration || '1.5 - 2 hours',
-        image: a.image || (a.images && a.images[0]) || 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=80',
-        description: a.description || a.longDescription || `Iconic landmark in ${destName}.`,
-        rating: a.rating || 4.8
-      }));
-    }
-
-    if (destination?.attractions && Array.isArray(destination.attractions) && destination.attractions.length > 0) {
-      return destination.attractions.map((attr, idx) => {
-        const name = typeof attr === 'string' ? attr : attr.name || `Attraction ${idx + 1}`;
-        return {
-          id: `attr-${idx}`,
-          name: name,
-          category: 'Landmark',
-          duration: '1.5 hours',
-          image: typeof attr === 'object' && attr.image ? attr.image : 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80',
-          description: typeof attr === 'object' && attr.description ? attr.description : `Scenic and historic landmark in ${destName}.`,
-          rating: 4.8
-        };
+    try {
+      const slugNorm = String(destName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const foundKey = Object.keys(attractionKnowledgeBase || {}).find(key => {
+        const kNorm = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+        return kNorm && (slugNorm === kNorm || slugNorm.includes(kNorm) || kNorm.includes(slugNorm));
       });
-    }
 
-    if (intel.curatedAttractions && intel.curatedAttractions.length > 0) {
-      return intel.curatedAttractions;
-    }
+      if (foundKey && attractionKnowledgeBase[foundKey] && Array.isArray(attractionKnowledgeBase[foundKey]) && attractionKnowledgeBase[foundKey].length > 0) {
+        return attractionKnowledgeBase[foundKey].map(a => ({
+          id: a?.id || `kb-${Math.random()}`,
+          name: a?.name || 'Local Landmark',
+          category: a?.category || 'Must See',
+          duration: a?.visitDuration || '1.5 - 2 hours',
+          image: a?.image || (Array.isArray(a?.images) && a.images[0]) || 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=80',
+          description: a?.description || a?.longDescription || `Iconic landmark in ${destName}.`,
+          rating: a?.rating || 4.8
+        }));
+      }
 
-    return [];
+      if (destination?.attractions && Array.isArray(destination.attractions) && destination.attractions.length > 0) {
+        return destination.attractions.map((attr, idx) => {
+          const name = typeof attr === 'string' ? attr : attr?.name || `Attraction ${idx + 1}`;
+          return {
+            id: `attr-${idx}`,
+            name: name,
+            category: 'Landmark',
+            duration: '1.5 hours',
+            image: typeof attr === 'object' && attr?.image ? attr.image : 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80',
+            description: typeof attr === 'object' && attr?.description ? attr.description : `Scenic and historic landmark in ${destName}.`,
+            rating: 4.8
+          };
+        });
+      }
+
+      if (intel?.curatedAttractions && Array.isArray(intel.curatedAttractions) && intel.curatedAttractions.length > 0) {
+        return intel.curatedAttractions;
+      }
+
+      return [];
+    } catch {
+      return [];
+    }
   }, [destName, destination, intel]);
 
   // Desktop shows max 3, mobile shows max 2

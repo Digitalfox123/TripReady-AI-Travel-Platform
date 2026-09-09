@@ -16,14 +16,24 @@ function lazyWithRetry(componentImport) {
     try {
       return await componentImport();
     } catch (error) {
-      console.warn("Module script / chunk load hiccup caught. Auto-recovering page...", error);
-      const lastReload = sessionStorage.getItem('chunk_auto_reload');
-      const now = Date.now();
-      if (!lastReload || now - parseInt(lastReload, 10) > 4000) {
-        sessionStorage.setItem('chunk_auto_reload', now.toString());
-        window.location.reload();
+      console.warn("Module script / chunk load hiccup caught. Retrying import...", error);
+      try {
+        // Short pause and retry once
+        await new Promise(res => setTimeout(res, 300));
+        return await componentImport();
+      } catch (retryErr) {
+        console.warn("Second import attempt failed. Auto-recovering page...", retryErr);
+        const lastReload = sessionStorage.getItem('chunk_auto_reload');
+        const now = Date.now();
+        if (!lastReload || now - parseInt(lastReload, 10) > 4000) {
+          sessionStorage.setItem('chunk_auto_reload', now.toString());
+          const cleanUrl = window.location.href.split('?')[0];
+          const searchParams = new URLSearchParams(window.location.search);
+          searchParams.set('v', now.toString());
+          window.location.href = `${cleanUrl}?${searchParams.toString()}`;
+        }
+        throw retryErr;
       }
-      throw error;
     }
   });
 }
