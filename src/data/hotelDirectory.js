@@ -178,6 +178,146 @@ export const REAL_HOTELS_REGISTRY = {
       badge: 'Great Value',
       amenities: ['Lush Tropical Gardens', 'Chinese Dynasty Dining', 'Fitness Club', 'Free Airport Shuttle']
     }
+  ],
+  singapore: [
+    {
+      name: 'Marina Bay Sands',
+      category: 'World-Iconic Luxury Resort',
+      rating: 4.9,
+      reviews: 8400,
+      image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=700&q=80',
+      price: '$480',
+      area: 'Bayfront / Marina Bay Waterfront',
+      badge: 'World Landmark',
+      amenities: ['SkyPark Rooftop Infinity Pool', 'Banyan Tree Spa', 'ArtScience Access', '20+ Celebrity Restaurants']
+    },
+    {
+      name: 'The Clan Hotel Singapore',
+      category: 'Modern Heritage Luxury',
+      rating: 4.8,
+      reviews: 1540,
+      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=700&q=80',
+      price: '$210',
+      area: 'Telok Ayer / Chinatown Fringe',
+      badge: 'Cultural Core',
+      amenities: ['Sky Pool & Jacuzzi', 'Brewing Tea Master Welcome', 'Direct Telok Ayer MRT', 'Craft Gin Lounge']
+    },
+    {
+      name: 'YOTEL Singapore Orchard Road',
+      category: 'Smart Strategic Value',
+      rating: 4.6,
+      reviews: 3200,
+      image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=700&q=80',
+      price: '$140',
+      area: 'Orchard Road / Shopping Boulevard',
+      badge: 'Best Location',
+      amenities: ['SmartBed Technology', 'Outdoor Terrace Pool', 'Robot Service Concierge', 'Orchard MRT Link']
+    }
+  ],
+  dubai: [
+    {
+      name: 'Address Downtown',
+      category: 'Luxury Burj Khalifa View Hotel',
+      rating: 4.9,
+      reviews: 2900,
+      image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=700&q=80',
+      price: '$360',
+      area: 'Downtown Dubai / Direct Dubai Mall Link',
+      badge: 'Burj Khalifa View',
+      amenities: ['Infinity Pool Facing Burj Khalifa', 'The Spa at Address', 'Direct Mall Bridge', 'Fine Dining']
+    },
+    {
+      name: 'Rove Downtown',
+      category: 'Contemporary Lifestyle Value',
+      rating: 4.7,
+      reviews: 4200,
+      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=700&q=80',
+      price: '$110',
+      area: 'Downtown Dubai / 5 min to Burj Khalifa',
+      badge: 'Smart Value',
+      amenities: ['24/7 Laundromat', 'Outdoor Saltwater Pool', 'Reel Cinema In-house', 'Free Shuttle to Beach']
+    },
+    {
+      name: 'One&Only Royal Mirage',
+      category: 'Palatial Beachfront Sanctuary',
+      rating: 4.9,
+      reviews: 1600,
+      image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=700&q=80',
+      price: '$490',
+      area: 'Jumeirah Beach / Facing Palm Island',
+      badge: 'Beachfront Palace',
+      amenities: ['1 km Private Beach', 'Traditional Oriental Hammam', 'Lush Palm Gardens', 'Michelin-star Dining']
+    }
+  ],
+  london: [
+    {
+      name: 'The Savoy London',
+      category: 'Legendary British Grand Luxury',
+      rating: 4.9,
+      reviews: 2800,
+      image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=700&q=80',
+      price: '$520',
+      area: 'Strand / Covent Garden Fringe',
+      badge: 'Historic Landmark',
+      amenities: ['American Bar (World\'s Best)', 'Thames River Views', 'Savoy Grill by Gordon Ramsay', 'Butler Service']
+    },
+    {
+      name: 'The Hoxton, Holborn',
+      category: 'Chic Boutique Urban Hub',
+      rating: 4.8,
+      reviews: 1950,
+      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=700&q=80',
+      price: '$210',
+      area: 'Holborn / 5 min to British Museum',
+      badge: 'Boutique Choice',
+      amenities: ['Artisanal Coffee Bar', 'Cosy Retro Rooms', 'Lively Co-working Lobby', 'Walk to West End']
+    },
+    {
+      name: 'CitizenM Tower of London',
+      category: 'Modern Strategic Hub',
+      rating: 4.6,
+      reviews: 3600,
+      image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=700&q=80',
+      price: '$150',
+      area: 'Directly Above Tower Hill Station',
+      badge: 'Transit Hub',
+      amenities: ['Tower Bridge Rooftop Bar', 'MoodPad Room Controls', '24/7 Food & Drinks', 'Direct Tube Access']
+    }
+  ],
+  newyork: [
+    {
+      name: 'The Plaza Hotel',
+      category: 'Historic Grandeur & Elegance',
+      rating: 4.9,
+      reviews: 4100,
+      image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=700&q=80',
+      price: '$580',
+      area: '5th Avenue & Central Park South',
+      badge: 'Historic Palace',
+      amenities: ['The Palm Court Afternoon Tea', 'Guerlain Spa', 'Central Park Views', 'White-glove Butler Service']
+    },
+    {
+      name: 'Arlo Midtown',
+      category: 'Trendy Urban Design Retreat',
+      rating: 4.7,
+      reviews: 2100,
+      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=700&q=80',
+      price: '$185',
+      area: 'Midtown West / Near Times Square & Hudson Yards',
+      badge: 'Design Boutique',
+      amenities: ['Rooftop Terrace Bar', 'Bicycle Fleet', 'Artisan Coffee', 'High-speed Wi-Fi']
+    },
+    {
+      name: 'Pod Times Square',
+      category: 'Smart Efficient Urban Stays',
+      rating: 4.5,
+      reviews: 4800,
+      image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=700&q=80',
+      price: '$120',
+      area: '42nd Street / Theater District',
+      badge: 'Best Value',
+      amenities: ['Tiki Rooftop Lounge', 'Automated Check-in', 'Soundproof Windows', 'Walk to Broadway']
+    }
   ]
 };
 

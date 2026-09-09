@@ -53,14 +53,14 @@ const IMAGE_REGISTRY = {
   saudiarabia: 'https://images.unsplash.com/photo-1564769625905-50e9ad63095a?w=1200&q=80',
 
   // Pakistan
-  islamabad: 'https://images.unsplash.com/photo-1565506737357-af89222625ad?w=1200&q=80', // Faisal Mosque
-  lahore: 'https://images.unsplash.com/photo-1584810359583-96fc3448beaa?w=1200&q=80',    // Badshahi Mosque
+  islamabad: 'https://images.unsplash.com/photo-1565506737357-af89222625ad?w=1400&q=85', // Faisal Mosque
+  lahore: 'https://images.unsplash.com/photo-1622546758596-f1f06ba11f58?w=1400&q=85',    // Minar-e-Pakistan
   karachi: 'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?w=1200&q=80',   // Mazar-e-Quaid Mausoleum
   hunza: 'https://images.unsplash.com/photo-1595844730298-b9f1ff982792?w=1200&q=80',     // Passu Cones Karakoram
   skardu: 'https://images.unsplash.com/photo-1614082242765-7c9880d3ddd3?w=1200&q=80',    // Shangrila Resort Lake
   swat: 'https://images.unsplash.com/photo-1627856013091-fed6e4e30025?w=1200&q=80',       // Swat Valley River/Mountains
   peshawar: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=1200&q=80',   // Qissa Khwani Bazaar
-  pakistan: 'https://images.unsplash.com/photo-1565506737357-af89222625ad?w=1200&q=80',
+  pakistan: 'https://images.unsplash.com/photo-1565506737357-af89222625ad?w=1400&q=85',   // Faisal Mosque
 
   // United States
   newyork: 'https://images.unsplash.com/photo-1522083165195-342750297f05?w=1200&q=80',    // Statue of Liberty

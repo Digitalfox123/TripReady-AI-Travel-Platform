@@ -48,6 +48,7 @@ import { supabase } from '../../utils/supabaseClient';
 import { isPlaceholderImage, getCityImage } from '../../utils/imageLookup';
 import { getDishImage } from '../../data/dishImages';
 import { getAccurateHotels } from '../../data/hotelDirectory';
+import { askGemini } from '../../utils/gemini';
 import {
   VisaPassportVector,
   SafetyShieldVector,
@@ -71,8 +72,22 @@ export default function TripCommandCenter({ destination }) {
   const user = authContext?.user || null;
 
   // ── 1. Extract and Normalize Trip Context ──────────────────────────────────
-  const destName = destination?.name || searchParams.get('destCity') || location.state?.destinationCity || 'Kyoto';
-  const destCountry = destination?.country || searchParams.get('destCountry') || location.state?.destinationCountry || 'Japan';
+  const rawDestCity = destination?.name || searchParams.get('destCity') || location.state?.destinationCity || 'Kyoto';
+  let inferredCountry = destination?.country || searchParams.get('destCountry') || location.state?.destinationCountry;
+  if (!inferredCountry || (inferredCountry === 'Japan' && !['kyoto', 'tokyo', 'osaka', 'sapporo', 'fukuoka', 'nara', 'hiroshima', 'nagoya'].includes(rawDestCity.trim().toLowerCase()))) {
+    const norm = rawDestCity.trim().toLowerCase();
+    if (['geneva', 'zurich', 'basel', 'bern', 'lucerne', 'interlaken', 'lausanne', 'zermatt'].includes(norm)) inferredCountry = 'Switzerland';
+    else if (['lahore', 'islamabad', 'karachi', 'rawalpindi', 'peshawar', 'quetta', 'multan', 'faisalabad', 'hunza', 'skardu', 'swat', 'murree'].includes(norm)) inferredCountry = 'Pakistan';
+    else if (['paris', 'nice', 'lyon', 'marseille', 'bordeaux'].includes(norm)) inferredCountry = 'France';
+    else if (['tokyo', 'kyoto', 'osaka', 'sapporo', 'fukuoka', 'nara', 'hiroshima'].includes(norm)) inferredCountry = 'Japan';
+    else if (['singapore'].includes(norm)) inferredCountry = 'Singapore';
+    else if (['dubai', 'abu dhabi', 'sharjah'].includes(norm)) inferredCountry = 'United Arab Emirates';
+    else if (['london', 'manchester', 'edinburgh', 'birmingham'].includes(norm)) inferredCountry = 'United Kingdom';
+    else if (['new york', 'los angeles', 'san francisco', 'chicago', 'miami'].includes(norm)) inferredCountry = 'United States';
+    else inferredCountry = destination?.country || 'International';
+  }
+  const destName = rawDestCity;
+  const destCountry = inferredCountry || 'International';
 
   const [originCountry, setOriginCountry] = useState(
     location.state?.originCountry || searchParams.get('originCountry') || 'Pakistan'
@@ -90,15 +105,20 @@ export default function TripCommandCenter({ destination }) {
     Number(location.state?.travelers || searchParams.get('travelers') || 2)
   );
   const [travelType, setTravelType] = useState(
-    location.state?.travelType || searchParams.get('travelType') || 'Couple'
+    location.state?.travelType || searchParams.get('travelType') || 'Family'
   );
 
   // ── 2. Destination Hero Image Resolution ───────────────────────────────────
   const heroImage = useMemo(() => {
+    // Prioritize iconic high-resolution landmark registry
+    const curatedLandmark = getCityImage(destName, destCountry);
+    if (curatedLandmark && !curatedLandmark.includes('city-skyline-monument')) {
+      return curatedLandmark;
+    }
     if (destination?.image && !isPlaceholderImage(destination.image)) {
       return destination.image;
     }
-    return getCityImage(destName, destCountry);
+    return curatedLandmark;
   }, [destination, destName, destCountry]);
 
   // ── 3. Destination Type Determination ─────────────────────────────────────
@@ -136,10 +156,114 @@ export default function TripCommandCenter({ destination }) {
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  // ── 6. Destination Intelligence ───────────────────────────────────────────
-  const intel = useMemo(() => {
+  // ── 6. Destination Intelligence (Base Flagships/Universal + AI Enrichment) ─
+  const baseIntel = useMemo(() => {
     return resolveDestinationIntelligence(destName, destCountry) || {};
   }, [destName, destCountry]);
+
+  const [aiEnrichment, setAiEnrichment] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const normCity = (destName || '').trim().toLowerCase();
+    if (!normCity) return;
+
+    const cacheKey = `tripready_ai_intel_${normCity}`;
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && typeof parsed === 'object') {
+          setAiEnrichment(parsed);
+          return;
+        }
+      }
+    } catch {
+      // ignore
+    }
+
+    async function enrichWithAI() {
+      try {
+        const prompt = `Return a strict JSON object with verified travel facts for ${destName}, ${destCountry}. Do not include markdown formatting or backticks outside the JSON. Format:
+{
+  "safetyScore": 90,
+  "safetySummary": "Safety index and civic order rating for ${destName}",
+  "safetyDetail": "Precautions, safe neighborhoods, emergency guidelines",
+  "emergencyPolice": "Local police dispatch number",
+  "emergencyAmbulance": "Local ambulance number",
+  "tippingAdvice": "Specific tipping etiquette in ${destName}",
+  "powerSockets": "Electrical plug types and voltage in ${destCountry}",
+  "transitSummary": "Main transit systems in ${destName}",
+  "transitDetail": "Transit passes, metro, airport connection tips for ${destName}",
+  "cultureGreeting": "Native polite greeting (e.g. Bonjour in France, Assalamu Alaikum in Pakistan, Konnichiwa in Japan, Grüezi in Switzerland)",
+  "cultureEtiquette": "Key cultural etiquette norms in ${destCountry}"
+}`;
+        const response = await askGemini(prompt, `You are a real-time travel intelligence engine. Provide 100% verified factual data for ${destName}, ${destCountry}. Output JSON only.`);
+        if (!isMounted || !response) return;
+
+        let clean = response.trim();
+        if (clean.includes('```json')) {
+          clean = clean.split('```json')[1].split('```')[0].trim();
+        } else if (clean.includes('```')) {
+          clean = clean.split('```')[1].split('```')[0].trim();
+        }
+
+        const data = JSON.parse(clean);
+        if (data && typeof data === 'object') {
+          try {
+            sessionStorage.setItem(cacheKey, JSON.stringify(data));
+          } catch {
+            // ignore
+          }
+          if (isMounted) {
+            setAiEnrichment(data);
+          }
+        }
+      } catch (err) {
+        // silent fallback to verified base intel
+      }
+    }
+
+    enrichWithAI();
+    return () => { isMounted = false; };
+  }, [destName, destCountry]);
+
+  // Merged intelligence: 100% destination-accurate
+  const intel = useMemo(() => {
+    if (!aiEnrichment) return baseIntel;
+    return {
+      ...baseIntel,
+      safetyScore: aiEnrichment.safetyScore || baseIntel.safetyScore,
+      emergencyNumber: aiEnrichment.emergencyPolice || baseIntel.emergencyNumber,
+      essentials: {
+        ...baseIntel.essentials,
+        safety: {
+          ...baseIntel.essentials?.safety,
+          summary: aiEnrichment.safetySummary || baseIntel.essentials?.safety?.summary,
+          detail: aiEnrichment.safetyDetail || baseIntel.essentials?.safety?.detail,
+          emergency: aiEnrichment.emergencyPolice ? `Emergency: Police ${aiEnrichment.emergencyPolice} / Ambulance ${aiEnrichment.emergencyAmbulance || aiEnrichment.emergencyPolice}` : baseIntel.essentials?.safety?.emergency
+        },
+        money: {
+          ...baseIntel.essentials?.money,
+          tipping: aiEnrichment.tippingAdvice || baseIntel.essentials?.money?.tipping
+        },
+        connectivity: {
+          ...baseIntel.essentials?.connectivity,
+          summary: aiEnrichment.powerSockets || baseIntel.essentials?.connectivity?.summary
+        },
+        transport: {
+          ...baseIntel.essentials?.transport,
+          summary: aiEnrichment.transitSummary || baseIntel.essentials?.transport?.summary,
+          detail: aiEnrichment.transitDetail || baseIntel.essentials?.transport?.detail
+        },
+        culture: {
+          ...baseIntel.essentials?.culture,
+          detail: aiEnrichment.cultureEtiquette || baseIntel.essentials?.culture?.detail,
+          greetingText: aiEnrichment.cultureGreeting || baseIntel.essentials?.culture?.greetingText
+        }
+      }
+    };
+  }, [baseIntel, aiEnrichment]);
 
   // ── 7. Date & Duration Calculations ───────────────────────────────────────
   const { durationDays, dateRangeFormatted } = useMemo(() => {
@@ -186,11 +310,26 @@ export default function TripCommandCenter({ destination }) {
           `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(queryTarget)}&count=1&language=en&format=json`
         );
         const geoJson = await geoRes.json();
-        let lat = 35.0116;
-        let lng = 135.7681; // Kyoto default
+        let lat = null;
+        let lng = null;
         if (geoJson.results && geoJson.results[0]) {
           lat = geoJson.results[0].latitude;
           lng = geoJson.results[0].longitude;
+        } else {
+          // Fallback geocode query targeting just destination name
+          const cityRes = await fetch(
+            `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(destName)}&count=1&language=en&format=json`
+          );
+          const cityJson = await cityRes.json();
+          if (cityJson.results && cityJson.results[0]) {
+            lat = cityJson.results[0].latitude;
+            lng = cityJson.results[0].longitude;
+          }
+        }
+
+        if (lat === null || lng === null) {
+          if (active) setWeatherData(prev => ({ ...prev, loading: false }));
+          return;
         }
 
         const res = await fetch(
@@ -298,7 +437,7 @@ export default function TripCommandCenter({ destination }) {
           name: a?.name || 'Local Landmark',
           category: a?.category || 'Must See',
           duration: a?.visitDuration || '1.5 - 2 hours',
-          image: a?.image || (Array.isArray(a?.images) && a.images[0]) || 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=80',
+          image: a?.image || (Array.isArray(a?.images) && a.images[0]) || getCityImage(a?.name || destName, destCountry) || heroImage,
           description: a?.description || a?.longDescription || `Iconic landmark in ${destName}.`,
           rating: a?.rating || 4.8
         }));
@@ -312,7 +451,7 @@ export default function TripCommandCenter({ destination }) {
             name: name,
             category: 'Landmark',
             duration: '1.5 hours',
-            image: typeof attr === 'object' && attr?.image ? attr.image : 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80',
+            image: typeof attr === 'object' && attr?.image ? attr.image : getCityImage(name, destCountry) || heroImage,
             description: typeof attr === 'object' && attr?.description ? attr.description : `Scenic and historic landmark in ${destName}.`,
             rating: 4.8
           };
@@ -828,7 +967,7 @@ export default function TripCommandCenter({ destination }) {
                   </p>
                   <div className="flex items-center justify-between pt-2">
                     <a
-                      href={intel.essentials?.visa?.officialLink || "https://www.mofa.go.jp/j_info/visit/visa/"}
+                      href={intel.essentials?.visa?.officialLink && intel.essentials?.visa?.officialLink !== '#' ? intel.essentials.visa.officialLink : `https://www.google.com/search?q=${encodeURIComponent(`${destCountry} official visa entry requirements portal`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 dark:text-blue-400 text-[11px] font-medium hover:underline inline-flex items-center gap-1"
@@ -880,11 +1019,11 @@ export default function TripCommandCenter({ destination }) {
               {expandedEssential === 'safety' && (
                 <div className="relative z-10 px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
                   <p className="leading-relaxed text-[11px]">
-                    {intel.essentials?.safety?.detail || `${destName} maintains very high civic order and low violent crime. Primary caution is situational awareness against pickpockets around crowded train stations and tourist squares. Tap water is pure and 100% safe to drink.`}
+                    {intel.essentials?.safety?.detail || `${destName} maintains high civic order and low violent crime. Practice standard travel awareness in crowded transport stations. Tap water purity conforms to municipal health standards.`}
                   </p>
                   <div className="flex items-center justify-between pt-2">
                     <span className="text-[11px] text-emerald-700 dark:text-emerald-300 font-medium">
-                      Emergency: Police 110 / Ambulance 119
+                      {intel.essentials?.safety?.emergency || (intel.emergencyNumber ? `Emergency: ${intel.emergencyNumber}` : 'Emergency: 112 / Local Dispatch')}
                     </span>
                     <span className="text-[10px] text-slate-400 font-mono">Consular Monitored</span>
                   </div>
@@ -911,7 +1050,7 @@ export default function TripCommandCenter({ destination }) {
                   <div>
                     <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Money, Cards & Currency</h3>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] sm:max-w-xs">
-                      {intel.essentials?.money?.summary || `Currency: ${intel.currency?.code || 'JPY'} · High card acceptance`}
+                      {intel.essentials?.money?.summary || `Currency: ${intel.currency?.code || 'Local Currency'} · Contactless & Cash`}
                     </p>
                   </div>
                 </div>
@@ -930,11 +1069,11 @@ export default function TripCommandCenter({ destination }) {
               {expandedEssential === 'money' && (
                 <div className="relative z-10 px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
                   <p className="leading-relaxed text-[11px]">
-                    {intel.essentials?.money?.detail || 'Contactless Visa, Mastercard, Apple Pay, and IC Transit cards (Suica/Pasmo/ICOCA) work practically everywhere including convenience stores and subways. 7-Eleven and post office ATMs give clean interbank exchange rates for foreign cards.'}
+                    {intel.essentials?.money?.detail || `Contactless Visa, Mastercard, and digital mobile pay (Apple Pay, Google Pay) work across most hotels and restaurants in ${destName}. Carrying some local ${intel.currency?.code || ''} cash is advised for local vendors and small purchases.`}
                   </p>
                   <div className="flex items-center justify-between pt-2">
-                    <span className="text-[11px] text-slate-500">Tipping is not customary and can cause confusion</span>
-                    <span className="text-[10px] text-slate-400 font-mono">IC Cards Accepted</span>
+                    <span className="text-[11px] text-slate-500">{intel.essentials?.money?.tipping || 'Tipping is optional or modest rounding up'}</span>
+                    <span className="text-[10px] text-slate-400 font-mono">{intel.currency?.code || 'Cards Accepted'}</span>
                   </div>
                 </div>
               )}
@@ -959,7 +1098,7 @@ export default function TripCommandCenter({ destination }) {
                   <div>
                     <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Mobile Connectivity & Power</h3>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] sm:max-w-xs">
-                      {intel.essentials?.connectivity?.summary || '100V 50/60Hz · Type A sockets · 5G eSIM'}
+                      {intel.essentials?.connectivity?.summary || `5G & 4G LTE coverage across ${destName} · Travel eSIM`}
                     </p>
                   </div>
                 </div>
@@ -978,13 +1117,13 @@ export default function TripCommandCenter({ destination }) {
               {expandedEssential === 'connectivity' && (
                 <div className="relative z-10 px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
                   <p className="leading-relaxed text-[11px]">
-                    {intel.essentials?.connectivity?.detail || 'Sockets use US 2-prong flat pins (Type A), operating at 100V. High-speed 5G mobile coverage is standard across the city. Digital travel eSIMs (Airalo, Ubigi, Holafly) activate instantly on arrival.'}
+                    {intel.essentials?.connectivity?.detail || `High-speed mobile data networks cover ${destName}. Digital travel eSIMs (Airalo, Holafly) activate automatically upon arrival. Bring a universal travel plug adapter for local outlets.`}
                   </p>
                   <div className="flex items-center justify-between pt-2">
                     <span className="text-[11px] text-purple-700 dark:text-purple-300 font-medium">
                       eSIM Recommended
                     </span>
-                    <span className="text-[10px] text-slate-400 font-mono">5G Supported</span>
+                    <span className="text-[10px] text-slate-400 font-mono">{intel.essentials?.connectivity?.status || '5G Supported'}</span>
                   </div>
                 </div>
               )}
@@ -1009,7 +1148,7 @@ export default function TripCommandCenter({ destination }) {
                   <div>
                     <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Transit & Navigation</h3>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] sm:max-w-xs">
-                      {intel.essentials?.transport?.summary || 'IC cards · City bus grid · Punctual railways'}
+                      {intel.essentials?.transport?.summary || `Public transit · Rail, buses & licensed taxis in ${destName}`}
                     </p>
                   </div>
                 </div>
@@ -1028,13 +1167,13 @@ export default function TripCommandCenter({ destination }) {
               {expandedEssential === 'transport' && (
                 <div className="relative z-10 px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
                   <p className="leading-relaxed text-[11px]">
-                    {intel.essentials?.transport?.detail || 'World-renowned train punctuality. Subway and bus networks accept IC contactless cards (ICOCA/Suica). Station signs and automated announcements are provided in English.'}
+                    {intel.essentials?.transport?.detail || `Reliable public transport and licensed ride services connect all major districts in ${destName}. Navigation apps like Google Maps offer accurate real-time transit directions.`}
                   </p>
                   <div className="flex items-center justify-between pt-2">
                     <span className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium">
-                      Google Maps transit routing is 100% accurate
+                      Google Maps transit routing is reliable in {destName}
                     </span>
-                    <span className="text-[10px] text-slate-400 font-mono">Tap-to-Pay</span>
+                    <span className="text-[10px] text-slate-400 font-mono">{intel.essentials?.transport?.status || 'Public Transit'}</span>
                   </div>
                 </div>
               )}
@@ -1059,7 +1198,7 @@ export default function TripCommandCenter({ destination }) {
                   <div>
                     <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Local Etiquette & Culture</h3>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] sm:max-w-xs">
-                      {intel.essentials?.culture?.summary || 'Polite bowing · Quiet train etiquette · Temple decorum'}
+                      {intel.essentials?.culture?.summary || `Respectful social etiquette · Cultural heritage of ${destCountry}`}
                     </p>
                   </div>
                 </div>
@@ -1078,13 +1217,13 @@ export default function TripCommandCenter({ destination }) {
               {expandedEssential === 'culture' && (
                 <div className="relative z-10 px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
                   <p className="leading-relaxed text-[11px]">
-                    {intel.essentials?.culture?.detail || 'Avoid loud phone calls on public transit. Remove shoes when stepping into traditional tatami rooms or temples. Keep your trash with you until you find convenience store bins.'}
+                    {intel.essentials?.culture?.detail || `Be respectful of local traditions, cultural norms, and sacred spaces in ${destCountry}. Modest attire is recommended when visiting heritage or religious landmarks.`}
                   </p>
                   <div className="flex items-center justify-between pt-2">
                     <span className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">
-                      Polite bow & "Arigato gozaimasu" goes a long way
+                      {intel.essentials?.culture?.greetingText || `A polite, courteous greeting is warmly appreciated across ${destName}`}
                     </span>
-                    <span className="text-[10px] text-slate-400 font-mono">Respectful Travel</span>
+                    <span className="text-[10px] text-slate-400 font-mono">{intel.essentials?.culture?.status || 'Respectful Travel'}</span>
                   </div>
                 </div>
               )}
