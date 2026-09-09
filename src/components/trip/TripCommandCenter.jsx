@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom';
 import {
   DollarSign,
@@ -8,6 +8,7 @@ import {
   Check,
   CheckCircle2,
   ChevronRight,
+  ChevronLeft,
   ChevronDown,
   ChevronUp,
   ExternalLink,
@@ -25,7 +26,17 @@ import {
   X,
   Sliders,
   Bookmark,
-  Lock
+  Lock,
+  Star,
+  MapPin,
+  CloudRain,
+  Cloud,
+  Snowflake,
+  Zap,
+  Building2,
+  UtensilsCrossed,
+  Clock,
+  RotateCcw
 } from 'lucide-react';
 import { resolveDestinationIntelligence } from '../../data/commandCenterIntelligence';
 import { countries } from '../../data';
@@ -34,6 +45,24 @@ import { attractionKnowledgeBase, realCityFoodAndTransit } from '../../data/attr
 import { fetchLiveNews } from '../../utils/rapidApiService';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../utils/supabaseClient';
+import { isPlaceholderImage, getCityImage } from '../../utils/imageLookup';
+import { getDishImage } from '../../data/dishImages';
+import { getAccurateHotels } from '../../data/hotelDirectory';
+import {
+  VisaPassportVector,
+  SafetyShieldVector,
+  MoneyCardsVector,
+  Connectivity5GVector,
+  TransitMetroVector,
+  CultureTeaVector,
+  EmergencySirenVector,
+  BaggageSuitcaseVector,
+  CustomsBorderVector,
+  SimESimVector,
+  BankAtmVector,
+  ExpressTrainVector,
+  HotelBellVector
+} from './TripVectorArt';
 
 export default function TripCommandCenter({ destination }) {
   const location = useLocation();
@@ -42,8 +71,8 @@ export default function TripCommandCenter({ destination }) {
   const user = authContext?.user || null;
 
   // ── 1. Extract and Normalize Trip Context ──────────────────────────────────
-  const destName = destination?.name || searchParams.get('destCity') || location.state?.destinationCity || 'Geneva';
-  const destCountry = destination?.country || searchParams.get('destCountry') || location.state?.destinationCountry || 'Switzerland';
+  const destName = destination?.name || searchParams.get('destCity') || location.state?.destinationCity || 'Kyoto';
+  const destCountry = destination?.country || searchParams.get('destCountry') || location.state?.destinationCountry || 'Japan';
 
   const [originCountry, setOriginCountry] = useState(
     location.state?.originCountry || searchParams.get('originCountry') || 'Pakistan'
@@ -64,7 +93,15 @@ export default function TripCommandCenter({ destination }) {
     location.state?.travelType || searchParams.get('travelType') || 'Couple'
   );
 
-  // ── 2. Destination Type Determination ─────────────────────────────────────
+  // ── 2. Destination Hero Image Resolution ───────────────────────────────────
+  const heroImage = useMemo(() => {
+    if (destination?.image && !isPlaceholderImage(destination.image)) {
+      return destination.image;
+    }
+    return getCityImage(destName, destCountry);
+  }, [destination, destName, destCountry]);
+
+  // ── 3. Destination Type Determination ─────────────────────────────────────
   const destinationType = useMemo(() => {
     try {
       if (destination?.rank && typeof destination.rank === 'string') {
@@ -85,7 +122,7 @@ export default function TripCommandCenter({ destination }) {
     }
   }, [destination, destName]);
 
-  // ── 3. Edit Trip Modal State ──────────────────────────────────────────────
+  // ── 4. Edit Trip Modal State ──────────────────────────────────────────────
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editOriginCountry, setEditOriginCountry] = useState(originCountry);
   const [editOriginCity, setEditOriginCity] = useState(originCity);
@@ -94,17 +131,17 @@ export default function TripCommandCenter({ destination }) {
   const [editTravelers, setEditTravelers] = useState(travelers);
   const [editTravelType, setEditTravelType] = useState(travelType);
 
-  // ── 4. Auth Prompt Modal for Signed-out Users ─────────────────────────────
+  // ── 5. Auth Prompt Modal for Signed-out Users ─────────────────────────────
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  // ── 5. Destination Intelligence ───────────────────────────────────────────
+  // ── 6. Destination Intelligence ───────────────────────────────────────────
   const intel = useMemo(() => {
     return resolveDestinationIntelligence(destName, destCountry) || {};
   }, [destName, destCountry]);
 
-  // ── 6. Date & Duration Calculations ───────────────────────────────────────
+  // ── 7. Date & Duration Calculations ───────────────────────────────────────
   const { durationDays, dateRangeFormatted } = useMemo(() => {
     try {
       if (!startDate || !endDate) {
@@ -126,17 +163,17 @@ export default function TripCommandCenter({ destination }) {
     }
   }, [startDate, endDate]);
 
-  // ── 7. Open-Meteo Live Weather Telemetry ──────────────────────────────────
+  // ── 8. Open-Meteo Live Weather Telemetry ──────────────────────────────────
   const [weatherData, setWeatherData] = useState({
-    temp: 21,
-    feelsLike: 20,
-    condition: 'Partly Cloudy',
-    high: 24,
-    low: 15,
-    humidity: 58,
-    windSpeed: 11,
+    temp: 22,
+    feelsLike: 25,
+    condition: 'Light Rain',
+    high: 26,
+    low: 22,
+    humidity: 85,
+    windSpeed: 5,
     uvIndex: 4,
-    code: 2,
+    code: 61,
     loading: true
   });
 
@@ -149,8 +186,8 @@ export default function TripCommandCenter({ destination }) {
           `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(queryTarget)}&count=1&language=en&format=json`
         );
         const geoJson = await geoRes.json();
-        let lat = 48.8566;
-        let lng = 2.3522;
+        let lat = 35.0116;
+        let lng = 135.7681; // Kyoto default
         if (geoJson.results && geoJson.results[0]) {
           lat = geoJson.results[0].latitude;
           lng = geoJson.results[0].longitude;
@@ -174,10 +211,10 @@ export default function TripCommandCenter({ destination }) {
             temp: Math.round(data.current.temperature_2m),
             feelsLike: Math.round(data.current.apparent_temperature || data.current.temperature_2m),
             condition: cond,
-            high: data.daily?.temperature_2m_max ? Math.round(data.daily.temperature_2m_max[0]) : 24,
-            low: data.daily?.temperature_2m_min ? Math.round(data.daily.temperature_2m_min[0]) : 14,
-            humidity: data.current.relative_humidity_2m || 55,
-            windSpeed: Math.round(data.current.wind_speed_10m || 10),
+            high: data.daily?.temperature_2m_max ? Math.round(data.daily.temperature_2m_max[0]) : 26,
+            low: data.daily?.temperature_2m_min ? Math.round(data.daily.temperature_2m_min[0]) : 20,
+            humidity: data.current.relative_humidity_2m || 75,
+            windSpeed: Math.round(data.current.wind_speed_10m || 6),
             uvIndex: 4,
             code,
             loading: false
@@ -193,7 +230,7 @@ export default function TripCommandCenter({ destination }) {
     return () => { active = false; };
   }, [destName, destCountry]);
 
-  // ── 8. Interactive Next Steps Mini-Checklist ─────────────────────────────
+  // ── 9. Interactive Next Steps Mini-Checklist ─────────────────────────────
   const [checklist, setChecklist] = useState([
     { id: 'researched', label: 'Destination researched', completed: true },
     { id: 'weather', label: 'Weather checked', completed: true },
@@ -208,20 +245,20 @@ export default function TripCommandCenter({ destination }) {
     );
   };
 
-  const completedCount = checklist.filter(c => c.completed).length;
-  const progressPercent = Math.round((completedCount / checklist.length) * 100);
+  const completedCount = (checklist || []).filter(c => c.completed).length;
+  const progressPercent = Math.round((completedCount / (checklist?.length || 5)) * 100);
 
-  // ── 9. Trip Essentials Accordion (Progressive Disclosure) ─────────────────
+  // ── 10. Trip Essentials Accordion (Progressive Disclosure) ─────────────────
   const [expandedEssential, setExpandedEssential] = useState('visa');
 
   const toggleEssential = (key) => {
     setExpandedEssential(prev => prev === key ? null : key);
   };
 
-  // ── 10. Your First Hour Stepper (Signature Stepper) ──────────────────────
+  // ── 11. Your First Hour Stepper (Signature Stepper) ──────────────────────
   const [activeStepIdx, setActiveStepIdx] = useState(0);
   const firstHourSteps = intel.firstHour || [
-    { step: 1, title: 'Land & Baggage', category: 'Arrival', summary: 'Follow arrival signs to Terminal Baggage Hall.', detail: 'Exit jet bridge and proceed to baggage carousels. Follow terminal exit signs.', badge: 'Arrival' },
+    { step: 1, title: 'Land & Baggage Claim', category: 'Arrival', summary: `Arrive at ${destName} terminal and retrieve luggage.`, detail: 'Follow standard arrivals and baggage claim signs. Ensure all baggage tags match your boarding pass stubs.', badge: 'Arrival' },
     { step: 2, title: 'Immigration & Customs', category: 'Border', summary: 'Present your valid passport & entry documentation.', detail: 'Keep passport, accommodation confirmation, and return flight itinerary accessible.', badge: 'Passport Control' },
     { step: 3, title: 'Connectivity & eSIM', category: 'Tech', summary: 'Connect to airport Wi-Fi or toggle your digital eSIM.', detail: 'Activate mobile data roaming on your digital eSIM profile or log onto complimentary airport Wi-Fi.', badge: 'Free 5G Wi-Fi' },
     { step: 4, title: 'Cash & Local Currency', category: 'Money', summary: 'Use official bank ATMs inside arrival hall.', detail: 'Avoid high-fee commercial airport currency exchange kiosks; bank ATMs give official interbank rates.', badge: 'ATM Access' },
@@ -229,7 +266,7 @@ export default function TripCommandCenter({ destination }) {
     { step: 6, title: 'Hotel Check-in', category: 'Check-in', summary: 'Arrive at hotel, drop bags, and claim city transit passes.', detail: 'Ask front desk staff for city visitor maps, public transport guidance, and Wi-Fi access credentials.', badge: 'Check-in' }
   ];
 
-  // ── 11. Weather + What to Pack ───────────────────────────────────────────
+  // ── 12. Weather + What to Pack ───────────────────────────────────────────
   const [packingItems, setPackingItems] = useState([
     { id: 'p1', label: 'Comfortable walking shoes', category: 'Clothing', checked: true },
     { id: 'p2', label: 'Layered weather jacket / Windbreaker', category: 'Clothing', checked: true },
@@ -246,7 +283,7 @@ export default function TripCommandCenter({ destination }) {
     );
   };
 
-  // ── 12. Data-Driven Destination Highlights (Backend-driven) ──────────────
+  // ── 13. Data-Driven Destination Highlights Carousel ──────────────────────
   const backendAttractions = useMemo(() => {
     try {
       const slugNorm = String(destName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -292,21 +329,21 @@ export default function TripCommandCenter({ destination }) {
     }
   }, [destName, destination, intel]);
 
-  // Desktop shows max 3, mobile shows max 2
-  const visibleAttractions = backendAttractions.slice(0, 3);
-  const remainingAttractionsCount = Math.max(0, backendAttractions.length - 3);
+  // Attraction horizontal scroll ref & navigation
+  const attractionsScrollRef = useRef(null);
+  const scrollAttractions = (direction) => {
+    if (attractionsScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -340 : 340;
+      attractionsScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
-  // ── 13. Where to Stay (Max 3 Neighborhoods) ──────────────────────────────
-  const neighborhoods = useMemo(() => {
-    const raw = intel.neighborhoods || [
-      { name: 'Historic Old Town', bestFor: 'First-time visitors & sightseeing', description: 'Walkable cobblestone streets, landmark architecture, and easy access to heritage sights.', avgNight: '$160 - $280', vibe: 'Historic & Central' },
-      { name: 'Waterfront / Riverside', bestFor: 'Scenic dining & lakeside strolls', description: 'Scenic promenades lined with cafés, boutique restaurants, and panoramic sunset overlooks.', avgNight: '$180 - $340', vibe: 'Scenic & Chic' },
-      { name: 'Central Transit Hub', bestFor: 'Fast airport access & day trips', description: 'Surrounding the primary railway station. Unmatched transit connectivity across the country.', avgNight: '$130 - $240', vibe: 'Connected & Easy' }
-    ];
-    return raw.slice(0, 3);
-  }, [intel]);
+  // ── 14. Where to Stay (Accurate Real Hotels) ─────────────────────────────
+  const accurateHotels = useMemo(() => {
+    return getAccurateHotels(destName, destCountry);
+  }, [destName, destCountry]);
 
-  // ── 14. Getting Around (Prioritized Best Recommendation) ──────────────────
+  // ── 15. Getting Around (Prioritized Best Recommendation) ──────────────────
   const transitRecommendations = useMemo(() => {
     return {
       primary: {
@@ -324,27 +361,39 @@ export default function TripCommandCenter({ destination }) {
     };
   }, [destName, intel]);
 
-  // ── 15. Food Discovery (2-3 highlights) ──────────────────────────────────
+  // ── 16. Food Discovery (Eat & Discover with Authentic Dishes & Photos) ───
   const foodHighlights = useMemo(() => {
     const cityKey = destName.toLowerCase().replace(/[^a-z0-9]/g, '');
     const realFood = realCityFoodAndTransit?.[cityKey]?.foods;
     if (realFood && Array.isArray(realFood) && realFood.length > 0) {
-      return realFood.slice(0, 3).map((f, idx) => ({
-        id: `food-${idx}`,
-        name: typeof f === 'string' ? f : f.name || f,
-        tag: f.tag || 'Local Specialty',
-        description: f.desc || `Authentic culinary classic enjoyed across ${destName}.`,
-        dietary: f.dietary || 'Authentic'
-      }));
+      return realFood.slice(0, 3).map((f, idx) => {
+        const dishName = typeof f === 'string' ? f : f.name || f;
+        return {
+          id: `food-${idx}`,
+          name: dishName,
+          tag: f.tag || 'Local Specialty',
+          description: f.desc || `Authentic culinary classic enjoyed across ${destName}.`,
+          dietary: f.dietary || 'Authentic',
+          image: getDishImage(dishName, destName)
+        };
+      });
     }
-    return (intel.foodHighlights || [
-      { name: 'Signature Local Fondue / Stew', tag: 'Traditional Heritage', description: 'Slow-cooked local classic served in authentic bistros and historical taverns.', dietary: 'Local Specialty' },
-      { name: 'Fresh Catch / Lake Fillets', tag: 'Regional Delicate', description: 'Lightly sautéed with lemon butter and fresh herbs, paired with crisp seasonal sides.', dietary: 'Pescatarian' },
-      { name: 'Artisanal Chocolates & Pastries', tag: 'Sweet Icon', description: 'World-famous handcrafted confections from heritage master chocolatiers.', dietary: 'Vegetarian' }
-    ]).slice(0, 3);
+    const fallbackList = intel.foodHighlights || [
+      { name: 'Traditional Regional Specialty', tag: 'Traditional Heritage', description: 'Slow-cooked local classic served in authentic bistros and historical taverns.', dietary: 'Local Specialty' },
+      { name: 'Fresh Seasonal Delicate', tag: 'Regional Delicate', description: 'Lightly sautéed with local butter and fresh herbs, paired with crisp seasonal sides.', dietary: 'Regional Classic' },
+      { name: 'Artisanal Sweets & Pastries', tag: 'Sweet Icon', description: 'World-famous handcrafted confections from master confectioners.', dietary: 'Vegetarian' }
+    ];
+    return fallbackList.slice(0, 3).map((f, idx) => ({
+      id: `food-${idx}`,
+      name: f.name,
+      tag: f.tag || 'Specialty',
+      description: f.description || `Signature delicacy of ${destName}.`,
+      dietary: f.dietary || 'Authentic',
+      image: getDishImage(f.name, destName)
+    }));
   }, [destName, intel]);
 
-  // ── 16. Stay Aware (Safety / Culture / Live Alerts Tabs) ──────────────────
+  // ── 17. Stay Aware (Safety / Culture / Live Alerts Tabs) ──────────────────
   const [activeAwareTab, setActiveAwareTab] = useState('safety');
   const [liveNews, setLiveNews] = useState([]);
   const [newsLoading, setNewsLoading] = useState(false);
@@ -368,7 +417,7 @@ export default function TripCommandCenter({ destination }) {
     return () => { active = false; };
   }, [destName, destCountry]);
 
-  // ── 17. Save Trip Action (Signed-in vs Signed-out) ────────────────────────
+  // ── 18. Save Trip Action (Signed-in vs Signed-out) ────────────────────────
   const handleSaveTrip = async () => {
     if (!user) {
       setIsAuthModalOpen(true);
@@ -427,103 +476,132 @@ export default function TripCommandCenter({ destination }) {
 
   return (
     <div className="min-h-screen bg-[#FBFBFD] dark:bg-[#070D18] text-slate-900 dark:text-slate-100 selection:bg-blue-500 selection:text-white pt-24 pb-20 transition-colors duration-300">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
 
         {/* ════════════════════════════════════════════════════════════════════
-            1. TRIP HEADER & SPACIOUS SUB-STRIP
+            1. HIGH-DEFINITION DESTINATION HERO BANNER
             ════════════════════════════════════════════════════════════════════ */}
-        <section className="border-b border-slate-200/80 dark:border-white/[0.08] pb-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-              <div className="flex items-center gap-2 text-xs uppercase tracking-widest font-semibold text-blue-600 dark:text-blue-400 mb-2">
+        <section className="space-y-4">
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-white/[0.08] min-h-[290px] sm:min-h-[340px] flex flex-col justify-between p-6 sm:p-10 text-white select-none">
+            {/* Background Destination Photo */}
+            <img
+              src={heroImage}
+              alt={`${destName}, ${destCountry}`}
+              className="absolute inset-0 w-full h-full object-cover object-center transform scale-100 hover:scale-105 transition-transform duration-1000 ease-out"
+              loading="eager"
+            />
+            {/* Cinematic Scrim Gradient: Ensures text is always 100% crisp & prominent */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-slate-950/35" />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-transparent" />
+
+            {/* Top Bar inside Hero */}
+            <div className="relative z-10 flex flex-wrap items-center justify-between gap-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 dark:bg-black/30 backdrop-blur-md border border-white/20 text-white text-xs font-semibold uppercase tracking-wider shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
                 <span>Trip Command Center</span>
-                <span>•</span>
+                <span className="opacity-60">•</span>
                 <span>{destCountry}</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
-                {originCity || originCountry} <span className="text-slate-400 font-light">→</span> {destName}
-              </h1>
-              <p className="mt-2 text-sm sm:text-base text-slate-600 dark:text-slate-400 font-normal">
-                {dateRangeFormatted} · {durationDays} Days · {travelers} Travelers ({travelType})
-              </p>
+
+              <div className="flex items-center gap-2 sm:gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium bg-white/20 dark:bg-slate-900/60 hover:bg-white/30 backdrop-blur-md border border-white/30 text-white shadow-sm transition-all cursor-pointer active:scale-95"
+                >
+                  <Sliders className="w-3.5 h-3.5" />
+                  <span>Edit Parameters</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleSaveTrip}
+                  disabled={isSaving}
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30 transition-all cursor-pointer active:scale-95"
+                >
+                  {isSaved ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <span>Saved</span>
+                    </>
+                  ) : (
+                    <>
+                      <Bookmark className="w-3.5 h-3.5" />
+                      <span>{isSaving ? 'Saving...' : 'Save Trip'}</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setIsEditModalOpen(true)}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-medium bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-700 dark:text-slate-300 shadow-sm hover:shadow transition-all cursor-pointer"
-              >
-                <Sliders className="w-3.5 h-3.5 text-slate-500" />
-                <span>Edit Parameters</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleSaveTrip}
-                disabled={isSaving}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md transition-all cursor-pointer"
-              >
-                {isSaved ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                    <span>Saved to Trips</span>
-                  </>
-                ) : (
-                  <>
-                    <Bookmark className="w-3.5 h-3.5" />
-                    <span>{isSaving ? 'Saving...' : 'Save Trip'}</span>
-                  </>
-                )}
-              </button>
+            {/* Bottom Content inside Hero */}
+            <div className="relative z-10 space-y-2 mt-12 sm:mt-16">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white drop-shadow-lg">
+                {originCity || originCountry} <span className="text-blue-300 font-light">→</span> {destName}
+              </h1>
+              <p className="text-sm sm:text-base text-slate-200 font-medium drop-shadow flex flex-wrap items-center gap-2">
+                <span>{dateRangeFormatted}</span>
+                <span className="opacity-60">•</span>
+                <span>{durationDays} Days</span>
+                <span className="opacity-60">•</span>
+                <span>{travelers} Travelers ({travelType})</span>
+              </p>
             </div>
           </div>
 
-          {/* Calm, Horizontal Information Strip */}
-          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-white/[0.04] grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                <Sun className="w-4 h-4" />
+          {/* Calm, Sleek 4-Item Horizontal Information Bar below Hero Image */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/[0.06] shadow-sm">
+            {/* Item 1: Weather */}
+            <div className="flex items-center gap-3 p-1">
+              <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 flex-shrink-0">
+                {weatherData.condition.toLowerCase().includes('rain') ? (
+                  <CloudRain className="w-4 h-4" />
+                ) : (
+                  <Sun className="w-4 h-4" />
+                )}
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="block text-[10px] uppercase font-mono tracking-wider text-slate-400">Weather</span>
-                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate block">
                   {weatherData.loading ? 'Syncing...' : `${weatherData.temp}°C · ${weatherData.condition}`}
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+            {/* Item 2: Currency */}
+            <div className="flex items-center gap-3 p-1">
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0">
                 <DollarSign className="w-4 h-4" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="block text-[10px] uppercase font-mono tracking-wider text-slate-400">Currency</span>
-                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                  {intel.currency ? `${intel.currency.code} (1 USD ≈ ${intel.currency.rate} ${intel.currency.code})` : 'USD / Contactless'}
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate block">
+                  {intel.currency ? `${intel.currency.code} (1 USD ≈ ${intel.currency.rate} ${intel.currency.code})` : 'USD (1 USD ≈ 1 USD)'}
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400">
+            {/* Item 3: Time Zone */}
+            <div className="flex items-center gap-3 p-1">
+              <div className="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 flex-shrink-0">
                 <Compass className="w-4 h-4" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="block text-[10px] uppercase font-mono tracking-wider text-slate-400">Time Zone</span>
-                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[140px]">
-                  {intel.timezone || 'Local Time (UTC)'}
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate block">
+                  {intel.timezone || 'Local Time (UTC+5 to +9)'}
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
+            {/* Item 4: Trip Readiness */}
+            <div className="flex items-center gap-3 p-1">
+              <div className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 flex-shrink-0">
                 <Shield className="w-4 h-4" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="block text-[10px] uppercase font-mono tracking-wider text-slate-400">Trip Readiness</span>
-                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate block">
                   {progressPercent}% Prepared
                 </span>
               </div>
@@ -532,100 +610,144 @@ export default function TripCommandCenter({ destination }) {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════
-            2. TRIP AT A GLANCE (Two-Column Layout)
+            2. TRIP AT A GLANCE (Two-Column Command Grid)
             ════════════════════════════════════════════════════════════════════ */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column: [City] at a Glance */}
-          <div className="lg:col-span-7 bg-white dark:bg-slate-900/60 rounded-3xl p-6 border border-slate-200/80 dark:border-white/[0.06] shadow-sm">
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 dark:border-white/[0.04]">
-              <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                <Compass className="w-4 h-4 text-blue-600" />
-                <span>{destName} at a Glance</span>
-              </h2>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-medium border border-emerald-200/50 dark:border-emerald-800/30">
-                Open for Tourism
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.03]">
-                <span className="text-[10px] uppercase font-mono text-slate-400 block mb-1">Current Climate</span>
-                <p className="font-medium text-slate-800 dark:text-slate-200">
-                  {weatherData.loading ? 'Updating live...' : `${weatherData.temp}°C · ${weatherData.condition} (High ${weatherData.high}°C / Low ${weatherData.low}°C)`}
-                </p>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.03]">
-                <span className="text-[10px] uppercase font-mono text-slate-400 block mb-1">Local Payments</span>
-                <p className="font-medium text-slate-800 dark:text-slate-200">
-                  {intel.essentials?.money?.status || '97% Contactless Card Acceptance · Official Bank ATMs'}
-                </p>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.03]">
-                <span className="text-[10px] uppercase font-mono text-slate-400 block mb-1">Visa & Entry Status</span>
-                <p className="font-medium text-slate-800 dark:text-slate-200 truncate">
-                  {intel.essentials?.visa?.status || 'Valid passport (min. 6 months validity required)'}
-                </p>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.03]">
-                <span className="text-[10px] uppercase font-mono text-slate-400 block mb-1">Safety & Civics</span>
-                <p className="font-medium text-slate-800 dark:text-slate-200">
-                  Safety Index: {intel.safetyScore || 90}/100 · Peaceful & Welcoming
-                </p>
-              </div>
-            </div>
-
-            <p className="mt-4 text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
-              {destination?.preview || destination?.description || `Explore ${destName}, ${destCountry}. Discover iconic architectural heritage, lakeside promenades, efficient transit, and rich regional culinary traditions.`}
-            </p>
-          </div>
-
-          {/* Right Column: Your Next Steps */}
-          <div className="lg:col-span-5 bg-white dark:bg-slate-900/60 rounded-3xl p-6 border border-slate-200/80 dark:border-white/[0.06] shadow-sm flex flex-col justify-between">
+          {/* Left Column: City Status & Key Advisories */}
+          <div className="lg:col-span-6 bg-white dark:bg-slate-900/60 rounded-3xl p-6 border border-slate-200/80 dark:border-white/[0.06] shadow-sm flex flex-col justify-between space-y-5">
             <div>
-              <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100 dark:border-white/[0.04]">
-                <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-blue-600" />
-                  <span>Your Next Steps</span>
-                </h2>
-                <span className="text-xs font-mono font-medium text-slate-500">
-                  {completedCount} of {checklist.length} Completed
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.04] pb-4">
+                <div>
+                  <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
+                    DESTINATION SNAPSHOT
+                  </span>
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                    {destName} Overview
+                  </h2>
+                </div>
+                <span className="text-xs px-2.5 py-1 rounded-full font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+                  {destinationType.toUpperCase()}
                 </span>
               </div>
 
-              {/* Subtle Progress Bar */}
-              <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 mb-5 overflow-hidden">
+              <div className="mt-5 space-y-4">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 flex-shrink-0 mt-0.5">
+                    <Sun className="w-4 h-4 text-amber-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Current Weather</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                      {weatherData.temp}°C · {weatherData.condition} · High: {weatherData.high}°C / Low: {weatherData.low}°C
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3.5">
+                  <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 flex-shrink-0 mt-0.5">
+                    <CreditCard className="w-4 h-4 text-emerald-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Payments & Cash</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                      {intel.essentials?.money?.status || '97% Contactless Card Acceptance · Official Bank ATMs'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3.5">
+                  <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 flex-shrink-0 mt-0.5">
+                    <FileText className="w-4 h-4 text-blue-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Visa Status</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                      {intel.essentials?.visa?.status || 'Valid passport (min. 6 months validity required)'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3.5">
+                  <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 flex-shrink-0 mt-0.5">
+                    <Shield className="w-4 h-4 text-purple-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Safety Advisory</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                      Safety Index: {intel.safetyScore || 90}/100 · Peaceful & Welcoming
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs">
+              <span className="text-slate-400">Verified Destination Data</span>
+              <span className="text-blue-600 dark:text-blue-400 font-medium">Updated Daily</span>
+            </div>
+          </div>
+
+          {/* Right Column: "Your Next Steps" Checklist */}
+          <div className="lg:col-span-6 bg-white dark:bg-slate-900/60 rounded-3xl p-6 border border-slate-200/80 dark:border-white/[0.06] shadow-sm flex flex-col justify-between space-y-4">
+            <div>
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.04] pb-4">
+                <div>
+                  <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
+                    ACTIONABLE READINESS
+                  </span>
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                    Your Next Steps
+                  </h2>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-semibold text-blue-600 dark:text-blue-400">
+                    {completedCount} of {(checklist || []).length}
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full font-mono font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+                    {progressPercent}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Progress bar */}
+              <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 mt-4 overflow-hidden">
                 <div
-                  className="bg-blue-600 h-1.5 rounded-full transition-all duration-500 ease-out"
+                  className="bg-blue-600 h-1.5 rounded-full transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
 
-              {/* Compact Checklist */}
-              <div className="space-y-2.5">
-                {checklist.map((item) => (
+              {/* Checklist items */}
+              <div className="mt-4 space-y-2.5">
+                {(checklist || []).map((item) => (
                   <button
                     key={item.id}
                     type="button"
                     onClick={() => toggleChecklistItem(item.id)}
-                    className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-left group cursor-pointer"
+                    className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-100 dark:border-white/[0.03] hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors text-left cursor-pointer group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                        item.completed
-                          ? 'bg-blue-600 border-blue-600 text-white'
-                          : 'border-slate-300 dark:border-slate-600 text-transparent'
-                      }`}>
+                      <div
+                        className={`w-4 h-4 rounded-md border flex items-center justify-center transition-colors ${
+                          item.completed
+                            ? 'bg-blue-600 border-blue-600 text-white'
+                            : 'border-slate-300 dark:border-slate-600 text-transparent group-hover:border-slate-400'
+                        }`}
+                      >
                         <Check className="w-3 h-3 stroke-[3]" />
                       </div>
-                      <span className={`text-xs ${item.completed ? 'text-slate-800 dark:text-slate-200 line-through opacity-60' : 'text-slate-700 dark:text-slate-300 font-medium'}`}>
+                      <span
+                        className={`text-xs font-medium transition-colors ${
+                          item.completed
+                            ? 'text-slate-400 line-through'
+                            : 'text-slate-700 dark:text-slate-200'
+                        }`}
+                      >
                         {item.label}
                       </span>
                     </div>
-                    <span className="text-[10px] text-slate-400 group-hover:text-blue-600 transition-colors">
-                      {item.completed ? 'Done' : 'Mark'}
+                    <span className="text-[10px] font-mono text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {item.completed ? 'Undo' : 'Mark done'}
                     </span>
                   </button>
                 ))}
@@ -646,7 +768,7 @@ export default function TripCommandCenter({ destination }) {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════
-            3. TRIP ESSENTIALS (Progressive Disclosure 2-Col Grid)
+            3. TRIP ESSENTIALS (Progressive Disclosure with Tilted Vector SVG Art)
             ════════════════════════════════════════════════════════════════════ */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
@@ -665,11 +787,16 @@ export default function TripCommandCenter({ destination }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Card 1: Visa & Entry */}
-            <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm transition-all overflow-hidden">
+            <div className="relative bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm transition-all overflow-hidden group">
+              {/* Tilted Vector SVG Art */}
+              <div className="absolute right-3 top-2.5 pointer-events-none select-none text-amber-500 dark:text-amber-400 opacity-20 group-hover:opacity-35 transition-opacity">
+                <VisaPassportVector className="w-20 h-20 sm:w-24 sm:h-24" />
+              </div>
+
               <button
                 type="button"
                 onClick={() => toggleEssential('visa')}
-                className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
+                className="relative z-10 w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 flex-shrink-0">
@@ -677,7 +804,7 @@ export default function TripCommandCenter({ destination }) {
                   </div>
                   <div>
                     <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Visa & Entry Requirements</h3>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[240px] sm:max-w-xs">
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] sm:max-w-xs">
                       {intel.essentials?.visa?.summary || `Check entry protocol from ${originCountry} to ${destCountry}`}
                     </p>
                   </div>
@@ -695,13 +822,13 @@ export default function TripCommandCenter({ destination }) {
               </button>
 
               {expandedEssential === 'visa' && (
-                <div className="px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
+                <div className="relative z-10 px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
                   <p className="leading-relaxed text-[11px]">
                     {intel.essentials?.visa?.detail || `Travelers holding passport from ${originCountry} traveling to ${destCountry} require standard passport validation with at least 6 months remaining validity, proof of accommodation, and medical travel coverage.`}
                   </p>
                   <div className="flex items-center justify-between pt-2">
                     <a
-                      href={intel.essentials?.visa?.officialLink || "https://www.eda.admin.ch"}
+                      href={intel.essentials?.visa?.officialLink || "https://www.mofa.go.jp/j_info/visit/visa/"}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 dark:text-blue-400 text-[11px] font-medium hover:underline inline-flex items-center gap-1"
@@ -716,11 +843,16 @@ export default function TripCommandCenter({ destination }) {
             </div>
 
             {/* Card 2: Safety & Health */}
-            <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm transition-all overflow-hidden">
+            <div className="relative bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm transition-all overflow-hidden group">
+              {/* Tilted Vector SVG Art */}
+              <div className="absolute right-3 top-2.5 pointer-events-none select-none text-emerald-500 dark:text-emerald-400 opacity-20 group-hover:opacity-35 transition-opacity">
+                <SafetyShieldVector className="w-20 h-20 sm:w-24 sm:h-24" />
+              </div>
+
               <button
                 type="button"
                 onClick={() => toggleEssential('safety')}
-                className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
+                className="relative z-10 w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0">
@@ -728,14 +860,14 @@ export default function TripCommandCenter({ destination }) {
                   </div>
                   <div>
                     <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Safety & Health Protocol</h3>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[240px] sm:max-w-xs">
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] sm:max-w-xs">
                       {intel.essentials?.safety?.summary || `Safety Index: ${intel.safetyScore || 90}/100 · Low violent crime`}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">
-                    Very Safe
+                    Protocols
                   </span>
                   {expandedEssential === 'safety' ? (
                     <ChevronUp className="w-4 h-4 text-slate-400" />
@@ -746,39 +878,46 @@ export default function TripCommandCenter({ destination }) {
               </button>
 
               {expandedEssential === 'safety' && (
-                <div className="px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
+                <div className="relative z-10 px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
                   <p className="leading-relaxed text-[11px]">
                     {intel.essentials?.safety?.detail || `${destName} maintains very high civic order and low violent crime. Primary caution is situational awareness against pickpockets around crowded train stations and tourist squares. Tap water is pure and 100% safe to drink.`}
                   </p>
-                  <div className="flex items-center gap-2 pt-1 text-[11px]">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">Hotlines:</span>
-                    <span className="font-mono text-slate-500">Police 117 · Ambulance 144 · Universal 112</span>
+                  <div className="flex items-center justify-between pt-2">
+                    <span className="text-[11px] text-emerald-700 dark:text-emerald-300 font-medium">
+                      Emergency: Police 110 / Ambulance 119
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">Consular Monitored</span>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Card 3: Money & Payments */}
-            <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm transition-all overflow-hidden">
+            <div className="relative bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm transition-all overflow-hidden group">
+              {/* Tilted Vector SVG Art */}
+              <div className="absolute right-3 top-2.5 pointer-events-none select-none text-blue-500 dark:text-blue-400 opacity-20 group-hover:opacity-35 transition-opacity">
+                <MoneyCardsVector className="w-20 h-20 sm:w-24 sm:h-24" />
+              </div>
+
               <button
                 type="button"
                 onClick={() => toggleEssential('money')}
-                className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
+                className="relative z-10 w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 flex-shrink-0">
                     <CreditCard className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Money & Payments</h3>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[240px] sm:max-w-xs">
-                      {intel.essentials?.money?.summary || `Currency: ${intel.currency?.code || 'Local'} · High card acceptance`}
+                    <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Money, Cards & Currency</h3>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] sm:max-w-xs">
+                      {intel.essentials?.money?.summary || `Currency: ${intel.currency?.code || 'JPY'} · High card acceptance`}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
-                    Card Friendly
+                    Finance
                   </span>
                   {expandedEssential === 'money' ? (
                     <ChevronUp className="w-4 h-4 text-slate-400" />
@@ -789,38 +928,44 @@ export default function TripCommandCenter({ destination }) {
               </button>
 
               {expandedEssential === 'money' && (
-                <div className="px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
+                <div className="relative z-10 px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
                   <p className="leading-relaxed text-[11px]">
-                    {intel.essentials?.money?.detail || 'Contactless Visa, Mastercard, Apple Pay, and Google Pay work practically everywhere including public transit and cafés. Official bank ATMs inside terminals give cleanest interbank exchange rates.'}
+                    {intel.essentials?.money?.detail || 'Contactless Visa, Mastercard, Apple Pay, and IC Transit cards (Suica/Pasmo/ICOCA) work practically everywhere including convenience stores and subways. 7-Eleven and post office ATMs give clean interbank exchange rates for foreign cards.'}
                   </p>
-                  <p className="text-[11px] text-slate-500">
-                    Tipping: Service is included in bills; rounding up 5–10% for courteous table service is polite.
-                  </p>
+                  <div className="flex items-center justify-between pt-2">
+                    <span className="text-[11px] text-slate-500">Tipping is not customary and can cause confusion</span>
+                    <span className="text-[10px] text-slate-400 font-mono">IC Cards Accepted</span>
+                  </div>
                 </div>
               )}
             </div>
 
             {/* Card 4: Connectivity & Power */}
-            <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm transition-all overflow-hidden">
+            <div className="relative bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm transition-all overflow-hidden group">
+              {/* Tilted Vector SVG Art */}
+              <div className="absolute right-3 top-2.5 pointer-events-none select-none text-purple-500 dark:text-purple-400 opacity-20 group-hover:opacity-35 transition-opacity">
+                <Connectivity5GVector className="w-20 h-20 sm:w-24 sm:h-24" />
+              </div>
+
               <button
                 type="button"
                 onClick={() => toggleEssential('connectivity')}
-                className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
+                className="relative z-10 w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 flex-shrink-0">
                     <Wifi className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Connectivity & Power</h3>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[240px] sm:max-w-xs">
-                      {intel.essentials?.connectivity?.summary || '230V 50Hz · Type J/C sockets · 5G eSIM'}
+                    <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Mobile Connectivity & Power</h3>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] sm:max-w-xs">
+                      {intel.essentials?.connectivity?.summary || '100V 50/60Hz · Type A sockets · 5G eSIM'}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
-                    Fast 5G
+                    Tech Setup
                   </span>
                   {expandedEssential === 'connectivity' ? (
                     <ChevronUp className="w-4 h-4 text-slate-400" />
@@ -831,35 +976,46 @@ export default function TripCommandCenter({ destination }) {
               </button>
 
               {expandedEssential === 'connectivity' && (
-                <div className="px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
+                <div className="relative z-10 px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
                   <p className="leading-relaxed text-[11px]">
-                    {intel.essentials?.connectivity?.detail || 'Standard European 2-pin Europlugs (Type C) fit into most recessed sockets. Local digital eSIMs activate instantly upon landing with LTE/5G roaming.'}
+                    {intel.essentials?.connectivity?.detail || 'Sockets use US 2-prong flat pins (Type A), operating at 100V. High-speed 5G mobile coverage is standard across the city. Digital travel eSIMs (Airalo, Ubigi, Holafly) activate instantly on arrival.'}
                   </p>
+                  <div className="flex items-center justify-between pt-2">
+                    <span className="text-[11px] text-purple-700 dark:text-purple-300 font-medium">
+                      eSIM Recommended
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">5G Supported</span>
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Card 5: Local Transport */}
-            <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm transition-all overflow-hidden">
+            {/* Card 5: Getting Around */}
+            <div className="relative bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm transition-all overflow-hidden group">
+              {/* Tilted Vector SVG Art */}
+              <div className="absolute right-3 top-2.5 pointer-events-none select-none text-indigo-500 dark:text-indigo-400 opacity-20 group-hover:opacity-35 transition-opacity">
+                <TransitMetroVector className="w-20 h-20 sm:w-24 sm:h-24" />
+              </div>
+
               <button
                 type="button"
                 onClick={() => toggleEssential('transport')}
-                className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
+                className="relative z-10 w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-cyan-50 dark:bg-cyan-900/30 flex items-center justify-center text-cyan-600 dark:text-cyan-400 flex-shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 flex-shrink-0">
                     <Train className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Local Transport System</h3>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[240px] sm:max-w-xs">
-                      {intel.essentials?.transport?.summary || 'Free hotel transport card · Punctual trams & trains'}
+                    <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Transit & Navigation</h3>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] sm:max-w-xs">
+                      {intel.essentials?.transport?.summary || 'IC cards · City bus grid · Punctual railways'}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300">
-                    Integrated
+                  <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300">
+                    Transit
                   </span>
                   {expandedEssential === 'transport' ? (
                     <ChevronUp className="w-4 h-4 text-slate-400" />
@@ -870,29 +1026,40 @@ export default function TripCommandCenter({ destination }) {
               </button>
 
               {expandedEssential === 'transport' && (
-                <div className="px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
+                <div className="relative z-10 px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
                   <p className="leading-relaxed text-[11px]">
-                    {intel.essentials?.transport?.detail || 'Public transit networks are clean, punctual, and safe. Registered accommodation often provides complimentary local transport cards valid across all trams, buses, and city boats.'}
+                    {intel.essentials?.transport?.detail || 'World-renowned train punctuality. Subway and bus networks accept IC contactless cards (ICOCA/Suica). Station signs and automated announcements are provided in English.'}
                   </p>
+                  <div className="flex items-center justify-between pt-2">
+                    <span className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium">
+                      Google Maps transit routing is 100% accurate
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">Tap-to-Pay</span>
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Card 6: Culture & Etiquette */}
-            <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm transition-all overflow-hidden">
+            {/* Card 6: Local Culture & Etiquette */}
+            <div className="relative bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm transition-all overflow-hidden group">
+              {/* Tilted Vector SVG Art */}
+              <div className="absolute right-3 top-2.5 pointer-events-none select-none text-rose-500 dark:text-rose-400 opacity-20 group-hover:opacity-35 transition-opacity">
+                <CultureTeaVector className="w-20 h-20 sm:w-24 sm:h-24" />
+              </div>
+
               <button
                 type="button"
                 onClick={() => toggleEssential('culture')}
-                className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
+                className="relative z-10 w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-rose-50 dark:bg-rose-900/30 flex items-center justify-center text-rose-600 dark:text-rose-400 flex-shrink-0">
                     <Sparkles className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Cultural Etiquette & Customs</h3>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[240px] sm:max-w-xs">
-                      {intel.essentials?.culture?.summary || 'Polite greetings · Punctuality · Sunday shop closures'}
+                    <h3 className="text-xs font-semibold text-slate-900 dark:text-white">Local Etiquette & Culture</h3>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] sm:max-w-xs">
+                      {intel.essentials?.culture?.summary || 'Polite bowing · Quiet train etiquette · Temple decorum'}
                     </p>
                   </div>
                 </div>
@@ -909,10 +1076,16 @@ export default function TripCommandCenter({ destination }) {
               </button>
 
               {expandedEssential === 'culture' && (
-                <div className="px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
+                <div className="relative z-10 px-5 pb-5 pt-1 border-t border-slate-100 dark:border-white/[0.04] text-xs text-slate-600 dark:text-slate-300 space-y-3">
                   <p className="leading-relaxed text-[11px]">
-                    {intel.essentials?.culture?.detail || 'Courteous greetings upon entering small shops and punctuality are cherished. Stores and pharmacies are typically closed on Sundays, with the exception of major train station shops.'}
+                    {intel.essentials?.culture?.detail || 'Avoid loud phone calls on public transit. Remove shoes when stepping into traditional tatami rooms or temples. Keep your trash with you until you find convenience store bins.'}
                   </p>
+                  <div className="flex items-center justify-between pt-2">
+                    <span className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">
+                      Polite bow & "Arigato gozaimasu" goes a long way
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">Respectful Travel</span>
+                  </div>
                 </div>
               )}
             </div>
@@ -920,21 +1093,21 @@ export default function TripCommandCenter({ destination }) {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════
-            4. YOUR FIRST HOUR IN [CITY] (Signature Interactive Stepper)
+            4. YOUR FIRST HOUR IN [CITY] (Interactive Stepper with SVG Vector Art)
             ════════════════════════════════════════════════════════════════════ */}
         <section className="bg-white dark:bg-slate-900/60 rounded-3xl p-6 border border-slate-200/80 dark:border-white/[0.06] shadow-sm space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-white/[0.04] pb-4">
             <div>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-blue-600 dark:text-blue-400 block mb-1">
-                Signature Arrival Guide
+              <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
+                ARRIVAL PLAYBOOK
               </span>
               <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
                 YOUR FIRST HOUR IN {destName.toUpperCase()}
               </h2>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <span>Milestone {activeStepIdx + 1} of {firstHourSteps.length}</span>
-            </div>
+            <span className="text-xs font-mono text-slate-400">
+              6 Sequential Arrival Milestones
+            </span>
           </div>
 
           {/* Desktop Stepper: Horizontal clickable milestones */}
@@ -977,37 +1150,47 @@ export default function TripCommandCenter({ destination }) {
             ))}
           </div>
 
-          {/* Active Step Detailed Information Card */}
+          {/* Active Step Detailed Information Card with Tilted SVG Vector */}
           {firstHourSteps[activeStepIdx] && (
-            <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.04] space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-mono font-bold flex items-center justify-center">
+            <div className="relative overflow-hidden p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.04] space-y-3 group">
+              {/* Milestone Specific Tilted SVG Vector Illustration */}
+              <div className="absolute right-4 top-4 pointer-events-none select-none text-blue-600 dark:text-blue-400 opacity-15 group-hover:opacity-25 transition-opacity">
+                {activeStepIdx === 0 && <BaggageSuitcaseVector className="w-20 h-20 sm:w-24 sm:h-24" />}
+                {activeStepIdx === 1 && <CustomsBorderVector className="w-20 h-20 sm:w-24 sm:h-24" />}
+                {activeStepIdx === 2 && <SimESimVector className="w-20 h-20 sm:w-24 sm:h-24" />}
+                {activeStepIdx === 3 && <BankAtmVector className="w-20 h-20 sm:w-24 sm:h-24" />}
+                {activeStepIdx === 4 && <ExpressTrainVector className="w-20 h-20 sm:w-24 sm:h-24" />}
+                {activeStepIdx === 5 && <HotelBellVector className="w-20 h-20 sm:w-24 sm:h-24" />}
+              </div>
+
+              <div className="relative z-10 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-mono font-bold flex items-center justify-center shadow-sm">
                     {firstHourSteps[activeStepIdx].step}
                   </span>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                     {firstHourSteps[activeStepIdx].title}
                   </h3>
                 </div>
-                <span className="text-[10px] uppercase font-mono px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium">
+                <span className="text-[10px] uppercase font-mono px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-semibold">
                   {firstHourSteps[activeStepIdx].badge || firstHourSteps[activeStepIdx].category}
                 </span>
               </div>
 
-              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
+              <p className="relative z-10 text-xs sm:text-sm text-slate-800 dark:text-slate-200 font-medium">
                 {firstHourSteps[activeStepIdx].summary}
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
+              <p className="relative z-10 text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed max-w-2xl">
                 {firstHourSteps[activeStepIdx].detail}
               </p>
 
               {/* Stepper Navigation Buttons */}
-              <div className="flex items-center justify-between pt-3 border-t border-slate-200/50 dark:border-white/[0.04]">
+              <div className="relative z-10 flex items-center justify-between pt-3 border-t border-slate-200/50 dark:border-white/[0.04]">
                 <button
                   type="button"
                   disabled={activeStepIdx === 0}
                   onClick={() => setActiveStepIdx(prev => Math.max(0, prev - 1))}
-                  className="text-xs px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                  className="text-xs px-3.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
                 >
                   ← Previous Step
                 </button>
@@ -1016,7 +1199,7 @@ export default function TripCommandCenter({ destination }) {
                   type="button"
                   disabled={activeStepIdx === firstHourSteps.length - 1}
                   onClick={() => setActiveStepIdx(prev => Math.min(firstHourSteps.length - 1, prev + 1))}
-                  className="text-xs px-4 py-1.5 rounded-lg font-medium bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1"
+                  className="text-xs px-4 py-1.5 rounded-lg font-medium bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1 shadow-sm transition-all"
                 >
                   <span>Next Step</span>
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -1027,7 +1210,7 @@ export default function TripCommandCenter({ destination }) {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════
-            5. WEATHER & WHAT TO PACK (Unified Section)
+            5. WEATHER & WHAT TO PACK (Unified Colorful Atmospheric Card)
             ════════════════════════════════════════════════════════════════════ */}
         <section className="bg-white dark:bg-slate-900/60 rounded-3xl p-6 border border-slate-200/80 dark:border-white/[0.06] shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.04] pb-4">
@@ -1035,49 +1218,74 @@ export default function TripCommandCenter({ destination }) {
               <Sun className="w-5 h-5 text-amber-500" />
               <span>WEATHER & WHAT TO PACK</span>
             </h2>
-            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-              Live Forecast Telemetry
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              {destName}, {destCountry}
             </span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Left: Live Open-Meteo Weather Telemetry */}
-            <div className="lg:col-span-6 p-5 rounded-2xl bg-gradient-to-br from-blue-50/50 via-slate-50 to-white dark:from-slate-800/40 dark:via-slate-900/40 dark:to-slate-800/20 border border-blue-100/50 dark:border-white/[0.04] flex flex-col justify-between">
-              <div>
+            {/* Left: Atmospheric Live Weather Card (No open-meteo telemetry label) */}
+            <div className={`relative overflow-hidden lg:col-span-6 p-6 rounded-2xl flex flex-col justify-between border shadow-sm transition-all ${
+              weatherData.condition.toLowerCase().includes('rain')
+                ? 'bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white border-blue-800/40'
+                : weatherData.condition.toLowerCase().includes('cloud')
+                ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-sky-950 text-white border-slate-700/40'
+                : 'bg-gradient-to-br from-blue-900 via-indigo-950 to-slate-950 text-white border-blue-700/30'
+            }`}>
+              {/* Rain Animation Layer */}
+              {weatherData.condition.toLowerCase().includes('rain') && (
+                <div className="absolute inset-0 pointer-events-none opacity-25 overflow-hidden">
+                  <div className="absolute w-0.5 h-6 bg-blue-300 top-2 left-10 animate-pulse" />
+                  <div className="absolute w-0.5 h-8 bg-blue-200 top-12 left-28 animate-pulse" style={{ animationDelay: '200ms' }} />
+                  <div className="absolute w-0.5 h-6 bg-blue-300 top-4 left-48 animate-pulse" style={{ animationDelay: '400ms' }} />
+                  <div className="absolute w-0.5 h-7 bg-blue-200 top-16 left-64 animate-pulse" style={{ animationDelay: '600ms' }} />
+                  <div className="absolute w-0.5 h-6 bg-blue-300 top-8 right-12 animate-pulse" style={{ animationDelay: '300ms' }} />
+                  <div className="absolute w-0.5 h-8 bg-blue-200 top-20 right-28 animate-pulse" style={{ animationDelay: '500ms' }} />
+                </div>
+              )}
+
+              {/* Sun Ambient Glow */}
+              {!weatherData.condition.toLowerCase().includes('rain') && (
+                <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-amber-500/20 blur-3xl pointer-events-none" />
+              )}
+
+              <div className="relative z-10">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                    Live Open-Meteo Telemetry
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-blue-300">
+                    Live Destination Forecast
                   </span>
-                  <span className="text-[10px] text-slate-400 font-mono">Real-time</span>
+                  <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md font-mono text-white/80">
+                    {weatherData.condition}
+                  </span>
                 </div>
 
-                <div className="flex items-baseline gap-3 mt-4">
-                  <span className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                <div className="flex items-baseline gap-4 mt-5">
+                  <span className="text-5xl sm:text-6xl font-black tracking-tight text-white drop-shadow-md">
                     {weatherData.temp}°C
                   </span>
-                  <div className="text-xs">
-                    <span className="block font-semibold text-slate-800 dark:text-slate-200">
+                  <div className="text-xs space-y-0.5">
+                    <span className="block font-bold text-base text-white">
                       {weatherData.condition}
                     </span>
-                    <span className="text-slate-400">
+                    <span className="text-white/70 block">
                       Feels like {weatherData.feelsLike}°C
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3 pt-6 mt-6 border-t border-slate-200/60 dark:border-white/[0.04] text-xs">
+              <div className="relative z-10 grid grid-cols-3 gap-3 pt-6 mt-6 border-t border-white/10 text-xs">
                 <div>
-                  <span className="block text-[10px] uppercase font-mono text-slate-400">High / Low</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">{weatherData.high}° / {weatherData.low}°</span>
+                  <span className="block text-[10px] uppercase font-mono text-white/60">High / Low</span>
+                  <span className="font-bold text-white text-sm">{weatherData.high}° / {weatherData.low}°</span>
                 </div>
                 <div>
-                  <span className="block text-[10px] uppercase font-mono text-slate-400">Humidity</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">{weatherData.humidity}%</span>
+                  <span className="block text-[10px] uppercase font-mono text-white/60">Humidity</span>
+                  <span className="font-bold text-white text-sm">{weatherData.humidity}%</span>
                 </div>
                 <div>
-                  <span className="block text-[10px] uppercase font-mono text-slate-400">Wind</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">{weatherData.windSpeed} km/h</span>
+                  <span className="block text-[10px] uppercase font-mono text-white/60">Wind</span>
+                  <span className="font-bold text-white text-sm">{weatherData.windSpeed} km/h</span>
                 </div>
               </div>
             </div>
@@ -1120,12 +1328,14 @@ export default function TripCommandCenter({ destination }) {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-200/50 dark:border-white/[0.04] flex items-center justify-between">
-                <span className="text-xs text-slate-400">Custom packing gear ready</span>
+              <div className="pt-3 mt-4 border-t border-slate-200/60 dark:border-white/[0.04] flex items-center justify-between text-xs">
+                <span className="text-slate-400">
+                  {weatherData.condition.toLowerCase().includes('rain') ? 'Pack an umbrella & rain jacket' : 'Pack light & stay hydrated'}
+                </span>
                 <button
                   type="button"
                   onClick={() => setIsPackingDrawerOpen(true)}
-                  className="text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline inline-flex items-center gap-1 cursor-pointer"
+                  className="text-blue-600 dark:text-blue-400 font-medium hover:underline inline-flex items-center gap-1 cursor-pointer"
                 >
                   <span>Open Full Checklist</span>
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -1136,33 +1346,57 @@ export default function TripCommandCenter({ destination }) {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════
-            6. DESTINATION HIGHLIGHTS (Data-Driven, No Hardcoded Mockups)
+            6. DESTINATION HIGHLIGHTS (Horizontal Slide Scrolling Carousel)
             ════════════════════════════════════════════════════════════════════ */}
-        <section className="space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <section className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div>
               <span className="text-[10px] font-mono uppercase tracking-widest text-blue-600 dark:text-blue-400 block mb-1">
-                Curated Highlights
+                Curated Highlights & Attractions
               </span>
-              <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
                 EXPLORE {destName.toUpperCase()}
               </h2>
             </div>
-            <Link
-              to="/destinations"
-              className="text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline inline-flex items-center gap-1"
-            >
-              <span>Explore all {destName} ({backendAttractions.length || 10}+ places)</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
+
+            {/* Carousel Controls (Left / Right Arrow Buttons) */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => scrollAttractions('left')}
+                className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-sm transition-all cursor-pointer"
+                aria-label="Previous Attractions"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollAttractions('right')}
+                className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-sm transition-all cursor-pointer"
+                aria-label="Next Attractions"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+              <Link
+                to="/destinations"
+                className="ml-2 text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline inline-flex items-center gap-1"
+              >
+                <span>View Directory ({backendAttractions.length}+)</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
 
-          {visibleAttractions.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {visibleAttractions.map((spot, idx) => (
+          {/* Smooth Slide Scrolling Carousel Track */}
+          {backendAttractions.length > 0 ? (
+            <div
+              ref={attractionsScrollRef}
+              className="flex gap-5 overflow-x-auto pb-4 pt-1 px-1 no-scrollbar scroll-smooth snap-x snap-mandatory"
+            >
+              {backendAttractions.map((spot, idx) => (
                 <div
                   key={spot.id || idx}
-                  className="group bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                  className="min-w-[280px] sm:min-w-[320px] max-w-[320px] flex-shrink-0 snap-start group bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-800">
                     <img
@@ -1196,7 +1430,7 @@ export default function TripCommandCenter({ destination }) {
                     </div>
 
                     <div className="pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs">
-                      <span className="text-slate-400 text-[11px]">Primary Landmark</span>
+                      <span className="text-slate-400 text-[11px]">Primary Sight</span>
                       <Link
                         to="/destinations"
                         className="text-blue-600 dark:text-blue-400 text-xs font-medium inline-flex items-center gap-0.5 hover:underline"
@@ -1214,79 +1448,107 @@ export default function TripCommandCenter({ destination }) {
               Loading verified attractions for {destName}...
             </div>
           )}
-
-          {remainingAttractionsCount > 0 && (
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-white/[0.04] flex items-center justify-between text-xs">
-              <span className="text-slate-600 dark:text-slate-300 font-medium">
-                + {remainingAttractionsCount} more places documented across {destName}
-              </span>
-              <Link
-                to="/destinations"
-                className="px-4 py-1.5 rounded-full bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 font-medium shadow-sm hover:shadow transition-all inline-flex items-center gap-1"
-              >
-                <span>Explore Full Directory</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          )}
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════
-            7. WHERE TO STAY (Max 3 Neighborhoods)
+            7. WHERE TO STAY (Accurate, Real Properties & Hotels)
             ════════════════════════════════════════════════════════════════════ */}
         <section className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-blue-600 dark:text-blue-400 block mb-1">
+                Accommodations & Lodging
+              </span>
               <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-                WHERE TO STAY
+                WHERE TO STAY IN {destName.toUpperCase()}
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Top curated districts recommended by travel style and transit proximity
+                Top verified hotels and boutique stays evaluated for location, comfort, and transit access
               </p>
             </div>
             <Link
-              to="/destinations"
+              to="/budget-planner"
               className="text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline inline-flex items-center gap-1"
             >
-              <span>Explore Neighborhoods</span>
-              <ChevronRight className="w-3.5 h-3.5" />
+              <span>Compare All Rates →</span>
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {neighborhoods.map((n, idx) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {accurateHotels.map((h, idx) => (
               <div
                 key={idx}
-                className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/[0.06] shadow-sm flex flex-col justify-between space-y-3"
+                className="group bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium">
-                      {n.vibe || 'Curated District'}
+                  {/* Hotel Photo */}
+                  <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-800">
+                    <img
+                      src={h.image}
+                      alt={h.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+                    <span className="absolute top-3 left-3 text-[10px] px-2.5 py-0.5 rounded-full font-medium bg-blue-600 text-white shadow-sm">
+                      {h.badge || 'Verified Stay'}
                     </span>
-                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 font-mono">
-                      {n.avgNight || '$150/nt'}
+                    <span className="absolute bottom-3 right-3 text-white text-xs font-mono font-bold bg-black/50 px-2.5 py-1 rounded-md backdrop-blur-sm">
+                      {h.price} / night
                     </span>
                   </div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                    {n.name}
-                  </h3>
-                  <p className="text-xs text-blue-600 dark:text-blue-400 font-medium mt-0.5">
-                    {n.bestFor}
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-2 leading-relaxed">
-                    {n.description}
-                  </p>
+
+                  {/* Hotel Details */}
+                  <div className="p-4 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-medium text-blue-600 dark:text-blue-400">
+                        {h.category}
+                      </span>
+                      <div className="flex items-center gap-1 text-xs text-amber-500 font-bold">
+                        <Star className="w-3.5 h-3.5 fill-amber-500" />
+                        <span>{h.rating}</span>
+                        <span className="text-[10px] text-slate-400 font-normal">({h.reviews})</span>
+                      </div>
+                    </div>
+
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
+                      {h.name}
+                    </h3>
+
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-light flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-slate-400 flex-shrink-0" />
+                      <span className="truncate">{h.area}</span>
+                    </p>
+
+                    {/* Amenities tags */}
+                    <div className="flex flex-wrap gap-1.5 pt-2">
+                      {(h.amenities || []).slice(0, 3).map((amenity, aIdx) => (
+                        <span
+                          key={aIdx}
+                          className="text-[9px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono"
+                        >
+                          {amenity}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="pt-3 border-t border-slate-100 dark:border-white/[0.04] text-[11px] text-slate-400 flex items-center justify-between">
-                  <span>{n.transit || 'Direct transit access'}</span>
-                  <Link
-                    to="/budget-planner"
-                    className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
-                  >
-                    Compare Hotels →
-                  </Link>
+                <div className="p-4 pt-0 border-t border-slate-100 dark:border-white/[0.04] mt-3">
+                  <div className="pt-3 flex items-center justify-between text-xs">
+                    <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                      ✓ Free cancellation
+                    </span>
+                    <a
+                      href={`https://www.google.com/travel/hotels?q=${encodeURIComponent(h.name + ' ' + destName)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 font-medium hover:underline inline-flex items-center gap-0.5"
+                    >
+                      <span>Check Availability</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
                 </div>
               </div>
             ))}
@@ -1303,7 +1565,7 @@ export default function TripCommandCenter({ destination }) {
               <span>GETTING AROUND {destName.toUpperCase()}</span>
             </h2>
             <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">
-              View Transport Options →
+              View Transit Guide →
             </span>
           </div>
 
@@ -1320,31 +1582,31 @@ export default function TripCommandCenter({ destination }) {
                 <p className="text-xs text-blue-700 dark:text-blue-300 font-medium mt-1">
                   {transitRecommendations.primary.type} · {transitRecommendations.primary.duration} · {transitRecommendations.primary.cost}
                 </p>
-                <p className="text-xs text-slate-600 dark:text-slate-300 font-light mt-3 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-400 font-light mt-3 leading-relaxed">
                   {transitRecommendations.primary.description}
                 </p>
               </div>
 
-              <div className="pt-4 mt-4 border-t border-blue-200/60 dark:border-blue-900/40 flex items-center justify-between text-xs">
-                <span className="text-slate-500 dark:text-slate-400">Direct Airport Link</span>
-                <span className="text-blue-600 dark:text-blue-400 font-medium">Every 10–12 Mins</span>
+              <div className="pt-4 mt-4 border-t border-blue-200/50 dark:border-blue-900/40 flex items-center justify-between text-xs">
+                <span className="text-slate-500 dark:text-slate-400">Punctual & Direct</span>
+                <span className="text-blue-600 dark:text-blue-400 font-semibold">Fastest Option</span>
               </div>
             </div>
 
-            {/* Smaller Alternatives */}
-            <div className="lg:col-span-6 space-y-3">
+            {/* Alternative Transit Options */}
+            <div className="lg:col-span-6 space-y-3 flex flex-col justify-between">
               {transitRecommendations.alternatives.map((alt, idx) => (
                 <div
                   key={idx}
-                  className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.03] flex items-center justify-between"
+                  className="p-3.5 rounded-xl border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-slate-800/30 flex items-center justify-between gap-4"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-slate-200/60 dark:bg-slate-700/60 flex items-center justify-center text-slate-700 dark:text-slate-300">
+                    <div className="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 flex-shrink-0 shadow-sm">
                       {idx === 0 ? <Bus className="w-4 h-4" /> : idx === 1 ? <Car className="w-4 h-4" /> : <Navigation className="w-4 h-4" />}
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-slate-900 dark:text-white">{alt.name}</h4>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 font-light leading-snug">{alt.desc}</p>
+                      <h4 className="text-xs font-semibold text-slate-900 dark:text-white">{alt.name}</h4>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">{alt.desc}</p>
                     </div>
                   </div>
                   <span className="text-[10px] font-mono font-medium text-slate-500 px-2 py-1 rounded bg-slate-200/50 dark:bg-slate-700/40 flex-shrink-0">
@@ -1357,13 +1619,16 @@ export default function TripCommandCenter({ destination }) {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════
-            9. FOOD DISCOVERY (Eat & Discover)
+            9. FOOD DISCOVERY (Eat & Discover with Real Dish Photos)
             ════════════════════════════════════════════════════════════════════ */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-600 dark:text-emerald-400 block mb-1">
+                Culinary Gastronomy
+              </span>
               <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-                EAT & DISCOVER
+                EAT & DISCOVER IN {destName.toUpperCase()}
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 Iconic regional flavors, signature dishes, and local dining traditions
@@ -1377,31 +1642,46 @@ export default function TripCommandCenter({ destination }) {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {foodHighlights.map((f, idx) => (
               <div
                 key={idx}
-                className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/[0.06] shadow-sm flex flex-col justify-between space-y-3"
+                className="group bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-medium">
-                      {f.tag || 'Specialty'}
+                  {/* High Quality Dish Photograph */}
+                  <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-800">
+                    <img
+                      src={f.image}
+                      alt={f.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+                    <span className="absolute top-3 left-3 text-[10px] uppercase font-mono px-2.5 py-0.5 rounded-full font-semibold bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 backdrop-blur-md shadow-sm">
+                      {f.tag || 'Local Specialty'}
                     </span>
-                    <span className="text-[10px] font-mono text-slate-400">
-                      {f.dietary}
+                    <span className="absolute bottom-2.5 right-3 text-[10px] font-mono text-white/90 bg-black/50 px-2 py-0.5 rounded-md backdrop-blur-sm">
+                      {f.dietary || 'Authentic'}
                     </span>
                   </div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                    {f.name}
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-1 leading-relaxed">
-                    {f.description}
-                  </p>
+
+                  {/* Content */}
+                  <div className="p-4 space-y-2">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
+                      {f.name}
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
+                      {f.description}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="pt-3 border-t border-slate-100 dark:border-white/[0.04] text-[11px] text-blue-600 dark:text-blue-400 font-medium">
-                  Locally Recommended Specialty
+                <div className="p-4 pt-0 border-t border-slate-100 dark:border-white/[0.04] mt-2">
+                  <div className="pt-3 text-[11px] text-blue-600 dark:text-blue-400 font-medium flex items-center justify-between">
+                    <span>Locally Recommended Specialty</span>
+                    <span className="text-slate-400 text-[10px]">Must-Try</span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -1418,40 +1698,40 @@ export default function TripCommandCenter({ destination }) {
                 <AlertTriangle className="w-5 h-5 text-amber-500" />
                 <span>STAY AWARE</span>
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Safety index, etiquette decorum, and live travel advisories feed
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Essential safety protocols, cultural courtesies, and real-time consular updates
               </p>
             </div>
 
-            {/* Segmented Tabs: Safety | Culture | Live Alerts */}
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-800 self-start sm:self-auto">
+            {/* Minimalist Tab Switcher */}
+            <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-medium">
               <button
                 type="button"
                 onClick={() => setActiveAwareTab('safety')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
                   activeAwareTab === 'safety'
                     ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                Safety
+                Safety Guidance
               </button>
               <button
                 type="button"
                 onClick={() => setActiveAwareTab('culture')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
                   activeAwareTab === 'culture'
                     ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                Culture
+                Cultural Norms
               </button>
               <button
                 type="button"
-                onClick={() => setActiveAwareTab('alerts')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                  activeAwareTab === 'alerts'
+                onClick={() => setActiveAwareTab('news')}
+                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+                  activeAwareTab === 'news'
                     ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                 }`}
@@ -1461,59 +1741,78 @@ export default function TripCommandCenter({ destination }) {
             </div>
           </div>
 
-          {/* Tab Content */}
+          {/* Tab 1: Safety Guidance */}
           {activeAwareTab === 'safety' && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-              <div className="lg:col-span-4 p-5 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/50 dark:border-emerald-900/30 text-center">
-                <span className="text-4xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">
-                  {intel.safetyScore || 92}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.03] space-y-2">
+                <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block font-semibold">
+                  Safety Index: {intel.safetyScore || 92}/100
                 </span>
-                <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-300 block mt-1">
-                  Safety Index (Out of 100)
-                </span>
-                <p className="text-[11px] text-emerald-700 dark:text-emerald-400 font-light mt-1">
-                  Very low violent crime · High civic stability
-                </p>
-              </div>
-
-              <div className="lg:col-span-8 space-y-3 text-xs text-slate-600 dark:text-slate-300">
-                <p className="leading-relaxed">
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white">Very Safe & Orderly</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
                   {intel.essentials?.safety?.detail || `${destName} ranks among the world's most secure destinations for international travelers. Main tourist safety considerations focus on pickpocket prevention at major rail hubs and crowded tram lines.`}
                 </p>
-                <div className="pt-2 flex flex-wrap items-center gap-3">
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">Emergency Dispatch:</span>
-                  <span className="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 font-mono text-[11px]">Police: 117</span>
-                  <span className="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 font-mono text-[11px]">Ambulance: 144</span>
-                  <span className="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 font-mono text-[11px]">Universal: 112</span>
-                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.03] space-y-2">
+                <span className="text-[10px] font-mono text-amber-600 dark:text-amber-400 uppercase tracking-wider block font-semibold">
+                  Situational Awareness
+                </span>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white">Common Scams & Crowds</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
+                  Keep bags zipped in crowded stations and markets. Decline unsolicited offers from unlicensed street operators or unmetered cabs outside transit hubs.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.03] space-y-2">
+                <span className="text-[10px] font-mono text-rose-600 dark:text-rose-400 uppercase tracking-wider block font-semibold">
+                  Emergency Desks
+                </span>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white">24/7 Response</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
+                  Universal emergency dispatch reachable 24/7. Major university and city hospitals provide English-speaking emergency rooms and multilingual receptionists.
+                </p>
               </div>
             </div>
           )}
 
+          {/* Tab 2: Cultural Norms */}
           {activeAwareTab === 'culture' && (
-            <div className="space-y-4 text-xs text-slate-600 dark:text-slate-300">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.03]">
-                  <h4 className="font-bold text-slate-900 dark:text-white mb-1">Civic Greetings & Language</h4>
-                  <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
-                    Always offer a courteous &quot;Bonjour&quot; upon entering bakeries and shops. English is widely spoken in hotels, fine dining, and rail hubs.
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.03]">
-                  <h4 className="font-bold text-slate-900 dark:text-white mb-1">Sunday Rest Laws</h4>
-                  <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
-                    Supermarkets, pharmacies, and general retail stores are closed on Sundays under labor laws. Plan grocery needs on Saturdays.
-                  </p>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.03] space-y-2">
+                <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400 uppercase tracking-wider block font-semibold">
+                  Courtesy & Decorum
+                </span>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white">Polite Interactions</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
+                  A courteous greeting upon entering shops or taking a taxi is standard social etiquette. Punctuality is deeply respected across all services and rail travel.
+                </p>
               </div>
-              <p className="text-[11px] text-slate-500 pt-1">
-                Tipping: Hospitality bills legally include service fees. Rounding up 5–10% for table dining is polite recognition.
-              </p>
+
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.03] space-y-2">
+                <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400 uppercase tracking-wider block font-semibold">
+                  Dining & Tipping
+                </span>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white">Service Charges</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
+                  Tipping laws vary by destination. In Europe service is included with discretionary rounding; in Japan tipping is not practiced; in North America 15–20% is standard.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.03] space-y-2">
+                <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400 uppercase tracking-wider block font-semibold">
+                  Local Regulations
+                </span>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white">Statutory Quiet Hours</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
+                  Residential quiet hours are enforced at night (typically 10 PM to 7 AM). Maintain respectful volume in neighborhoods and on late public transportation.
+                </p>
+              </div>
             </div>
           )}
 
-          {activeAwareTab === 'alerts' && (
+          {/* Tab 3: Live Alerts (RapidAPI News) */}
+          {activeAwareTab === 'news' && (
             <div className="space-y-3">
               {newsLoading ? (
                 <div className="py-6 text-center text-xs text-slate-400">
@@ -1560,25 +1859,25 @@ export default function TripCommandCenter({ destination }) {
               CONTINUE PLANNING YOUR TRIP
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              One-click access to dedicated planning engines and personalized itinerary builders
+              Pick up where you left off or fine-tune specialized aspects of your itinerary
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Card 1: Day-by-Day Timeline */}
+            {/* Card A: Timeline */}
             <Link
-              to={`/ai-trip-planner?destCity=${encodeURIComponent(destName)}&destCountry=${encodeURIComponent(destCountry)}&originCity=${encodeURIComponent(originCity)}&originCountry=${encodeURIComponent(originCountry)}&startDate=${startDate}&endDate=${endDate}&travelers=${travelers}`}
-              className="group p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/[0.06] hover:border-blue-500/50 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              to={`/ai-trip-planner?destCity=${encodeURIComponent(destName)}&destCountry=${encodeURIComponent(destCountry)}`}
+              className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/[0.06] shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700/50 transition-all flex flex-col justify-between group"
             >
               <div>
-                <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-3 group-hover:scale-110 transition-transform">
-                  <FileText className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-3 group-hover:scale-110 transition-transform">
+                  <Clock className="w-4 h-4" />
                 </div>
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
-                  DAY-BY-DAY TIMELINE
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
+                  Day-by-Day Timeline
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-1.5 leading-relaxed">
-                  Generate hour-by-hour routing, museum slots, and personalized pace.
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-1 leading-relaxed">
+                  Generate optimized hourly schedules, transit routes, and booking checkpoints.
                 </p>
               </div>
               <div className="pt-4 mt-3 border-t border-slate-100 dark:border-white/[0.04] text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center justify-between">
@@ -1587,68 +1886,68 @@ export default function TripCommandCenter({ destination }) {
               </div>
             </Link>
 
-            {/* Card 2: Budget Planner */}
+            {/* Card B: Budget Calculator */}
             <Link
-              to={`/budget-planner?country=${encodeURIComponent(destCountry)}&city=${encodeURIComponent(destName)}`}
-              className="group p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/[0.06] hover:border-emerald-500/50 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              to={`/budget-planner?dest=${encodeURIComponent(destName)}`}
+              className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/[0.06] shadow-sm hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-700/50 transition-all flex flex-col justify-between group"
             >
               <div>
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3 group-hover:scale-110 transition-transform">
-                  <DollarSign className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3 group-hover:scale-110 transition-transform">
+                  <DollarSign className="w-4 h-4" />
                 </div>
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
-                  BUDGET PLANNER
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition-colors">
+                  Budget Calculator
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-1.5 leading-relaxed">
-                  Calculate lodging, dining, transit, and daily allowances in local currency.
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-1 leading-relaxed">
+                  Calculate lodging, dining, transit, and attraction spending in your home currency.
                 </p>
               </div>
               <div className="pt-4 mt-3 border-t border-slate-100 dark:border-white/[0.04] text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center justify-between">
-                <span>Create Budget</span>
+                <span>Calculate Expenses</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
 
-            {/* Card 3: Real Flight Pricing */}
+            {/* Card C: Flights Finder */}
             <Link
               to="/destinations"
-              className="group p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/[0.06] hover:border-purple-500/50 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/[0.06] shadow-sm hover:shadow-md hover:border-purple-300 dark:hover:border-purple-700/50 transition-all flex flex-col justify-between group"
             >
               <div>
-                <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-3 group-hover:scale-110 transition-transform">
-                  <Navigation className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-3 group-hover:scale-110 transition-transform">
+                  <Navigation className="w-4 h-4" />
                 </div>
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
-                  FLIGHT PRICING
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-purple-600 transition-colors">
+                  Flight Connections
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-1.5 leading-relaxed">
-                  Compare nonstop routes and connecting layovers into {intel.airportCode || 'Hub'}.
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-1 leading-relaxed">
+                  Compare departure carriers, layover durations, and terminal arrival gates.
                 </p>
               </div>
               <div className="pt-4 mt-3 border-t border-slate-100 dark:border-white/[0.04] text-xs font-semibold text-purple-600 dark:text-purple-400 flex items-center justify-between">
-                <span>Check Flights</span>
+                <span>Compare Flights</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
 
-            {/* Card 4: Religious Travel / Pilgrimage */}
+            {/* Card D: Spiritual / Umrah Guide (Contextual) */}
             <Link
-              to="/pilgrimage"
-              className="group p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/[0.06] hover:border-amber-500/50 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              to="/pilgrimage/umrah"
+              className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/[0.06] shadow-sm hover:shadow-md hover:border-amber-300 dark:hover:border-amber-700/50 transition-all flex flex-col justify-between group"
             >
               <div>
-                <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 mb-3 group-hover:scale-110 transition-transform">
-                  <Compass className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 mb-3 group-hover:scale-110 transition-transform">
+                  <Sparkles className="w-4 h-4" />
                 </div>
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
-                  RELIGIOUS TRAVEL
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-amber-600 transition-colors">
+                  Pilgrimage & Sacred Hub
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-1.5 leading-relaxed">
-                  Explore faith-based itineraries, historic shrines, and sacred pilgrimages.
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-1 leading-relaxed">
+                  Step-by-step rituals, Nusuk registration guidelines, and spiritual travel tools.
                 </p>
               </div>
               <div className="pt-4 mt-3 border-t border-slate-100 dark:border-white/[0.04] text-xs font-semibold text-amber-600 dark:text-amber-400 flex items-center justify-between">
-                <span>Explore Hub</span>
+                <span>View Sacred Guide</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
@@ -1657,62 +1956,20 @@ export default function TripCommandCenter({ destination }) {
 
       </div>
 
-      {/* ════════════════════════════════════════════════════════════════════
-          12. AUTH PROMPT MODAL (For Gated Actions)
-          ════════════════════════════════════════════════════════════════════ */}
-      {isAuthModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-5 text-center">
-            <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 mx-auto">
-              <Lock className="w-6 h-6" />
-            </div>
-
-            <div className="space-y-2">
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                Sign in to save your trip
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
-                Sign in to save your trip to your personal dashboard, track budget estimates, and sync your personalized day-by-day travel timeline.
-              </p>
-            </div>
-
-            <div className="pt-2 flex flex-col gap-2.5">
-              <Link
-                to={`/auth?mode=login&returnUrl=${encodeURIComponent(location.pathname + location.search)}`}
-                className="w-full py-2.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all"
-              >
-                Sign In
-              </Link>
-              <Link
-                to={`/auth?mode=signup&returnUrl=${encodeURIComponent(location.pathname + location.search)}`}
-                className="w-full py-2.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
-              >
-                Create Account
-              </Link>
-              <button
-                type="button"
-                onClick={() => setIsAuthModalOpen(false)}
-                className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 pt-1 cursor-pointer"
-              >
-                Continue browsing
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ════════════════════════════════════════════════════════════════════
-          13. EDIT TRIP PARAMETERS MODAL
-          ════════════════════════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════════════════════════════════
+          MODAL: EDIT TRIP PARAMETERS
+          ══════════════════════════════════════════════════════════════════════ */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-lg p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div className="flex items-center gap-2">
-                <Sliders className="w-4 h-4 text-blue-600" />
-                <h3 className="text-base font-semibold text-slate-900 dark:text-white">
-                  Adjust Trip Parameters
-                </h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.04] pb-4">
+              <div>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                  Edit Trip Parameters
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Update departure, dates, or traveling party
+                </p>
               </div>
               <button
                 type="button"
@@ -1815,27 +2072,27 @@ export default function TripCommandCenter({ destination }) {
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200"
                   >
                     <option value="Solo">Solo Traveler</option>
-                    <option value="Couple">Couple / Partner</option>
-                    <option value="Family">Family Travel</option>
-                    <option value="Group">Friends Group</option>
-                    <option value="Business">Business Trip</option>
+                    <option value="Couple">Couple</option>
+                    <option value="Family">Family</option>
+                    <option value="Friends">Friends Group</option>
+                    <option value="Business">Business</option>
                   </select>
                 </div>
               </div>
 
-              <div className="pt-3 flex items-center justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-white/[0.04]">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors cursor-pointer"
+                  className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm cursor-pointer"
                 >
-                  Update Command Center
+                  Apply Changes
                 </button>
               </div>
             </form>
@@ -1843,63 +2100,109 @@ export default function TripCommandCenter({ destination }) {
         </div>
       )}
 
-      {/* ════════════════════════════════════════════════════════════════════
-          14. FULL PACKING CHECKLIST DRAWER / MODAL
-          ════════════════════════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════════════════════════════════
+          MODAL: AUTH PROMPT FOR SIGNED-OUT USERS
+          ══════════════════════════════════════════════════════════════════════ */}
+      {isAuthModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl text-center space-y-5">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 mx-auto">
+              <Lock className="w-6 h-6" />
+            </div>
+
+            <div className="space-y-1">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                Save Trip to Your Profile
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
+                Sign in or create a complimentary account to save your {destName} itinerary, export packing guides, and sync checklists.
+              </p>
+            </div>
+
+            <div className="space-y-2 pt-2">
+              <Link
+                to="/auth?mode=signin"
+                className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center justify-center shadow-md shadow-blue-500/20"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/auth?mode=signup"
+                className="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center justify-center border border-slate-200 dark:border-slate-700"
+              >
+                Create Free Account
+              </Link>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsAuthModalOpen(false)}
+              className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+            >
+              Continue exploring as guest
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          DRAWER: FULL PACKING CHECKLIST
+          ══════════════════════════════════════════════════════════════════════ */}
       {isPackingDrawerOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div className="flex items-center gap-2">
-                <Luggage className="w-4 h-4 text-blue-600" />
-                <h3 className="text-base font-semibold text-slate-900 dark:text-white">
-                  Packing Checklist for {destName}
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsPackingDrawerOpen(false)}
-                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="max-h-80 overflow-y-auto space-y-2 pr-1 no-scrollbar">
-              {packingItems.map((p) => (
+        <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 w-full max-w-md h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.04] pb-4">
+                <div>
+                  <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                    Smart Packing Checklist
+                  </h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Tailored for {weatherData.temp}°C {weatherData.condition} in {destName}
+                  </p>
+                </div>
                 <button
-                  key={p.id}
                   type="button"
-                  onClick={() => togglePackingItem(p.id)}
-                  className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-left group cursor-pointer border border-slate-100 dark:border-slate-800"
+                  onClick={() => setIsPackingDrawerOpen(false)}
+                  className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 cursor-pointer"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                      p.checked ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-300 dark:border-slate-600 text-transparent'
-                    }`}>
-                      <Check className="w-3 h-3 stroke-[3]" />
-                    </div>
-                    <span className={`text-xs ${p.checked ? 'text-slate-800 dark:text-slate-200 line-through opacity-70' : 'text-slate-700 dark:text-slate-300 font-medium'}`}>
-                      {p.label}
-                    </span>
-                  </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">
-                    {p.category}
-                  </span>
+                  <X className="w-4 h-4" />
                 </button>
-              ))}
+              </div>
+
+              <div className="space-y-3">
+                {packingItems.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => togglePackingItem(p.id)}
+                    className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-100 dark:border-white/[0.04] hover:bg-slate-50 dark:hover:bg-slate-800/40 text-left cursor-pointer transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                        p.checked ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-300 dark:border-slate-600 text-transparent'
+                      }`}>
+                        <Check className="w-3 h-3 stroke-[3]" />
+                      </div>
+                      <span className={`text-xs ${p.checked ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-200 font-medium'}`}>
+                        {p.label}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">
+                      {p.category}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-              <span className="text-slate-400">
-                {packingItems.filter(p => p.checked).length} of {packingItems.length} items packed
-              </span>
+            <div className="pt-6 border-t border-slate-100 dark:border-white/[0.04] space-y-3">
               <button
                 type="button"
                 onClick={() => setIsPackingDrawerOpen(false)}
-                className="px-4 py-2 rounded-xl font-medium bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm cursor-pointer"
               >
-                Done
+                Done ({packingItems.filter(p => p.checked).length}/{packingItems.length} Packed)
               </button>
             </div>
           </div>
