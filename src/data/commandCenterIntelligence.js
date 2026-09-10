@@ -718,6 +718,7 @@ export function resolveDestinationIntelligence(destName, destCountry) {
     timezone: timezones,
     safetyScore: 88,
     safetyLevel: 'Safe & Welcoming',
+    emergencyNumber: emergencyNumber,
     firstHour: [
       {
         step: 1,

@@ -79,7 +79,8 @@ import {
 import { topDestinations, currencies, travelCategories, countries } from '../data';
 import { cityDatabase } from '../data/cityDatabase';
 import { countriesData } from '../data/countryData';
-import { getCityImage, usePremiumImage, useDestinationGallery } from '../utils/imageLookup';
+import { getCityImage, usePremiumImage, useDestinationGallery, isPlaceholderImage } from '../utils/imageLookup';
+import { fetchFromWikipedia } from '../utils/imagePipeline';
 import { fetchLiveVisaRequirement, simulateVisaRequirement, fetchLiveNews } from '../utils/rapidApiService';
 import { fetchLiveHotels, simulateHotels } from '../utils/amadeusService';
 import { fetchLiveTransitJourneys, simulateTransitJourneys } from '../utils/navitiaService';
@@ -5179,29 +5180,65 @@ export default function DestinationPage() {
         // 6. Dynamic AI Fallback Builder
         const parsedId = id ? id.replace(/-/g, ' ') : '';
         const nameCap = parsedId.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-        const matchedCountry = countries.find(c => 
+        let matchedCountry = countries.find(c => 
           c.cities.some(city => city.toLowerCase() === parsedId.toLowerCase())
         ) || { name: 'Worldwide', flag: '🌍' };
+
+        let countryName = matchedCountry.name;
+        let countryFlag = matchedCountry.flag;
+        let foundTz = findTimezoneForCountry(countryName);
+
+        // If unknown country or "Worldwide", query real-time geocoding to identify actual country and timezone
+        if (countryName === 'Worldwide' && parsedId) {
+          try {
+            const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(parsedId)}&count=1&language=en&format=json`);
+            const geoJson = await geoRes.json();
+            if (geoJson.results && geoJson.results[0]) {
+              const best = geoJson.results[0];
+              if (best.country) {
+                countryName = best.country;
+                foundTz = best.timezone || findTimezoneForCountry(countryName);
+                const matchedC = countries.find(c => c.name.toLowerCase() === best.country.toLowerCase());
+                if (matchedC && matchedC.flag) countryFlag = matchedC.flag;
+              }
+            }
+          } catch (err) {
+            // silent
+          }
+        }
+
+        let resolvedImg = getCityImage(nameCap, countryName);
+        if (!resolvedImg || isPlaceholderImage(resolvedImg)) {
+          try {
+            const wikiImg = await fetchFromWikipedia(nameCap, countryName);
+            if (wikiImg) {
+              resolvedImg = wikiImg;
+              try {
+                localStorage.setItem(`tripready_hero_img_${parsedId.toLowerCase().replace(/[^a-z0-9]/g, '')}`, wikiImg);
+              } catch (e) {}
+            }
+          } catch (e) {}
+        }
 
         const fallbackObj = {
           id: id || 'custom',
           name: nameCap || 'Curated Destination',
-          country: matchedCountry.name,
-          flag: matchedCountry.flag,
+          country: countryName,
+          flag: countryFlag,
           rank: 'AI Curated',
-          image: getCityImage(nameCap, matchedCountry.name),
-          preview: `An extraordinary, culturally rich journey to the heart of ${matchedCountry.name}.`,
-          description: `${nameCap} is a spectacular world-class destination located in ${matchedCountry.name}. It represents a beautiful combination of deep heritage, local warmth, and stunning scenic landscapes, providing an unforgettable travel experience for adventurers and leisure seekers alike.`,
+          image: resolvedImg,
+          preview: `An extraordinary, culturally rich journey to the heart of ${countryName}.`,
+          description: `${nameCap} is a spectacular world-class destination located in ${countryName}. It represents a beautiful combination of deep heritage, local warmth, and stunning scenic landscapes, providing an unforgettable travel experience for adventurers and leisure seekers alike.`,
           weather: { temp: '26°C', condition: 'Sunny & Pleasant', humidity: '50%', airQuality: 'Excellent' },
           bestTime: 'October - April',
           budget: { daily: '$90-220', hotel: '$60-180', food: '$20-50', transport: '$10-25' },
           safety: 'Safe & Welcoming',
-          timezone: findTimezoneForCountry(matchedCountry.name),
-          attractions: [`Historic ${nameCap} Center`, `Scenic ${nameCap} Overlook`, `Central ${nameCap} Culture Square`, `Heritage Museum of ${matchedCountry.name}`],
+          timezone: foundTz,
+          attractions: [`Historic ${nameCap} Center`, `Scenic ${nameCap} Overlook`, `Central ${nameCap} Culture Square`, `Heritage Museum of ${countryName}`],
           foods: ['Traditional Specialty', 'Local Spiced Stew', 'Signature Pastry'],
           transport: ['Local Transit System', 'Chauffeured Car Charter', 'Walkable Boulevards'],
           culture: `Respect local customs and dress codes. A friendly smile and basic courtesy go a long way.`,
-          visa: `eVisa or visa-free entry is provided for most international travelers to ${matchedCountry.name}.`
+          visa: `eVisa or visa-free entry is provided for most international travelers to ${countryName}.`
         };
 
         if (isMounted) {

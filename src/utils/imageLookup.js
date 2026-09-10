@@ -63,6 +63,8 @@ const IMAGE_REGISTRY = {
   pakistan: 'https://images.unsplash.com/photo-1565506737357-af89222625ad?w=1400&q=85',   // Faisal Mosque
 
   // United States
+  rochester: 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Downtown_Rochester%2C_NY_HDR_by_patrickashley.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled',
+  rochesterny: 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Downtown_Rochester%2C_NY_HDR_by_patrickashley.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled',
   newyork: 'https://images.unsplash.com/photo-1522083165195-342750297f05?w=1200&q=80',    // Statue of Liberty
   losangeles: 'https://images.unsplash.com/photo-1506634572416-48cdfe530110?w=1200&q=80', // Griffith Observatory / Hollywood Sign
   chicago: 'https://images.unsplash.com/photo-1494526585095-c41746248156?w=1200&q=80',    // Chicago Cloud Gate Bean
@@ -70,6 +72,12 @@ const IMAGE_REGISTRY = {
   sanfrancisco: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=1200&q=80', // Golden Gate Bridge
   unitedstates: 'https://images.unsplash.com/photo-1522083165195-342750297f05?w=1200&q=80',
   usa: 'https://images.unsplash.com/photo-1522083165195-342750297f05?w=1200&q=80',
+
+  // Mexico
+  mexico: 'https://images.unsplash.com/photo-1518638150340-f706e86654de?w=1400&q=85',     // Palacio de Bellas Artes, Mexico City
+  mexicocity: 'https://images.unsplash.com/photo-1518638150340-f706e86654de?w=1400&q=85',
+  cancun: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=1200&q=80',
+  oaxaca: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=1200&q=80',
 
   // United Kingdom
   london: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1200&q=80',    // Big Ben & Tower Bridge
@@ -186,6 +194,16 @@ export function getCityImage(city, country) {
       return value;
     }
   }
+
+  // Check local dynamic cache (populated via Wikipedia REST API / AI image resolver)
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const cached = localStorage.getItem(`tripready_hero_img_${normCity}`) || localStorage.getItem(`tripready_hero_img_${normCountry}`);
+      if (cached && !isPlaceholderImage(cached)) {
+        return cached;
+      }
+    }
+  } catch (e) {}
 
   // Structural Fallback themes
   const fullText = (normCity + ' ' + normCountry).toLowerCase();

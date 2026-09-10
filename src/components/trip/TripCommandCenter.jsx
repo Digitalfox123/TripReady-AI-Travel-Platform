@@ -64,6 +64,10 @@ import {
   ExpressTrainVector,
   HotelBellVector
 } from './TripVectorArt';
+import TripWeatherScenery from './TripWeatherScenery';
+import TripCurrencyDesk, { getCurrencyForCountry } from './TripCurrencyDesk';
+import { useLiveRates } from '../../utils/currencyService';
+import { fetchFromWikipedia } from '../../utils/imagePipeline';
 
 export default function TripCommandCenter({ destination }) {
   const location = useLocation();
@@ -108,9 +112,13 @@ export default function TripCommandCenter({ destination }) {
     location.state?.travelType || searchParams.get('travelType') || 'Family'
   );
 
-  // ── 2. Destination Hero Image Resolution ───────────────────────────────────
-  const heroImage = useMemo(() => {
-    // Prioritize iconic high-resolution landmark registry
+  // ── 2. Destination Hero Image Resolution (Curated Registry + Dynamic Pipeline) ──
+  const [dynamicHeroImage, setDynamicHeroImage] = useState(() => {
+    const norm = (destName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    try {
+      const cached = typeof window !== 'undefined' ? localStorage.getItem(`tripready_hero_img_${norm}`) : null;
+      if (cached) return cached;
+    } catch {}
     const curatedLandmark = getCityImage(destName, destCountry);
     if (curatedLandmark && !curatedLandmark.includes('city-skyline-monument')) {
       return curatedLandmark;
@@ -119,7 +127,50 @@ export default function TripCommandCenter({ destination }) {
       return destination.image;
     }
     return curatedLandmark;
-  }, [destination, destName, destCountry]);
+  });
+
+  useEffect(() => {
+    let active = true;
+    const norm = (destName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    try {
+      const cached = typeof window !== 'undefined' ? localStorage.getItem(`tripready_hero_img_${norm}`) : null;
+      if (cached) {
+        setDynamicHeroImage(cached);
+        return;
+      }
+    } catch {}
+
+    const curatedLandmark = getCityImage(destName, destCountry);
+    if (curatedLandmark && !curatedLandmark.includes('city-skyline-monument')) {
+      setDynamicHeroImage(curatedLandmark);
+      return;
+    }
+
+    if (destination?.image && !isPlaceholderImage(destination.image)) {
+      setDynamicHeroImage(destination.image);
+      return;
+    }
+
+    async function resolveLiveHero() {
+      try {
+        const photo = await fetchFromWikipedia(destName, destCountry);
+        if (active && photo && !isPlaceholderImage(photo)) {
+          try {
+            localStorage.setItem(`tripready_hero_img_${norm}`, photo);
+          } catch {}
+          setDynamicHeroImage(photo);
+        } else if (active && curatedLandmark) {
+          setDynamicHeroImage(curatedLandmark);
+        }
+      } catch {
+        if (active && curatedLandmark) setDynamicHeroImage(curatedLandmark);
+      }
+    }
+    resolveLiveHero();
+    return () => { active = false; };
+  }, [destName, destCountry, destination]);
+
+  const heroImage = dynamicHeroImage || getCityImage(destName, destCountry);
 
   // ── 3. Destination Type Determination ─────────────────────────────────────
   const destinationType = useMemo(() => {
@@ -287,7 +338,72 @@ export default function TripCommandCenter({ destination }) {
     }
   }, [startDate, endDate]);
 
-  // ── 8. Open-Meteo Live Weather Telemetry ──────────────────────────────────
+  // ── 8. Live Clock & Open-Meteo Weather Telemetry ──────────────────────────
+  const [destTimezone, setDestTimezone] = useState(null);
+  const [currentTime, setCurrentTime] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const liveLocalTime = useMemo(() => {
+    try {
+      const tz = destTimezone || (intel.timezone && intel.timezone.includes('/') ? intel.timezone : undefined);
+      const options = {
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+        timeZone: tz
+      };
+      const timeStr = new Intl.DateTimeFormat('en-US', options).format(currentTime);
+      const tzOptions = { timeZoneName: 'short', timeZone: tz };
+      const tzStr = new Intl.DateTimeFormat('en-US', tzOptions).formatToParts(currentTime).find(p => p.type === 'timeZoneName')?.value || '';
+      return `${timeStr} · ${destName}${tzStr ? ` (${tzStr})` : ''}`;
+    } catch {
+      return currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+    }
+  }, [currentTime, destTimezone, destName, intel.timezone]);
+
+  // Destination vs Origin Exchange Rate Calculation
+  const { convert: convertCurrency } = useLiveRates();
+  const originCurrObj = useMemo(() => getCurrencyForCountry(originCountry), [originCountry]);
+  const destCurrObj = useMemo(() => {
+    if (intel.currency?.code) {
+      return {
+        code: intel.currency.code,
+        symbol: intel.currency.symbol || intel.currency.code,
+        name: intel.currency.name || intel.currency.code
+      };
+    }
+    return getCurrencyForCountry(destCountry);
+  }, [intel.currency, destCountry]);
+
+  const destToOriginRate = useMemo(() => {
+    try {
+      const r = convertCurrency(1, destCurrObj.code, originCurrObj.code);
+      return r > 0 ? r : null;
+    } catch {
+      return null;
+    }
+  }, [destCurrObj.code, originCurrObj.code, convertCurrency]);
+
+  // Holy Sanctuary Check for Makkah & Madinah
+  const isHolySanctuary = useMemo(() => {
+    const norm = (destName || '').toLowerCase().trim();
+    const cNorm = (destCountry || '').toLowerCase().trim();
+    return (
+      norm.includes('makkah') ||
+      norm.includes('mecca') ||
+      norm.includes('madinah') ||
+      norm.includes('medina') ||
+      (cNorm.includes('saudi') && (norm.includes('makkah') || norm.includes('madinah') || norm.includes('mecca') || norm.includes('medina')))
+    );
+  }, [destName, destCountry]);
+
   const [weatherData, setWeatherData] = useState({
     temp: 22,
     feelsLike: 25,
@@ -315,6 +431,9 @@ export default function TripCommandCenter({ destination }) {
         if (geoJson.results && geoJson.results[0]) {
           lat = geoJson.results[0].latitude;
           lng = geoJson.results[0].longitude;
+          if (geoJson.results[0].timezone && active) {
+            setDestTimezone(geoJson.results[0].timezone);
+          }
         } else {
           // Fallback geocode query targeting just destination name
           const cityRes = await fetch(
@@ -324,6 +443,9 @@ export default function TripCommandCenter({ destination }) {
           if (cityJson.results && cityJson.results[0]) {
             lat = cityJson.results[0].latitude;
             lng = cityJson.results[0].longitude;
+            if (cityJson.results[0].timezone && active) {
+              setDestTimezone(cityJson.results[0].timezone);
+            }
           }
         }
 
@@ -336,28 +458,33 @@ export default function TripCommandCenter({ destination }) {
           `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto`
         );
         const data = await res.json();
-        if (active && data && data.current) {
-          const code = data.current.weather_code || 0;
-          let cond = 'Clear Sky';
-          if (code >= 1 && code <= 3) cond = 'Partly Cloudy';
-          else if (code >= 45 && code <= 48) cond = 'Foggy';
-          else if (code >= 51 && code <= 67) cond = 'Light Rain';
-          else if (code >= 71 && code <= 77) cond = 'Snow Showers';
-          else if (code >= 80 && code <= 82) cond = 'Rain Showers';
-          else if (code >= 95) cond = 'Thunderstorm';
+        if (active && data) {
+          if (data.timezone) {
+            setDestTimezone(data.timezone);
+          }
+          if (data.current) {
+            const code = data.current.weather_code || 0;
+            let cond = 'Clear Sky';
+            if (code >= 1 && code <= 3) cond = 'Partly Cloudy';
+            else if (code >= 45 && code <= 48) cond = 'Foggy';
+            else if (code >= 51 && code <= 67) cond = 'Light Rain';
+            else if (code >= 71 && code <= 77) cond = 'Snow Showers';
+            else if (code >= 80 && code <= 82) cond = 'Rain Showers';
+            else if (code >= 95) cond = 'Thunderstorm';
 
-          setWeatherData({
-            temp: Math.round(data.current.temperature_2m),
-            feelsLike: Math.round(data.current.apparent_temperature || data.current.temperature_2m),
-            condition: cond,
-            high: data.daily?.temperature_2m_max ? Math.round(data.daily.temperature_2m_max[0]) : 26,
-            low: data.daily?.temperature_2m_min ? Math.round(data.daily.temperature_2m_min[0]) : 20,
-            humidity: data.current.relative_humidity_2m || 75,
-            windSpeed: Math.round(data.current.wind_speed_10m || 6),
-            uvIndex: 4,
-            code,
-            loading: false
-          });
+            setWeatherData({
+              temp: Math.round(data.current.temperature_2m),
+              feelsLike: Math.round(data.current.apparent_temperature || data.current.temperature_2m),
+              condition: cond,
+              high: data.daily?.temperature_2m_max ? Math.round(data.daily.temperature_2m_max[0]) : 26,
+              low: data.daily?.temperature_2m_min ? Math.round(data.daily.temperature_2m_min[0]) : 20,
+              humidity: data.current.relative_humidity_2m || 75,
+              windSpeed: Math.round(data.current.wind_speed_10m || 6),
+              uvIndex: 4,
+              code,
+              loading: false
+            });
+          }
         }
       } catch (e) {
         if (active) {
@@ -707,28 +834,30 @@ export default function TripCommandCenter({ destination }) {
               </div>
             </div>
 
-            {/* Item 2: Currency */}
+            {/* Item 2: Currency Rate (Destination vs Origin) */}
             <div className="flex items-center gap-3 p-1">
               <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0">
                 <DollarSign className="w-4 h-4" />
               </div>
               <div className="min-w-0">
-                <span className="block text-[10px] uppercase font-mono tracking-wider text-slate-400">Currency</span>
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate block">
-                  {intel.currency ? `${intel.currency.code} (1 USD ≈ ${intel.currency.rate} ${intel.currency.code})` : 'USD (1 USD ≈ 1 USD)'}
+                <span className="block text-[10px] uppercase font-mono tracking-wider text-slate-400">Exchange Rate</span>
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate block" title={`1 ${destCurrObj.code} = ${destToOriginRate ? destToOriginRate.toFixed(2) : '1'} ${originCurrObj.code}`}>
+                  {destToOriginRate
+                    ? `1 ${destCurrObj.code} ≈ ${destToOriginRate.toFixed(2)} ${originCurrObj.code}`
+                    : `${destCurrObj.code} · ${originCurrObj.code}`}
                 </span>
               </div>
             </div>
 
-            {/* Item 3: Time Zone */}
+            {/* Item 3: Live Local Time */}
             <div className="flex items-center gap-3 p-1">
               <div className="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 flex-shrink-0">
-                <Compass className="w-4 h-4" />
+                <Clock className="w-4 h-4" />
               </div>
               <div className="min-w-0">
-                <span className="block text-[10px] uppercase font-mono tracking-wider text-slate-400">Time Zone</span>
+                <span className="block text-[10px] uppercase font-mono tracking-wider text-slate-400">Live Local Time</span>
                 <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate block">
-                  {intel.timezone || 'Local Time (UTC+5 to +9)'}
+                  {liveLocalTime}
                 </span>
               </div>
             </div>
@@ -1349,6 +1478,16 @@ export default function TripCommandCenter({ destination }) {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════
+            4B. DEDICATED INTERACTIVE CURRENCY EXCHANGE DESK & CALCULATOR
+            ════════════════════════════════════════════════════════════════════ */}
+        <TripCurrencyDesk
+          destCountry={destCountry}
+          destName={destName}
+          originCountry={originCountry}
+          destCurrencyCode={intel.currency?.code}
+        />
+
+        {/* ════════════════════════════════════════════════════════════════════
             5. WEATHER & WHAT TO PACK (Unified Colorful Atmospheric Card)
             ════════════════════════════════════════════════════════════════════ */}
         <section className="bg-white dark:bg-slate-900/60 rounded-3xl p-6 border border-slate-200/80 dark:border-white/[0.06] shadow-sm space-y-6">
@@ -1363,74 +1502,18 @@ export default function TripCommandCenter({ destination }) {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Left: Atmospheric Live Weather Card (No open-meteo telemetry label) */}
-            <div className={`relative overflow-hidden lg:col-span-6 p-6 rounded-2xl flex flex-col justify-between border shadow-sm transition-all ${
-              weatherData.condition.toLowerCase().includes('rain')
-                ? 'bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white border-blue-800/40'
-                : weatherData.condition.toLowerCase().includes('cloud')
-                ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-sky-950 text-white border-slate-700/40'
-                : 'bg-gradient-to-br from-blue-900 via-indigo-950 to-slate-950 text-white border-blue-700/30'
-            }`}>
-              {/* Rain Animation Layer */}
-              {weatherData.condition.toLowerCase().includes('rain') && (
-                <div className="absolute inset-0 pointer-events-none opacity-25 overflow-hidden">
-                  <div className="absolute w-0.5 h-6 bg-blue-300 top-2 left-10 animate-pulse" />
-                  <div className="absolute w-0.5 h-8 bg-blue-200 top-12 left-28 animate-pulse" style={{ animationDelay: '200ms' }} />
-                  <div className="absolute w-0.5 h-6 bg-blue-300 top-4 left-48 animate-pulse" style={{ animationDelay: '400ms' }} />
-                  <div className="absolute w-0.5 h-7 bg-blue-200 top-16 left-64 animate-pulse" style={{ animationDelay: '600ms' }} />
-                  <div className="absolute w-0.5 h-6 bg-blue-300 top-8 right-12 animate-pulse" style={{ animationDelay: '300ms' }} />
-                  <div className="absolute w-0.5 h-8 bg-blue-200 top-20 right-28 animate-pulse" style={{ animationDelay: '500ms' }} />
-                </div>
-              )}
-
-              {/* Sun Ambient Glow */}
-              {!weatherData.condition.toLowerCase().includes('rain') && (
-                <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-amber-500/20 blur-3xl pointer-events-none" />
-              )}
-
-              <div className="relative z-10">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-mono uppercase tracking-wider text-blue-300">
-                    Live Destination Forecast
-                  </span>
-                  <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md font-mono text-white/80">
-                    {weatherData.condition}
-                  </span>
-                </div>
-
-                <div className="flex items-baseline gap-4 mt-5">
-                  <span className="text-5xl sm:text-6xl font-black tracking-tight text-white drop-shadow-md">
-                    {weatherData.temp}°C
-                  </span>
-                  <div className="text-xs space-y-0.5">
-                    <span className="block font-bold text-base text-white">
-                      {weatherData.condition}
-                    </span>
-                    <span className="text-white/70 block">
-                      Feels like {weatherData.feelsLike}°C
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative z-10 grid grid-cols-3 gap-3 pt-6 mt-6 border-t border-white/10 text-xs">
-                <div>
-                  <span className="block text-[10px] uppercase font-mono text-white/60">High / Low</span>
-                  <span className="font-bold text-white text-sm">{weatherData.high}° / {weatherData.low}°</span>
-                </div>
-                <div>
-                  <span className="block text-[10px] uppercase font-mono text-white/60">Humidity</span>
-                  <span className="font-bold text-white text-sm">{weatherData.humidity}%</span>
-                </div>
-                <div>
-                  <span className="block text-[10px] uppercase font-mono text-white/60">Wind</span>
-                  <span className="font-bold text-white text-sm">{weatherData.windSpeed} km/h</span>
-                </div>
-              </div>
+            {/* Left: Picturesque Living Landscape Weather Scenery */}
+            <div className="lg:col-span-7">
+              <TripWeatherScenery
+                weatherData={weatherData}
+                destName={destName}
+                destCountry={destCountry}
+                destTimezone={destTimezone}
+              />
             </div>
 
             {/* Right: What to Pack Compact Preview */}
-            <div className="lg:col-span-6 flex flex-col justify-between p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.04]">
+            <div className="lg:col-span-5 flex flex-col justify-between p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-white/[0.04]">
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-xs font-semibold uppercase font-mono text-slate-500 tracking-wider">
@@ -1990,6 +2073,44 @@ export default function TripCommandCenter({ destination }) {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════
+            SPECIAL FEATURED BANNER: START YOUR UMRAH JOURNEY (Makkah & Madinah ONLY)
+            ════════════════════════════════════════════════════════════════════ */}
+        {isHolySanctuary && (
+          <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-950 border-2 border-amber-500/40 shadow-2xl p-6 sm:p-10 text-white select-none">
+            {/* Ambient gold-emerald glow */}
+            <div className="absolute -right-12 -top-12 w-80 h-80 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />
+            <div className="absolute right-6 bottom-3 opacity-10 pointer-events-none font-serif text-8xl sm:text-9xl text-amber-300 select-none">
+              مكة
+            </div>
+
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-3 max-w-2xl">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-semibold uppercase tracking-wider">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin" style={{ animationDuration: '8s' }} />
+                  <span>Sacred Sanctuary · Makkah & Madinah</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white drop-shadow-md">
+                  Start Your Umrah Journey
+                </h2>
+                <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed font-light">
+                  Experience our dedicated sacred guide: Nusuk permit protocols, step-by-step Ihram & Tawaf rituals, Rawdah booking checkpoints, interactive pilgrimage checklist, and verified Ziyarat landmarks for {destName}.
+                </p>
+              </div>
+
+              <div className="flex-shrink-0">
+                <Link
+                  to="/pilgrimage/umrah"
+                  className="inline-flex items-center gap-3 px-6 py-3.5 rounded-2xl font-bold text-sm bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-xl shadow-amber-500/20 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  <span>Launch Umrah Experience</span>
+                  <ArrowRight className="w-4 h-4 text-slate-950 stroke-[2.5]" />
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ════════════════════════════════════════════════════════════════════
             11. CONTINUE PLANNING YOUR TRIP (Contextual Next Steps)
             ════════════════════════════════════════════════════════════════════ */}
         <section className="space-y-4">
@@ -2069,9 +2190,9 @@ export default function TripCommandCenter({ destination }) {
               </div>
             </Link>
 
-            {/* Card D: Spiritual / Umrah Guide (Contextual) */}
+            {/* Card D: Spiritual / Multi-Faith Pilgrimage Hub */}
             <Link
-              to="/pilgrimage/umrah"
+              to="/pilgrimage"
               className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/[0.06] shadow-sm hover:shadow-md hover:border-amber-300 dark:hover:border-amber-700/50 transition-all flex flex-col justify-between group"
             >
               <div>
@@ -2082,11 +2203,11 @@ export default function TripCommandCenter({ destination }) {
                   Pilgrimage & Sacred Hub
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-1 leading-relaxed">
-                  Step-by-step rituals, Nusuk registration guidelines, and spiritual travel tools.
+                  Multi-faith sacred sanctuaries, architectural heritage, and spiritual travel guides worldwide.
                 </p>
               </div>
               <div className="pt-4 mt-3 border-t border-slate-100 dark:border-white/[0.04] text-xs font-semibold text-amber-600 dark:text-amber-400 flex items-center justify-between">
-                <span>View Sacred Guide</span>
+                <span>Explore Sacred Hub</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
