@@ -43,21 +43,21 @@ export function isPlaceholderImage(url) {
 // ── CURATED DYNAMIC IMAGE REGISTRY FOR HIGH-DENSITY LANDMARK VISUALS ─────────
 const IMAGE_REGISTRY = {
   // Saudi Arabia
-  riyadh: 'https://images.unsplash.com/photo-1586724230021-4c38356a1b7c?w=1200&q=80', // Kingdom Centre Skyline
+  riyadh: 'https://images.unsplash.com/photo-1580835239846-5bb9ce03c8c3?w=1400&q=85',
   jeddah: 'https://images.unsplash.com/photo-1598902108854-10e335adac99?w=1200&q=80', // Historic Al-Balad coral houses
-  mecca: 'https://images.unsplash.com/photo-1564769625905-50e9ad63095a?w=1200&q=80',  // Holy Kaaba
-  makkah: 'https://images.unsplash.com/photo-1564769625905-50e9ad63095a?w=1200&q=80', // Holy Kaaba
-  medina: 'https://images.unsplash.com/photo-1601058268499-e52658bdfaf1?w=1200&q=80',  // Prophet's Mosque Al-Masjid an-Nabawi
-  madinah: 'https://images.unsplash.com/photo-1601058268499-e52658bdfaf1?w=1200&q=80', // Prophet's Mosque Al-Masjid an-Nabawi
-  alula: 'https://images.unsplash.com/photo-1627998797960-951fcdae95a9?w=1200&q=80',   // Hegra Stone Tombs
-  saudiarabia: 'https://images.unsplash.com/photo-1564769625905-50e9ad63095a?w=1200&q=80',
+  mecca: 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=1400&q=85',  // Holy Kaaba
+  makkah: 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=1400&q=85', // Holy Kaaba
+  medina: 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1400&q=85',  // Prophet's Mosque Al-Masjid an-Nabawi
+  madinah: 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1400&q=85', // Prophet's Mosque Al-Masjid an-Nabawi
+  alula: 'https://images.unsplash.com/photo-1682687220063-4742bd7fd538?w=1400&q=85',
+  saudiarabia: 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=1400&q=85',
 
   // Pakistan
   islamabad: 'https://images.unsplash.com/photo-1565506737357-af89222625ad?w=1400&q=85', // Faisal Mosque
   lahore: 'https://images.unsplash.com/photo-1622546758596-f1f06ba11f58?w=1400&q=85',    // Minar-e-Pakistan
   karachi: 'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?w=1200&q=80',   // Mazar-e-Quaid Mausoleum
-  hunza: 'https://images.unsplash.com/photo-1595844730298-b9f1ff982792?w=1200&q=80',     // Passu Cones Karakoram
-  skardu: 'https://images.unsplash.com/photo-1614082242765-7c9880d3ddd3?w=1200&q=80',    // Shangrila Resort Lake
+  hunza: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1400&q=85',
+  skardu: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1400&q=85',
   swat: 'https://images.unsplash.com/photo-1627856013091-fed6e4e30025?w=1200&q=80',       // Swat Valley River/Mountains
   peshawar: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=1200&q=80',   // Qissa Khwani Bazaar
   pakistan: 'https://images.unsplash.com/photo-1565506737357-af89222625ad?w=1400&q=85',   // Faisal Mosque
@@ -65,13 +65,13 @@ const IMAGE_REGISTRY = {
   // United States
   rochester: 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Downtown_Rochester%2C_NY_HDR_by_patrickashley.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled',
   rochesterny: 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Downtown_Rochester%2C_NY_HDR_by_patrickashley.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled',
-  newyork: 'https://images.unsplash.com/photo-1522083165195-342750297f05?w=1200&q=80',    // Statue of Liberty
+  newyork: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1400&q=85',    // Manhattan Skyline
   losangeles: 'https://images.unsplash.com/photo-1506634572416-48cdfe530110?w=1200&q=80', // Griffith Observatory / Hollywood Sign
   chicago: 'https://images.unsplash.com/photo-1494526585095-c41746248156?w=1200&q=80',    // Chicago Cloud Gate Bean
   miami: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80',      // Art Deco Ocean Drive
   sanfrancisco: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=1200&q=80', // Golden Gate Bridge
-  unitedstates: 'https://images.unsplash.com/photo-1522083165195-342750297f05?w=1200&q=80',
-  usa: 'https://images.unsplash.com/photo-1522083165195-342750297f05?w=1200&q=80',
+  unitedstates: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1400&q=85',
+  usa: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1400&q=85',
 
   // Mexico
   mexico: 'https://images.unsplash.com/photo-1518638150340-f706e86654de?w=1400&q=85',     // Palacio de Bellas Artes, Mexico City
@@ -93,7 +93,7 @@ const IMAGE_REGISTRY = {
   // Japan
   tokyo: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=1200&q=80',     // Tokyo Tower
   kyoto: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200&q=80',     // Kiyomizu-dera Pagoda
-  osaka: 'https://images.unsplash.com/photo-1590253509302-39c4d715978a?w=1200&q=80',     // Dotonbori Canal Neon
+  osaka: 'https://images.unsplash.com/photo-1576675784201-0e142b423952?w=1400&q=85',
   mountfuji: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1200&q=80', // Mt. Fuji Pagoda Cherry Blossoms
   japan: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=1200&q=80',
 
@@ -104,20 +104,20 @@ const IMAGE_REGISTRY = {
   italy: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&q=80',
 
   // Spain
-  barcelona: 'https://images.unsplash.com/photo-1583422409516-2895a77efedd?w=1200&q=80', // Sagrada Familia
+  barcelona: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=1400&q=85',
   madrid: 'https://images.unsplash.com/photo-1539650116574-8efeb43e2750?w=1200&q=80',    // Royal Palace Plaza
-  spain: 'https://images.unsplash.com/photo-1583422409516-2895a77efedd?w=1200&q=80',
+  spain: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=1400&q=85',
 
   // Switzerland
-  zurich: 'https://images.unsplash.com/photo-1515488042361-404e9250afef?w=1200&q=80',     // Zurich city lake/skyline
+  zurich: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=1400&q=85',
   geneva: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=1200&q=80',
   swissalps: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80', // Matterhorn Peak
   switzerland: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80',
 
   // Egypt
-  cairo: 'https://images.unsplash.com/photo-1503177119275-0aa32b31d468?w=1200&q=80',        // Great Pyramids of Giza
-  cairopyramids: 'https://images.unsplash.com/photo-1503177119275-0aa32b31d468?w=1200&q=80', // Great Pyramids of Giza
-  egypt: 'https://images.unsplash.com/photo-1503177119275-0aa32b31d468?w=1200&q=80',
+  cairo: 'https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=1400&q=85',
+  cairopyramids: 'https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=1400&q=85',
+  egypt: 'https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=1400&q=85',
 
   // Germany
   berlin: 'https://images.unsplash.com/photo-1560969184-10fe8719e047?w=1200&q=80',    // Brandenburg Gate
@@ -126,7 +126,7 @@ const IMAGE_REGISTRY = {
 
   // Turkey
   istanbul: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=1200&q=80',  // Hagia Sophia / Blue Mosque
-  cappadocia: 'https://images.unsplash.com/photo-1570939617782-99c878bfeed3?w=1200&q=80',// Hot Air Balloons
+  cappadocia: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1400&q=85',
   turkey: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=1200&q=80',
 
   // Greece
@@ -157,8 +157,8 @@ const IMAGE_REGISTRY = {
   austria: 'https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=1200&q=80',
 
   // Portugal
-  lisbon: 'https://images.unsplash.com/photo-1509804868213-982885970221?w=1200&q=80',    // Yellow Tram Alfama
-  portugal: 'https://images.unsplash.com/photo-1509804868213-982885970221?w=1200&q=80',
+  lisbon: 'https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=1400&q=85',
+  portugal: 'https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=1400&q=85',
 
   // Others
   singapore: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=1200&q=80', // Marina Bay Sands
@@ -171,8 +171,8 @@ const IMAGE_REGISTRY = {
   maldives: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=1200&q=80',  // Overwater Bungalow Resort
   thailand: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=1200&q=80',  // Grand Palace Bangkok
   bangkok: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=1200&q=80',
-  washingtondc: 'https://images.unsplash.com/photo-1501466044931-62695aada8e3?w=1200&q=80', // US Capitol
-  washington: 'https://images.unsplash.com/photo-1501466044931-62695aada8e3?w=1200&q=80',
+  washingtondc: 'https://images.unsplash.com/photo-1617581629397-a72507c3de9e?w=1400&q=85',
+  washington: 'https://images.unsplash.com/photo-1617581629397-a72507c3de9e?w=1400&q=85',
   default: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1200&q=80'
 };
 

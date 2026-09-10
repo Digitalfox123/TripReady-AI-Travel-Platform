@@ -114,15 +114,17 @@ export default function TripCommandCenter({ destination }) {
 
   // ── 2. Destination Hero Image Resolution (Curated Registry + Dynamic Pipeline) ──
   const [dynamicHeroImage, setDynamicHeroImage] = useState(() => {
-    const norm = (destName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-    try {
-      const cached = typeof window !== 'undefined' ? localStorage.getItem(`tripready_hero_img_${norm}`) : null;
-      if (cached) return cached;
-    } catch {}
     const curatedLandmark = getCityImage(destName, destCountry);
     if (curatedLandmark && !curatedLandmark.includes('city-skyline-monument')) {
       return curatedLandmark;
     }
+    const norm = (destName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    try {
+      const cached = typeof window !== 'undefined' ? localStorage.getItem(`tripready_hero_img_${norm}`) : null;
+      if (cached && !isPlaceholderImage(cached) && !cached.includes('photo-1564769625905-50e9ad63095a')) {
+        return cached;
+      }
+    } catch {}
     if (destination?.image && !isPlaceholderImage(destination.image)) {
       return destination.image;
     }
@@ -132,19 +134,22 @@ export default function TripCommandCenter({ destination }) {
   useEffect(() => {
     let active = true;
     const norm = (destName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-    try {
-      const cached = typeof window !== 'undefined' ? localStorage.getItem(`tripready_hero_img_${norm}`) : null;
-      if (cached) {
-        setDynamicHeroImage(cached);
-        return;
-      }
-    } catch {}
 
     const curatedLandmark = getCityImage(destName, destCountry);
     if (curatedLandmark && !curatedLandmark.includes('city-skyline-monument')) {
       setDynamicHeroImage(curatedLandmark);
       return;
     }
+
+    try {
+      const cached = typeof window !== 'undefined' ? localStorage.getItem(`tripready_hero_img_${norm}`) : null;
+      if (cached && !isPlaceholderImage(cached) && !cached.includes('photo-1564769625905-50e9ad63095a')) {
+        setDynamicHeroImage(cached);
+        return;
+      } else if (cached) {
+        localStorage.removeItem(`tripready_hero_img_${norm}`);
+      }
+    } catch {}
 
     if (destination?.image && !isPlaceholderImage(destination.image)) {
       setDynamicHeroImage(destination.image);
@@ -405,15 +410,19 @@ export default function TripCommandCenter({ destination }) {
   }, [destName, destCountry]);
 
   const [weatherData, setWeatherData] = useState({
-    temp: 22,
-    feelsLike: 25,
-    condition: 'Light Rain',
-    high: 26,
-    low: 22,
-    humidity: 85,
-    windSpeed: 5,
+    temp: 24,
+    feelsLike: 26,
+    condition: 'Sunny',
+    high: 28,
+    low: 20,
+    humidity: 62,
+    windSpeed: 8,
+    windDirection: 'NNE',
+    pressure: 1012,
+    visibility: 10,
+    hourly: [],
     uvIndex: 4,
-    code: 61,
+    code: 0,
     loading: true
   });
 
@@ -455,7 +464,7 @@ export default function TripCommandCenter({ destination }) {
         }
 
         const res = await fetch(
-          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto`
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure,visibility&hourly=temperature_2m,weather_code&forecast_hours=12&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto`
         );
         const data = await res.json();
         if (active && data) {
@@ -472,14 +481,46 @@ export default function TripCommandCenter({ destination }) {
             else if (code >= 80 && code <= 82) cond = 'Rain Showers';
             else if (code >= 95) cond = 'Thunderstorm';
 
+            // Convert wind direction degrees to compass
+            const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+            const windDeg = data.current.wind_direction_10m;
+            const windCompass = windDeg != null ? directions[Math.round(windDeg / 22.5) % 16] : 'NNE';
+
+            // Parse 6 Hourly forecast points
+            let parsedHourly = [];
+            if (data.hourly && Array.isArray(data.hourly.time)) {
+              const currentIsoHour = data.current.time ? data.current.time.slice(0, 13) : '';
+              let startIdx = data.hourly.time.findIndex(t => t.startsWith(currentIsoHour));
+              if (startIdx < 0) startIdx = 0;
+              for (let i = startIdx; i < Math.min(startIdx + 6, data.hourly.time.length); i++) {
+                const rawTime = data.hourly.time[i];
+                const hourNum = parseInt(rawTime.split('T')[1].split(':')[0], 10);
+                const period = hourNum >= 12 ? 'PM' : 'AM';
+                const displayH = hourNum % 12 === 0 ? 12 : hourNum % 12;
+                const hCode = data.hourly.weather_code ? data.hourly.weather_code[i] : 0;
+                parsedHourly.push({
+                  time: `${displayH} ${period}`,
+                  temp: Math.round(data.hourly.temperature_2m[i]),
+                  code: hCode,
+                  isRain: (hCode >= 51 && hCode <= 67) || (hCode >= 80 && hCode <= 82) || hCode >= 95,
+                  isSnow: hCode >= 71 && hCode <= 77,
+                  isCloudy: hCode >= 1 && hCode <= 3
+                });
+              }
+            }
+
             setWeatherData({
               temp: Math.round(data.current.temperature_2m),
               feelsLike: Math.round(data.current.apparent_temperature || data.current.temperature_2m),
               condition: cond,
               high: data.daily?.temperature_2m_max ? Math.round(data.daily.temperature_2m_max[0]) : 26,
               low: data.daily?.temperature_2m_min ? Math.round(data.daily.temperature_2m_min[0]) : 20,
-              humidity: data.current.relative_humidity_2m || 75,
-              windSpeed: Math.round(data.current.wind_speed_10m || 6),
+              humidity: data.current.relative_humidity_2m || 62,
+              windSpeed: Math.round(data.current.wind_speed_10m || 8),
+              windDirection: windCompass,
+              pressure: Math.round(data.current.surface_pressure || 1012),
+              visibility: Math.round((data.current.visibility || 10000) / 1000),
+              hourly: parsedHourly,
               uvIndex: 4,
               code,
               loading: false
@@ -755,6 +796,21 @@ export default function TripCommandCenter({ destination }) {
               alt={`${destName}, ${destCountry}`}
               className="absolute inset-0 w-full h-full object-cover object-center transform scale-100 hover:scale-105 transition-transform duration-1000 ease-out"
               loading="eager"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                const norm = (destName || '').toLowerCase();
+                if (norm.includes('mecca') || norm.includes('makkah')) {
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=1400&q=85';
+                } else if (norm.includes('medina') || norm.includes('madinah')) {
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1400&q=85';
+                } else if (norm.includes('lahore')) {
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1622546758596-f1f06ba11f58?w=1400&q=85';
+                } else if (norm.includes('pakistan')) {
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1565506737357-af89222625ad?w=1400&q=85';
+                } else {
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1400&q=85';
+                }
+              }}
             />
             {/* Cinematic Scrim Gradient: Ensures text is always 100% crisp & prominent */}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-slate-950/35" />

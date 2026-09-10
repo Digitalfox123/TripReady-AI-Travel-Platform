@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
+  MapPin,
   Sun,
   Moon,
   CloudRain,
@@ -7,7 +8,11 @@ import {
   Cloud,
   Zap,
   Wind,
-  Droplets
+  Droplets,
+  Gauge,
+  Eye,
+  Thermometer,
+  ArrowRight
 } from 'lucide-react';
 
 export default function TripWeatherScenery({
@@ -16,10 +21,11 @@ export default function TripWeatherScenery({
   destCountry = '',
   destTimezone = null
 }) {
-  // ── 1. Determine Time of Day in Destination City ───────────────────────────
-  const { timePeriod, destHour, formattedLocalTime } = useMemo(() => {
+  // ── 1. Determine Time & Period in Destination City ───────────────────────────
+  const { timePeriod, destHour, formattedDate, formattedTime } = useMemo(() => {
     let hour = 12;
-    let timeStr = '';
+    let timeStr = '07:24 AM';
+    let dateStr = 'Wed, 4 Jun 2026';
     const now = new Date();
 
     if (destTimezone) {
@@ -30,7 +36,7 @@ export default function TripWeatherScenery({
           minute: '2-digit',
           hour12: true
         }).formatToParts(now);
-        
+
         const hPart = parts.find(p => p.type === 'hour');
         const dayPeriodPart = parts.find(p => p.type === 'dayPeriod');
         if (hPart) {
@@ -39,269 +45,170 @@ export default function TripWeatherScenery({
           if (dayPeriodPart && dayPeriodPart.value.toLowerCase() === 'am' && h === 12) h = 0;
           hour = h;
         }
+
         timeStr = new Intl.DateTimeFormat('en-US', {
           timeZone: destTimezone,
-          hour: 'numeric',
+          hour: '2-digit',
           minute: '2-digit',
           hour12: true
+        }).format(now);
+
+        dateStr = new Intl.DateTimeFormat('en-US', {
+          timeZone: destTimezone,
+          weekday: 'short',
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
         }).format(now);
       } catch {
         hour = now.getHours();
         timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        dateStr = now.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
       }
     } else {
       hour = now.getHours();
       timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      dateStr = now.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
     }
 
-    let period = 'day';
-    if (hour >= 5 && hour < 8) period = 'dawn';
-    else if (hour >= 8 && hour < 17) period = 'day';
-    else if (hour >= 17 && hour < 20) period = 'dusk';
-    else period = 'night';
+    let period = 'Morning';
+    if (hour >= 5 && hour < 12) period = 'Morning';
+    else if (hour >= 12 && hour < 17) period = 'Afternoon';
+    else if (hour >= 17 && hour < 21) period = 'Evening';
+    else period = 'Night';
 
-    return { timePeriod: period, destHour: hour, formattedLocalTime: timeStr };
+    return {
+      timePeriod: period,
+      destHour: hour,
+      formattedDate: dateStr,
+      formattedTime: timeStr
+    };
   }, [destTimezone]);
 
-  // ── 2. Weather Condition Categorization ───────────────────────────────────
-  const condition = (weatherData?.condition || 'Clear Sky').toLowerCase();
+  // ── 2. Weather Condition Categorization ─────────────────────────────────────
+  const condition = (weatherData?.condition || 'Sunny').toLowerCase();
   const isRain = condition.includes('rain') || condition.includes('drizzle') || condition.includes('shower');
   const isSnow = condition.includes('snow') || condition.includes('flurry') || condition.includes('ice');
   const isThunder = condition.includes('thunder') || condition.includes('storm');
   const isCloudy = condition.includes('cloud') || condition.includes('overcast') || condition.includes('fog') || condition.includes('mist');
-  const isClear = !isRain && !isSnow && !isThunder && !isCloudy;
+  const isNight = timePeriod === 'Night';
 
-  // ── 3. Dynamic Sky Background Gradients ───────────────────────────────────
-  const skyBackground = useMemo(() => {
-    if (isThunder) {
-      return 'from-slate-950 via-purple-950 to-slate-900';
-    }
-    if (isRain) {
-      return 'from-slate-800 via-blue-950 to-slate-900';
-    }
+  // ── 3. High-Definition Curated Background Photo ─────────────────────────────
+  const backgroundImage = useMemo(() => {
     if (isSnow) {
-      return 'from-slate-800 via-indigo-950 to-slate-900';
+      // Snowy Alpine Lake & Chalets
+      return 'https://images.unsplash.com/photo-1491557345352-5929e343eb89?w=1600&q=85';
     }
+    if (isRain || isThunder) {
+      // Moody Atmospheric Rain Over Scenic Lake & Mountains
+      return 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?w=1600&q=85';
+    }
+    if (isNight) {
+      // Starlit Midnight Mountains & Calm Lake
+      return 'https://images.unsplash.com/photo-1509773896068-7fd415d91e2e?w=1600&q=85';
+    }
+    if (timePeriod === 'Morning') {
+      // Golden Sunrise Lake & Hills
+      return 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600&q=85';
+    }
+    // Sunny Afternoon / Day
+    return 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=85';
+  }, [isSnow, isRain, isThunder, isNight, timePeriod]);
 
-    switch (timePeriod) {
-      case 'dawn':
-        return 'from-amber-600 via-rose-600 to-purple-900';
-      case 'dusk':
-        return 'from-purple-900 via-rose-800 to-amber-700';
-      case 'night':
-        return 'from-[#050B18] via-[#0B1730] to-[#122444]';
-      case 'day':
-      default:
-        return isCloudy
-          ? 'from-slate-700 via-sky-800 to-slate-800'
-          : 'from-sky-500 via-blue-600 to-indigo-700';
+  // ── 4. Natural Contextual Weather Description ───────────────────────────────
+  const weatherAdvisory = useMemo(() => {
+    if (isSnow) {
+      return 'Light snow is falling. Roads may be slippery, so drive carefully.';
     }
-  }, [timePeriod, isRain, isSnow, isThunder, isCloudy]);
+    if (isRain || isThunder) {
+      return 'Light to moderate rain expected throughout the day.';
+    }
+    if (isNight) {
+      return 'Cool and calm evening with clear starry skies.';
+    }
+    if (isCloudy) {
+      return 'Gentle cloud cover with pleasant seasonal temperatures.';
+    }
+    if (timePeriod === 'Morning') {
+      return 'Clear skies with bright morning sunshine throughout the day.';
+    }
+    return 'Sunny and comfortable outdoor conditions across the city.';
+  }, [isSnow, isRain, isThunder, isNight, isCloudy, timePeriod]);
+
+  // ── 5. Hourly Forecast Generation (6 Hours) ────────────────────────────────
+  const hourlyForecast = useMemo(() => {
+    if (weatherData?.hourly && Array.isArray(weatherData.hourly) && weatherData.hourly.length >= 6) {
+      return weatherData.hourly.slice(0, 6);
+    }
+    // Fallback computed hourly progression based on current temp
+    const baseTemp = weatherData?.temp ?? 24;
+    const currentH = destHour;
+    return Array.from({ length: 6 }).map((_, i) => {
+      const h = (currentH + i) % 24;
+      const period = h >= 12 ? 'PM' : 'AM';
+      const displayH = h % 12 === 0 ? 12 : h % 12;
+      const tempDiff = i === 0 ? 0 : (i <= 3 ? i * 2 : (6 - i) * 2);
+      return {
+        time: `${displayH} ${period}`,
+        temp: baseTemp + tempDiff,
+        isRain,
+        isSnow,
+        isCloudy
+      };
+    });
+  }, [weatherData, destHour, isRain, isSnow, isCloudy]);
+
+  // ── 6. State for active hourly selection ───────────────────────────────────
+  const [activeHourIdx, setActiveHourIdx] = useState(0);
 
   return (
-    <div
-      className={`relative overflow-hidden rounded-3xl bg-gradient-to-b ${skyBackground} text-white shadow-xl border border-white/10 min-h-[380px] flex flex-col justify-between p-6 select-none transition-all duration-700 group`}
-    >
-      {/* ══════════════════════════════════════════════════════════════════════
-          SCENERY LAYER 1: STARS & TWINKLES (NIGHT ONLY)
-          ══════════════════════════════════════════════════════════════════════ */}
-      {timePeriod === 'night' && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-          {/* Static and twinkling celestial stars */}
-          {[
-            { t: '12%', l: '15%', s: 2, d: '0ms' },
-            { t: '8%', l: '35%', s: 3, d: '300ms' },
-            { t: '18%', l: '48%', s: 1.5, d: '700ms' },
-            { t: '10%', l: '65%', s: 2.5, d: '200ms' },
-            { t: '22%', l: '80%', s: 2, d: '500ms' },
-            { t: '15%', l: '92%', s: 3, d: '400ms' },
-            { t: '28%', l: '25%', s: 1.5, d: '600ms' },
-            { t: '32%', l: '58%', s: 2, d: '100ms' },
-            { t: '30%', l: '72%', s: 1.5, d: '800ms' },
-            { t: '5%', l: '85%', s: 2, d: '250ms' }
-          ].map((star, idx) => (
-            <span
-              key={idx}
-              className="absolute rounded-full bg-white animate-pulse"
-              style={{
-                top: star.t,
-                left: star.l,
-                width: `${star.s}px`,
-                height: `${star.s}px`,
-                boxShadow: '0 0 6px rgba(255, 255, 255, 0.9)',
-                animationDelay: star.d,
-                animationDuration: '2.5s'
-              }}
-            />
-          ))}
-        </div>
-      )}
+    <div className="relative overflow-hidden rounded-[32px] sm:rounded-[36px] shadow-2xl border border-white/20 p-5 sm:p-7 text-white select-none transition-all">
+      {/* Background Photographic Scenery */}
+      <img
+        src={backgroundImage}
+        alt={`${destName} weather landscape`}
+        className="absolute inset-0 w-full h-full object-cover object-center transform scale-100 hover:scale-105 transition-transform duration-1000 ease-out"
+        loading="eager"
+        onError={(e) => {
+          e.currentTarget.onerror = null;
+          e.currentTarget.src = 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600&q=85';
+        }}
+      />
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          SCENERY LAYER 2: CELESTIAL BODIES (SUN / MOON)
-          ══════════════════════════════════════════════════════════════════════ */}
-      {/* 1. Luminous Crescent Moon with Silver Ambient Glow (Night) */}
-      {timePeriod === 'night' && (
-        <div className="absolute top-8 right-10 pointer-events-none z-10 transition-transform duration-1000 group-hover:scale-105">
-          {/* Radial Moon Glow */}
-          <div className="absolute -inset-6 rounded-full bg-blue-300/15 blur-2xl pointer-events-none" />
-          
-          <svg className="w-16 h-16 sm:w-20 sm:h-20 text-amber-100 drop-shadow-[0_0_20px_rgba(254,243,199,0.5)]" viewBox="0 0 100 100" fill="none">
-            {/* Glowing Crescent Silhouette */}
-            <path
-              d="M75 50C75 66.5685 61.5685 80 45 80C34.5029 80 25.2936 74.5977 20 66.4251C24.4288 68.708 29.5601 70 35 70C51.5685 70 65 56.5685 65 40C65 30.5601 60.708 22.1288 54 17.5C66.5977 21.7936 75 34.5029 75 50Z"
-              fill="url(#moonGradient)"
-            />
-            {/* Subtle Crater Details */}
-            <circle cx="50" cy="50" r="3" fill="#E2E8F0" fillOpacity="0.4" />
-            <circle cx="58" cy="42" r="2" fill="#E2E8F0" fillOpacity="0.3" />
-            <circle cx="56" cy="58" r="2.5" fill="#E2E8F0" fillOpacity="0.3" />
-            <defs>
-              <linearGradient id="moonGradient" x1="20" y1="20" x2="75" y2="80" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#FFFBEB" />
-                <stop offset="0.6" stopColor="#FEF3C7" />
-                <stop offset="1" stopColor="#FDE68A" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-      )}
+      {/* Cinematic Scrim Gradient: Ensures white typography & frosted glass remain 100% crisp */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/40 pointer-events-none" />
+      <div className="absolute inset-0 bg-sky-950/20 pointer-events-none" />
 
-      {/* 2. Radiant Rising Sun (Dawn / Sunrise) */}
-      {timePeriod === 'dawn' && (
-        <div className="absolute bottom-28 right-12 pointer-events-none z-10 transition-transform duration-1000">
-          {/* Huge Rising Sun Flare */}
-          <div className="absolute -inset-10 rounded-full bg-amber-400/40 blur-3xl" />
-          <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-amber-300 via-orange-400 to-rose-400 shadow-[0_0_60px_rgba(251,191,36,0.8)] border border-amber-200/50" />
-        </div>
-      )}
-
-      {/* 3. Golden Sun with Ambient Flare (Daytime) */}
-      {timePeriod === 'day' && !isThunder && (
-        <div className="absolute top-6 right-10 pointer-events-none z-10 transition-transform duration-1000 group-hover:scale-105">
-          {/* Sun Glow */}
-          <div className="absolute -inset-8 rounded-full bg-amber-400/25 blur-3xl pointer-events-none animate-pulse" />
-          
-          <svg className="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-[0_0_25px_rgba(251,191,36,0.6)]" viewBox="0 0 100 100" fill="none">
-            {/* Core Sun Disc */}
-            <circle cx="50" cy="50" r="22" fill="url(#sunGradient)" />
-            {/* Rotating Corona Rays */}
-            <g className="animate-[spin_40s_linear_infinite]" style={{ transformOrigin: '50px 50px' }}>
-              {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, idx) => (
-                <line
-                  key={idx}
-                  x1="50"
-                  y1="18"
-                  x2="50"
-                  y2="10"
-                  stroke="#FDE047"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  transform={`rotate(${angle} 50 50)`}
-                  strokeOpacity="0.8"
-                />
-              ))}
-            </g>
-            <defs>
-              <linearGradient id="sunGradient" x1="30" y1="30" x2="70" y2="70" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#FEF08A" />
-                <stop offset="0.5" stopColor="#FACC15" />
-                <stop offset="1" stopColor="#F59E0B" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-      )}
-
-      {/* 4. Golden Crimson Sunset Sun (Dusk) */}
-      {timePeriod === 'dusk' && (
-        <div className="absolute bottom-24 right-14 pointer-events-none z-10 transition-transform duration-1000">
-          <div className="absolute -inset-10 rounded-full bg-rose-500/40 blur-3xl" />
-          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-orange-400 via-rose-500 to-purple-600 shadow-[0_0_50px_rgba(244,63,94,0.7)]" />
-        </div>
-      )}
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          SCENERY LAYER 3: CLOUDS & MIST (DYNAMIC DRIFTING)
-          ══════════════════════════════════════════════════════════════════════ */}
-      {(isCloudy || isRain || isSnow) && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-          {/* Cloud Bank 1 (High layer) */}
-          <div className="absolute -top-4 -left-10 w-96 h-28 bg-white/10 dark:bg-white/5 rounded-full blur-xl animate-[pulse_6s_ease-in-out_infinite]" />
-          {/* Cloud Bank 2 (Mid layer) */}
-          <div className="absolute top-10 right-4 w-80 h-24 bg-white/15 dark:bg-white/10 rounded-full blur-lg" />
-        </div>
-      )}
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          SCENERY LAYER 4: ANIMATED RAINFALL STREAKS & RIPPLES (IF RAINY)
-          ══════════════════════════════════════════════════════════════════════ */}
+      {/* Animated Rain Effects (when rainy) */}
       {isRain && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
-          {/* 18 Staggered Falling Raindrops passing in front of mountains */}
-          {[
-            { l: '8%', d: '0ms', dur: '0.8s' },
-            { l: '16%', d: '300ms', dur: '0.9s' },
-            { l: '24%', d: '150ms', dur: '0.75s' },
-            { l: '32%', d: '500ms', dur: '0.85s' },
-            { l: '40%', d: '100ms', dur: '0.8s' },
-            { l: '48%', d: '450ms', dur: '0.7s' },
-            { l: '56%', d: '250ms', dur: '0.9s' },
-            { l: '64%', d: '600ms', dur: '0.75s' },
-            { l: '72%', d: '50ms', dur: '0.85s' },
-            { l: '80%', d: '350ms', dur: '0.8s' },
-            { l: '88%', d: '200ms', dur: '0.7s' },
-            { l: '95%', d: '550ms', dur: '0.9s' },
-            { l: '12%', d: '400ms', dur: '0.85s' },
-            { l: '28%', d: '650ms', dur: '0.75s' },
-            { l: '44%', d: '180ms', dur: '0.8s' },
-            { l: '60%', d: '320ms', dur: '0.7s' },
-            { l: '76%', d: '480ms', dur: '0.9s' },
-            { l: '92%', d: '120ms', dur: '0.85s' }
-          ].map((drop, idx) => (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
+          {Array.from({ length: 16 }).map((_, i) => (
             <div
-              key={idx}
-              className="absolute w-[1.5px] h-8 bg-gradient-to-b from-transparent via-blue-200 to-white/90 rounded-full animate-bounce"
+              key={i}
+              className="absolute w-[1.5px] bg-gradient-to-b from-transparent via-cyan-200 to-white animate-pulse"
               style={{
-                left: drop.l,
-                top: '-20px',
-                animationDelay: drop.d,
-                animationDuration: drop.dur,
-                animationIterationCount: 'infinite',
-                transform: 'rotate(15deg)'
+                height: `${24 + (i % 5) * 8}px`,
+                left: `${(i * 6.5) % 100}%`,
+                top: `${(i * 12) % 80}%`,
+                transform: 'rotate(15deg)',
+                animationDuration: `${0.8 + (i % 4) * 0.2}s`
               }}
             />
           ))}
-
-          {/* Water Splash Ripples at bottom */}
-          <div className="absolute bottom-6 left-1/4 w-8 h-1 rounded-full bg-blue-300/40 animate-ping" />
-          <div className="absolute bottom-4 right-1/3 w-10 h-1 rounded-full bg-blue-200/50 animate-ping" style={{ animationDelay: '400ms' }} />
         </div>
       )}
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          SCENERY LAYER 5: ANIMATED SNOWFLAKES (IF SNOWY)
-          ══════════════════════════════════════════════════════════════════════ */}
+      {/* Animated Snow Effects (when snowy) */}
       {isSnow && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
-          {[
-            { l: '10%', d: '0ms', dur: '3s', s: 4 },
-            { l: '25%', d: '1s', dur: '3.5s', s: 6 },
-            { l: '40%', d: '0.5s', dur: '2.8s', s: 3 },
-            { l: '60%', d: '1.5s', dur: '3.2s', s: 5 },
-            { l: '75%', d: '2s', dur: '2.9s', s: 4 },
-            { l: '90%', d: '0.8s', dur: '3.4s', s: 5 }
-          ].map((flake, idx) => (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-60">
+          {Array.from({ length: 18 }).map((_, i) => (
             <div
-              key={idx}
-              className="absolute rounded-full bg-white/90 shadow-[0_0_8px_white] animate-pulse"
+              key={i}
+              className="absolute w-2 h-2 rounded-full bg-white/80 blur-[0.5px] animate-ping"
               style={{
-                left: flake.l,
-                top: '20%',
-                width: `${flake.s}px`,
-                height: `${flake.s}px`,
-                animationDelay: flake.d,
-                animationDuration: flake.dur
+                left: `${(i * 5.8) % 96}%`,
+                top: `${(i * 10) % 90}%`,
+                animationDuration: `${2 + (i % 3)}s`
               }}
             />
           ))}
@@ -309,160 +216,278 @@ export default function TripWeatherScenery({
       )}
 
       {/* ══════════════════════════════════════════════════════════════════════
-          SCENERY LAYER 6: MAJESTIC MOUNTAINS, GARDEN MEADOWS & PINE TREES (SVG)
+          TOP BAR: LOCATION & TIME
           ══════════════════════════════════════════════════════════════════════ */}
-      <div className="absolute bottom-0 left-0 right-0 pointer-events-none z-10 select-none overflow-hidden">
-        <svg
-          className="w-full h-36 sm:h-44 preserve-3d"
-          viewBox="0 0 1000 300"
-          preserveAspectRatio="none"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* Far Distant Mountain Range (Misty Atmospheric Silhouettes) */}
-          <path
-            d="M0 200 L120 110 L280 180 L420 80 L580 170 L720 95 L880 160 L1000 120 L1000 300 L0 300 Z"
-            fill={timePeriod === 'night' ? '#0A152A' : timePeriod === 'dawn' || timePeriod === 'dusk' ? '#4A1D4E' : '#1E3A5F'}
-            fillOpacity="0.55"
-          />
+      <div className="relative z-10 flex items-start justify-between gap-3">
+        {/* Left: Location Pin & Destination */}
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white flex-shrink-0 shadow-sm">
+            <MapPin className="w-4 h-4 text-white" />
+          </div>
+          <div>
+            <h3 className="text-base sm:text-lg font-bold text-white tracking-tight drop-shadow-md leading-snug">
+              {destName}
+            </h3>
+            <p className="text-[11px] text-white/80 font-medium drop-shadow-sm truncate max-w-[160px] sm:max-w-xs">
+              {destCountry || 'International'}
+            </p>
+          </div>
+        </div>
 
-          {/* Mid Ridge Peaks (Crisp Alpine Ridges with Snow Highlights) */}
-          <path
-            d="M0 240 L160 140 L310 210 L480 130 L640 220 L810 150 L1000 230 L1000 300 L0 300 Z"
-            fill={timePeriod === 'night' ? '#060E1D' : timePeriod === 'dawn' || timePeriod === 'dusk' ? '#3B133E' : '#162C49'}
-            fillOpacity="0.8"
-          />
+        {/* Right: Date, Time & Small Condition Icon */}
+        <div className="flex items-center gap-2.5 text-right">
+          <div>
+            <span className="block text-[11px] text-white/80 font-medium drop-shadow-sm">
+              {formattedDate}
+            </span>
+            <span className="block text-sm sm:text-base font-bold text-white font-mono tracking-tight drop-shadow-md">
+              {formattedTime}
+            </span>
+          </div>
 
-          {/* Mountain Peak Snow/Light Accent Caps */}
-          <polygon
-            points="480,130 460,150 500,150"
-            fill={timePeriod === 'dawn' ? '#FDE68A' : '#FFFFFF'}
-            fillOpacity="0.5"
-          />
-          <polygon
-            points="160,140 145,155 175,155"
-            fill={timePeriod === 'dawn' ? '#FDE68A' : '#FFFFFF'}
-            fillOpacity="0.4"
-          />
-          <polygon
-            points="810,150 795,165 825,165"
-            fill={timePeriod === 'dawn' ? '#FDE68A' : '#FFFFFF'}
-            fillOpacity="0.4"
-          />
-
-          {/* Near Foreground: Rolling Hills & Garden Meadow */}
-          <path
-            d="M0 260 C150 230 300 275 480 250 C680 225 820 270 1000 245 L1000 300 L0 300 Z"
-            fill={timePeriod === 'night' ? '#030812' : timePeriod === 'dawn' || timePeriod === 'dusk' ? '#250B28' : '#0F1F33'}
-          />
-
-          {/* Foreground Meadow Garden Grass Silhouette */}
-          <path
-            d="M0 275 C200 260 400 285 600 270 C800 255 900 275 1000 265 L1000 300 L0 300 Z"
-            fill={timePeriod === 'night' ? '#02050B' : timePeriod === 'dawn' || timePeriod === 'dusk' ? '#1A071C' : '#091524'}
-          />
-
-          {/* Pine Trees / Cypress Garden Silhouettes along the ridges */}
-          {/* Tree Cluster Left */}
-          <polygon points="90,240 85,255 95,255" fill="#02050B" fillOpacity="0.9" />
-          <polygon points="105,232 100,250 110,250" fill="#02050B" fillOpacity="0.9" />
-          <polygon points="120,238 115,255 125,255" fill="#02050B" fillOpacity="0.9" />
-
-          {/* Tree Cluster Center */}
-          <polygon points="520,245 515,260 525,260" fill="#02050B" fillOpacity="0.85" />
-          <polygon points="535,238 529,258 541,258" fill="#02050B" fillOpacity="0.85" />
-
-          {/* Tree Cluster Right */}
-          <polygon points="860,242 854,260 866,260" fill="#02050B" fillOpacity="0.9" />
-          <polygon points="875,234 869,255 881,255" fill="#02050B" fillOpacity="0.9" />
-          <polygon points="890,240 885,260 895,260" fill="#02050B" fillOpacity="0.9" />
-        </svg>
+          <div className="w-8 h-8 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white flex-shrink-0 shadow-sm">
+            {isSnow ? (
+              <CloudSnow className="w-4 h-4 text-cyan-200" />
+            ) : isRain ? (
+              <CloudRain className="w-4 h-4 text-cyan-300" />
+            ) : isNight ? (
+              <Moon className="w-4 h-4 text-amber-200" />
+            ) : (
+              <Sun className="w-4 h-4 text-amber-300" />
+            )}
+          </div>
+        </div>
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          SCENERY FOREGROUND: WEATHER TELEMETRY & DATA (FROSTED GLASS PILLS)
+          MAIN HERO WEATHER & 3D CELESTIAL GRAPHIC
           ══════════════════════════════════════════════════════════════════════ */}
-      {/* Top Header Row */}
-      <div className="relative z-30 flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/30 backdrop-blur-md border border-white/15 text-xs font-mono">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="font-semibold uppercase tracking-wider text-emerald-300">
-            {timePeriod === 'night'
-              ? 'NIGHT SKY SCENERY'
-              : timePeriod === 'dawn'
-              ? 'SUNRISE OVER PEAKS'
-              : timePeriod === 'dusk'
-              ? 'GOLDEN TWILIGHT'
-              : 'SUNNY HORIZON'}
-          </span>
-          <span className="opacity-40">•</span>
-          <span className="text-white/80">{formattedLocalTime}</span>
-        </div>
+      <div className="relative z-10 flex items-center justify-between gap-4 mt-6 sm:mt-8">
+        {/* Left Hero Details */}
+        <div className="space-y-1 sm:space-y-1.5">
+          {/* Period Badge */}
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-xs font-semibold uppercase tracking-wider shadow-sm">
+            {isSnow ? (
+              <CloudSnow className="w-3.5 h-3.5 text-cyan-200" />
+            ) : isRain ? (
+              <CloudRain className="w-3.5 h-3.5 text-cyan-300" />
+            ) : isNight ? (
+              <Moon className="w-3.5 h-3.5 text-amber-200" />
+            ) : (
+              <Sun className="w-3.5 h-3.5 text-amber-300" />
+            )}
+            <span>{isSnow ? 'Snow' : isRain ? 'Rainy' : timePeriod}</span>
+          </div>
 
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-medium">
-          {isRain ? (
-            <CloudRain className="w-3.5 h-3.5 text-blue-300 animate-bounce" />
-          ) : isSnow ? (
-            <CloudSnow className="w-3.5 h-3.5 text-blue-100" />
-          ) : isThunder ? (
-            <Zap className="w-3.5 h-3.5 text-amber-300" />
-          ) : timePeriod === 'night' ? (
-            <Moon className="w-3.5 h-3.5 text-amber-200" />
-          ) : (
-            <Sun className="w-3.5 h-3.5 text-amber-400" />
-          )}
-          <span className="capitalize">{weatherData?.condition || 'Clear Sky'}</span>
-        </div>
-      </div>
-
-      {/* Main Temperature & Destination Display */}
-      <div className="relative z-30 my-auto py-6">
-        <div className="flex flex-col sm:flex-row sm:items-baseline gap-3 sm:gap-6">
-          <div className="flex items-baseline gap-1">
-            <span className="text-6xl sm:text-7xl font-black tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
-              {weatherData?.temp ?? 22}
+          {/* Giant Temperature */}
+          <div className="flex items-baseline">
+            <span className="text-6xl sm:text-7xl md:text-8xl font-black text-white tracking-tighter leading-none drop-shadow-2xl">
+              {weatherData?.temp ?? 24}
             </span>
-            <span className="text-2xl sm:text-3xl font-light text-white/80">°C</span>
+            <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-white/90 ml-1.5 align-top drop-shadow-lg">
+              °C
+            </span>
           </div>
 
-          <div className="space-y-1">
-            <div className="text-lg sm:text-xl font-bold text-white drop-shadow flex items-center gap-2">
-              <span>{destName}</span>
-              {destCountry && <span className="text-white/60 text-sm font-normal">({destCountry})</span>}
+          {/* Condition Name */}
+          <h4 className="text-lg sm:text-2xl font-bold text-white drop-shadow-md">
+            {weatherData?.condition || (isSnow ? 'Snow' : isRain ? 'Rainy' : 'Sunny')}
+          </h4>
+
+          {/* Feels Like Row */}
+          <div className="flex items-center gap-1.5 text-white/90 text-xs sm:text-sm font-medium drop-shadow-sm pt-0.5">
+            <Thermometer className="w-4 h-4 text-white/80" />
+            <span>Feels like {weatherData?.feelsLike ?? weatherData?.temp ?? 26}°C</span>
+          </div>
+
+          {/* Advisory Sentence */}
+          <p className="text-[11px] sm:text-xs text-white/85 font-light max-w-sm drop-shadow leading-relaxed pt-1">
+            {weatherAdvisory}
+          </p>
+        </div>
+
+        {/* Right: 3D Glowing Celestial Element */}
+        <div className="relative flex-shrink-0 w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center">
+          {isSnow ? (
+            /* 3D Snowcloud */
+            <div className="relative flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full bg-cyan-400/20 blur-2xl absolute inset-0" />
+              <CloudSnow className="w-20 h-20 sm:w-24 sm:h-24 text-cyan-100 drop-shadow-2xl filter" />
             </div>
-            <div className="text-xs text-white/80 font-medium flex items-center gap-2 drop-shadow">
-              <span>Feels like {weatherData?.feelsLike ?? 24}°C</span>
-              <span>•</span>
-              <span>H: {weatherData?.high ?? 26}° / L: {weatherData?.low ?? 18}°</span>
+          ) : isRain ? (
+            /* 3D Raincloud */
+            <div className="relative flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full bg-blue-500/25 blur-2xl absolute inset-0" />
+              <CloudRain className="w-20 h-20 sm:w-24 sm:h-24 text-blue-100 drop-shadow-2xl filter" />
+            </div>
+          ) : isNight ? (
+            /* 3D Crescent Moon */
+            <div className="relative flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full bg-amber-300/20 blur-2xl absolute inset-0" />
+              <Moon className="w-20 h-20 sm:w-24 sm:h-24 text-amber-200 fill-amber-200/90 drop-shadow-2xl filter" />
+            </div>
+          ) : (
+            /* 3D Golden Sun with Radiating Corona Flare */
+            <div className="relative flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full bg-amber-400/35 blur-2xl absolute inset-0 animate-pulse" />
+              <svg className="w-24 h-24 sm:w-28 sm:h-28 drop-shadow-2xl" viewBox="0 0 100 100">
+                <defs>
+                  <radialGradient id="sun3dGrad" cx="35%" cy="35%" r="65%">
+                    <stop offset="0%" stopColor="#FFF9C4" />
+                    <stop offset="45%" stopColor="#FDD835" />
+                    <stop offset="85%" stopColor="#F57C00" />
+                    <stop offset="100%" stopColor="#E65100" />
+                  </radialGradient>
+                  <filter id="sunGlow" x="-30%" y="-30%" width="160%" height="160%">
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                  </filter>
+                </defs>
+                {/* Corona Rays */}
+                {Array.from({ length: 8 }).map((_, rIdx) => (
+                  <rect
+                    key={rIdx}
+                    x="47"
+                    y="8"
+                    width="6"
+                    height="12"
+                    rx="3"
+                    fill="#FFD54F"
+                    opacity="0.9"
+                    transform={`rotate(${rIdx * 45} 50 50)`}
+                  />
+                ))}
+                {/* Sun Sphere */}
+                <circle cx="50" cy="50" r="26" fill="url(#sun3dGrad)" filter="url(#sunGlow)" />
+                {/* Specular Highlight */}
+                <ellipse cx="43" cy="42" rx="8" ry="4" fill="white" opacity="0.4" transform="rotate(-30 43 42)" />
+              </svg>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          FROSTED GLASS TELEMETRY PILL (4 COLUMNS)
+          ══════════════════════════════════════════════════════════════════════ */}
+      <div className="relative z-10 mt-6 sm:mt-8 p-4 sm:p-5 rounded-2xl bg-black/40 dark:bg-black/55 backdrop-blur-xl border border-white/15 shadow-xl">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-2 sm:divide-x divide-white/15">
+          {/* Metric 1: Humidity */}
+          <div className="flex items-center gap-3 px-2 sm:px-3">
+            <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-cyan-300 flex-shrink-0">
+              <Droplets className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="block text-[10px] sm:text-[11px] text-white/70 font-medium">Humidity</span>
+              <span className="block text-sm sm:text-base font-bold text-white font-mono">
+                {weatherData?.humidity ?? 62}%
+              </span>
+            </div>
+          </div>
+
+          {/* Metric 2: Wind */}
+          <div className="flex items-center gap-3 px-2 sm:px-3">
+            <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-cyan-300 flex-shrink-0">
+              <Wind className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="block text-[10px] sm:text-[11px] text-white/70 font-medium">Wind</span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-sm sm:text-base font-bold text-white font-mono">
+                  {weatherData?.windSpeed ?? 8} km/h
+                </span>
+                <span className="text-[10px] text-white/60 font-mono">
+                  {weatherData?.windDirection || 'NNE'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Metric 3: Pressure */}
+          <div className="flex items-center gap-3 px-2 sm:px-3 pt-3 sm:pt-0 border-t sm:border-t-0 border-white/10">
+            <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-cyan-300 flex-shrink-0">
+              <Gauge className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="block text-[10px] sm:text-[11px] text-white/70 font-medium">Pressure</span>
+              <span className="block text-sm sm:text-base font-bold text-white font-mono">
+                {weatherData?.pressure ?? 1012} hPa
+              </span>
+            </div>
+          </div>
+
+          {/* Metric 4: Visibility */}
+          <div className="flex items-center gap-3 px-2 sm:px-3 pt-3 sm:pt-0 border-t sm:border-t-0 border-white/10">
+            <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-cyan-300 flex-shrink-0">
+              <Eye className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="block text-[10px] sm:text-[11px] text-white/70 font-medium">Visibility</span>
+              <span className="block text-sm sm:text-base font-bold text-white font-mono">
+                {weatherData?.visibility ?? 10} km
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom Sleek Metric Strip (Frosted Glass Surface) */}
-      <div className="relative z-30 grid grid-cols-3 gap-2 p-3 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 text-xs">
-        <div className="flex items-center gap-2 px-2">
-          <Droplets className="w-4 h-4 text-blue-300 flex-shrink-0" />
-          <div>
-            <span className="block text-[9px] uppercase font-mono text-white/60">Humidity</span>
-            <span className="font-bold text-white text-xs">{weatherData?.humidity ?? 65}%</span>
+      {/* ══════════════════════════════════════════════════════════════════════
+          FROSTED GLASS HOURLY FORECAST BAR (6 HOURS)
+          ══════════════════════════════════════════════════════════════════════ */}
+      <div className="relative z-10 mt-3 p-4 sm:p-5 rounded-2xl bg-black/40 dark:bg-black/55 backdrop-blur-xl border border-white/15 shadow-xl space-y-3">
+        {/* Forecast Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {isSnow ? (
+              <CloudSnow className="w-4 h-4 text-cyan-300" />
+            ) : isRain ? (
+              <CloudRain className="w-4 h-4 text-cyan-300" />
+            ) : (
+              <Sun className="w-4 h-4 text-amber-300" />
+            )}
+            <h5 className="text-xs sm:text-sm font-bold text-white tracking-wide">
+              Hourly Forecast
+            </h5>
           </div>
+
+          <span className="text-[11px] text-white/75 hover:text-white transition-colors cursor-pointer flex items-center gap-1 font-medium">
+            <span>More Details</span>
+            <ArrowRight className="w-3 h-3" />
+          </span>
         </div>
 
-        <div className="flex items-center gap-2 px-2 border-l border-white/10">
-          <Wind className="w-4 h-4 text-teal-300 flex-shrink-0" />
-          <div>
-            <span className="block text-[9px] uppercase font-mono text-white/60">Wind</span>
-            <span className="font-bold text-white text-xs">{weatherData?.windSpeed ?? 8} km/h</span>
-          </div>
-        </div>
+        {/* 6 Hourly Slot Pills */}
+        <div className="grid grid-cols-6 gap-2 pt-1 text-center">
+          {hourlyForecast.map((slot, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => setActiveHourIdx(idx)}
+              className={`flex flex-col items-center justify-between py-1.5 px-1 rounded-xl transition-all cursor-pointer ${
+                activeHourIdx === idx
+                  ? 'border-b-2 border-cyan-400 bg-white/10 font-bold'
+                  : 'hover:bg-white/5 opacity-80 hover:opacity-100'
+              }`}
+            >
+              <span className="text-[10px] sm:text-[11px] text-white/80 font-medium">
+                {slot.time}
+              </span>
 
-        <div className="flex items-center gap-2 px-2 border-l border-white/10">
-          <Sun className="w-4 h-4 text-amber-300 flex-shrink-0" />
-          <div>
-            <span className="block text-[9px] uppercase font-mono text-white/60">UV Index</span>
-            <span className="font-bold text-white text-xs">{weatherData?.uvIndex ?? 3} (Moderate)</span>
-          </div>
+              <div className="my-1.5 flex items-center justify-center text-white">
+                {isSnow ? (
+                  <CloudSnow className="w-4 h-4 text-cyan-200" />
+                ) : isRain ? (
+                  <CloudRain className="w-4 h-4 text-cyan-300" />
+                ) : (
+                  <Sun className="w-4 h-4 text-amber-300" />
+                )}
+              </div>
+
+              <span className="text-xs sm:text-sm font-bold text-white font-mono">
+                {slot.temp}°
+              </span>
+            </button>
+          ))}
         </div>
       </div>
     </div>
